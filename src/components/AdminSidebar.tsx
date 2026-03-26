@@ -2,9 +2,33 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState, useEffect } from "react";
+
+interface UserInfo {
+    id: string;
+    name: string;
+    email: string;
+    role: string;
+}
 
 export default function AdminSidebar() {
     const pathname = usePathname();
+    const [user, setUser] = useState<UserInfo | null>(null);
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                const res = await fetch("/api/auth/me");
+                if (res.ok) {
+                    const data = await res.json();
+                    setUser(data);
+                }
+            } catch (error) {
+                console.error("Failed to fetch user:", error);
+            }
+        };
+        fetchUser();
+    }, []);
 
     const navItems = [
         { name: "Live Overview", href: "/admin", icon: "dashboard" },
@@ -17,6 +41,10 @@ export default function AdminSidebar() {
         { name: "Neural Health", href: "/admin/health", icon: "biotech" },
         { name: "Traffic Matrix", href: "/admin/traffic", icon: "hub" },
     ];
+
+    const initials = user?.name
+        ? user.name.split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2)
+        : "..";
 
     return (
         <aside className="w-72 glass-panel border-r border-white/5 flex flex-col fixed h-full z-50">
@@ -72,14 +100,14 @@ export default function AdminSidebar() {
             <div className="p-6 border-t border-white/5">
                 <div className="flex items-center gap-4 px-4 py-4 rounded-xl glass-panel bg-white/5 border-white/10">
                     <div className="relative">
-                        <div className="w-10 h-10 rounded-full bg-sky-500/20 border border-sky-400/50 flex items-center justify-center text-sky-400 font-bold">
-                            OP
+                        <div className="w-10 h-10 rounded-full bg-sky-500/20 border border-sky-400/50 flex items-center justify-center text-sky-400 font-bold text-xs">
+                            {initials}
                         </div>
                         <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 border-2 border-slate-950 rounded-full"></div>
                     </div>
                     <div className="flex-1 overflow-hidden">
-                        <p className="text-xs font-bold text-white truncate uppercase">Operator_08</p>
-                        <p className="text-[10px] text-sky-400/70 font-mono truncate">AUTH_LVL: ALPHA</p>
+                        <p className="text-xs font-bold text-white truncate uppercase">{user?.name || "Loading..."}</p>
+                        <p className="text-[10px] text-sky-400/70 font-mono truncate">ROLE: {user?.role || "..."}</p>
                     </div>
                     <Link href="/login" className="text-slate-500 hover:text-white transition-colors">
                         <span className="material-symbols-outlined text-lg">logout</span>
@@ -89,3 +117,4 @@ export default function AdminSidebar() {
         </aside>
     );
 }
+

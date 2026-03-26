@@ -17,22 +17,26 @@ export async function POST(req: Request) {
         const { payload } = await jwtVerify(token, secret);
         const userId = payload.userId as string;
 
-        const { url, title } = await req.json();
+        const { content, title, url } = await req.json();
 
-        if (!url || !title) {
+        if (!content) {
             return NextResponse.json(
-                { error: "Missing required fields" },
+                { error: "Please provide text content to verify" },
                 { status: 400 }
             );
         }
 
-        // Trigger real verification
-        const verification = await verifyNews(url, title);
+        // Auto-generate title from the first ~60 chars of content if not provided
+        const submissionTitle = title || content.slice(0, 60) + (content.length > 60 ? "..." : "");
+
+        // Trigger verification using the claim text
+        const verification = await verifyNews(content, submissionTitle);
 
         const submission = await db.submission.create({
             data: {
-                url,
-                title,
+                content,
+                url: url || null,
+                title: submissionTitle,
                 trustScore: verification.accuracy,
                 status: verification.status,
                 citations: JSON.stringify(verification.citations),
@@ -40,7 +44,11 @@ export async function POST(req: Request) {
             },
         });
 
-        return NextResponse.json(submission, { status: 201 });
+        // Return submission data along with AI analysis
+        return NextResponse.json({
+            ...submission,
+            aiAnalysis: verification.aiAnalysis,
+        }, { status: 201 });
     } catch (error) {
         console.error("Submission error:", error);
         return NextResponse.json(

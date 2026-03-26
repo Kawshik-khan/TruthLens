@@ -54,7 +54,7 @@ export default function Footer() {
                     </div>
                 </div>
                 <div className="mt-24 pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6 text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-slate-700">
-                    <p>© 2024 TruthLens Archive System. Encrypted Deployment.</p>
+                    <p>&copy; {new Date().getFullYear()} TruthLens Archive System. Encrypted Deployment.</p>
                     <div className="flex gap-8">
                         <Link className="hover:text-white transition-colors" href="/methodology">Access Policy</Link>
                         <Link className="hover:text-white transition-colors" href="/feedback">Feedback</Link>

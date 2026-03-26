@@ -5,27 +5,55 @@ import Footer from "@/components/Footer";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 
+interface UserInfo {
+    id: string;
+    name: string;
+    email: string;
+    role: string;
+    createdAt: string;
+}
+
+function computeTrustTier(avgScore: number): { label: string; level: number } {
+    if (avgScore >= 85) return { label: "Trust Tier 1", level: 1 };
+    if (avgScore >= 60) return { label: "Trust Tier 2", level: 2 };
+    return { label: "Trust Tier 3", level: 3 };
+}
+
 export default function DashboardPage() {
     const [historyItems, setHistoryItems] = useState<any[]>([]);
+    const [user, setUser] = useState<UserInfo | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        const fetchHistory = async () => {
+        const fetchData = async () => {
             try {
-                const res = await fetch("/api/submissions");
-                if (res.ok) {
-                    const data = await res.json();
+                const [historyRes, userRes] = await Promise.all([
+                    fetch("/api/submissions"),
+                    fetch("/api/auth/me"),
+                ]);
+
+                if (historyRes.ok) {
+                    const data = await historyRes.json();
                     setHistoryItems(data);
                 }
+                if (userRes.ok) {
+                    const userData = await userRes.json();
+                    setUser(userData);
+                }
             } catch (error) {
-                console.error("Failed to fetch history:", error);
+                console.error("Failed to fetch dashboard data:", error);
             } finally {
                 setIsLoading(false);
             }
         };
 
-        fetchHistory();
+        fetchData();
     }, []);
+
+    const avgScore = historyItems.length > 0
+        ? Math.round(historyItems.reduce((acc, curr) => acc + curr.trustScore, 0) / historyItems.length)
+        : 0;
+    const trustTier = computeTrustTier(avgScore);
 
     return (
         <div className="flex min-h-screen bg-[#0b0b1a] grid-bg">
@@ -36,7 +64,7 @@ export default function DashboardPage() {
                 <div className="flex justify-between items-end mb-8">
                     <div>
                         <h2 className="text-3xl font-bold tracking-tight mb-2 text-white">User Dashboard</h2>
-                        <p className="text-slate-400">Welcome back, monitoring global truth metrics.</p>
+                        <p className="text-slate-400">Welcome back{user ? `, ${user.name}` : ""}. Monitoring global truth metrics.</p>
                     </div>
                     <div className="flex items-center gap-4">
                         <div className="text-right">
@@ -55,10 +83,15 @@ export default function DashboardPage() {
                     <div className="flex flex-col md:flex-row md:items-center gap-8 relative z-10">
                         <div className="flex-1">
                             <div className="flex items-center gap-3 mb-4">
-                                <h3 className="text-2xl font-bold text-white">Verified Researcher</h3>
+                                <h3 className="text-2xl font-bold text-white">{user?.name || "Loading..."}</h3>
                                 <span className="bg-indigo-600/20 text-indigo-400 text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full border border-indigo-600/30">
-                                    Trust Tier 1
+                                    {historyItems.length > 0 ? trustTier.label : "New Member"}
                                 </span>
+                                {user?.role && (
+                                    <span className="bg-slate-700/30 text-slate-400 text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full border border-slate-600/30">
+                                        {user.role}
+                                    </span>
+                                )}
                             </div>
                             <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
                                 <div>
@@ -68,9 +101,19 @@ export default function DashboardPage() {
                                 <div>
                                     <div className="text-slate-500 text-xs font-semibold uppercase mb-1">Average Score</div>
                                     <div className="text-2xl font-bold text-white">
-                                        {historyItems.length > 0
-                                            ? Math.round(historyItems.reduce((acc, curr) => acc + curr.trustScore, 0) / historyItems.length)
-                                            : "--"}
+                                        {historyItems.length > 0 ? avgScore : "--"}
+                                    </div>
+                                </div>
+                                <div>
+                                    <div className="text-slate-500 text-xs font-semibold uppercase mb-1">Member Since</div>
+                                    <div className="text-2xl font-bold text-white">
+                                        {user ? new Date(user.createdAt).toLocaleDateString("en-US", { month: "short", year: "numeric" }) : "--"}
+                                    </div>
+                                </div>
+                                <div>
+                                    <div className="text-slate-500 text-xs font-semibold uppercase mb-1">Verified</div>
+                                    <div className="text-2xl font-bold text-emerald-500">
+                                        {historyItems.filter(i => i.status === "VERIFIED").length}
                                     </div>
                                 </div>
                             </div>
@@ -131,7 +174,7 @@ export default function DashboardPage() {
                                         </div>
                                         <div className="flex gap-2">
                                             <Link
-                                                href="/report"
+                                                href={`/report?id=${item.id}`}
                                                 className="p-2 text-slate-500 hover:text-indigo-400 hover:bg-indigo-600/10 rounded transition-all"
                                                 title="View Report"
                                             >

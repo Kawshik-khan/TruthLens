@@ -24,7 +24,8 @@ model User {
 model Submission {
   id          String   @id @default(cuid())
   title       String
-  url         String
+  content     String?  // The raw text claim submitted by the user
+  url         String?  // Optional URL if provided
   trustScore  Int
   status      String   // VERIFIED, FLAGGED, RELIABLE, FAKE
   citations   String?  // JSON string of matching URLs

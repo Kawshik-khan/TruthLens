@@ -2,95 +2,82 @@
 
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
+interface SourceData {
+    id: string;
+    domain: string;
+    name: string;
+    tier: string; // TRUSTED, QUESTIONABLE, DISINFO
+    biasIndex: number;
+    auditDate: string;
+    auditor: string;
+}
+
+interface UserInfo {
+    id: string;
+    name: string;
+    email: string;
+    role: string;
+}
+
+function getTierDisplay(tier: string) {
+    switch (tier) {
+        case "TRUSTED":
+            return { label: "Trusted", color: "text-blue-500 bg-blue-500/10", borderColor: "text-blue-500 border-blue-600/30 bg-blue-600/5 shadow-[0_0_10px_rgba(59,130,246,0.2)]", barColor: "bg-blue-600/20 group-hover:bg-blue-600" };
+        case "QUESTIONABLE":
+            return { label: "Mixed", color: "text-amber-500 bg-amber-500/10", borderColor: "text-amber-500 border-amber-500/30 bg-amber-500/5 shadow-[0_0_10px_rgba(245,158,11,0.2)]", barColor: "bg-amber-500/20 group-hover:bg-amber-500" };
+        case "DISINFO":
+            return { label: "Untrusted", color: "text-purple-500 bg-purple-500/10", borderColor: "text-purple-500 border-purple-600/30 bg-purple-600/5 shadow-[0_0_10px_rgba(168,85,247,0.2)]", barColor: "bg-purple-500/20 group-hover:bg-purple-500" };
+        default:
+            return { label: tier, color: "text-slate-500 bg-slate-500/10", borderColor: "text-slate-500 border-slate-600/30 bg-slate-600/5", barColor: "bg-slate-500/20 group-hover:bg-slate-500" };
+    }
+}
+
+function generateBars(): number[] {
+    return Array.from({ length: 6 }, () => Math.floor(Math.random() * 8) + 2);
+}
 
 export default function SourcesPage() {
-    const sources = [
-        {
-            id: "BBC",
-            domain: "bbc.com",
-            region: "United Kingdom",
-            type: "Mainstream News",
-            scope: "Global",
-            reliability: 98.4,
-            neon: "neon-blue",
-            tier: "Trusted",
-            tierColor: "text-blue-500 bg-blue-500/10",
-            bars: [4, 6, 5, 8, 7, 10],
-        },
-        {
-            id: "CNN",
-            domain: "cnn.com",
-            region: "United States",
-            type: "Mainstream News",
-            scope: "Global",
-            reliability: 91.2,
-            neon: "neon-blue",
-            tier: "Trusted",
-            tierColor: "text-blue-500 bg-blue-500/10",
-            bars: [6, 5, 7, 9, 8, 7],
-        },
-        {
-            id: "DFL",
-            domain: "dailyflash.net",
-            region: "Regional / Mixed",
-            type: "Entertainment",
-            scope: "NA",
-            reliability: 64.8,
-            neon: "neon-amber",
-            tier: "Mixed",
-            tierColor: "text-amber-500 bg-amber-500/10",
-            bars: [3, 8, 4, 5, 3, 6],
-        },
-        {
-            id: "TUT",
-            domain: "truth-o-meter.xyz",
-            region: "Unverified",
-            type: "Opinion/Blog",
-            scope: "Global",
-            reliability: 22.1,
-            neon: "neon-slate",
-            tier: "Untrusted",
-            tierColor: "text-purple-500 bg-purple-500/10",
-            bars: [2, 4, 2, 3, 2, 1],
-        },
-        {
-            id: "NYT",
-            domain: "nytimes.com",
-            region: "United States",
-            type: "Mainstream News",
-            scope: "Global",
-            reliability: 96.5,
-            neon: "neon-blue",
-            tier: "Trusted",
-            tierColor: "text-blue-500 bg-blue-500/10",
-            bars: [9, 8, 9, 10, 9, 9],
-        },
-        {
-            id: "REU",
-            domain: "reuters.com",
-            region: "United Kingdom",
-            type: "Agency News",
-            scope: "Global",
-            reliability: 99.1,
-            neon: "neon-blue",
-            tier: "Trusted",
-            tierColor: "text-blue-500 bg-blue-500/10",
-            bars: [8, 9, 10, 10, 10, 10],
-        },
-        {
-            id: "ALJ",
-            domain: "aljazeera.com",
-            region: "Qatar",
-            type: "Mainstream News",
-            scope: "Global",
-            reliability: 72.4,
-            neon: "neon-amber",
-            tier: "Mixed",
-            tierColor: "text-amber-500 bg-amber-500/10",
-            bars: [5, 4, 6, 7, 8, 6],
-        },
-    ];
+    const [sources, setSources] = useState<SourceData[]>([]);
+    const [user, setUser] = useState<UserInfo | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [searchQuery, setSearchQuery] = useState("");
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const [sourcesRes, userRes] = await Promise.all([
+                    fetch("/api/sources"),
+                    fetch("/api/auth/me"),
+                ]);
+
+                if (sourcesRes.ok) {
+                    const data = await sourcesRes.json();
+                    setSources(data);
+                }
+                if (userRes.ok) {
+                    const userData = await userRes.json();
+                    setUser(userData);
+                }
+            } catch (error) {
+                console.error("Failed to fetch sources:", error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchData();
+    }, []);
+
+    const filteredSources = sources.filter(s =>
+        s.domain.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        s.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    const trustedCount = sources.filter(s => s.tier === "TRUSTED").length;
+    const mixedCount = sources.filter(s => s.tier === "QUESTIONABLE").length;
+    const untrustedCount = sources.filter(s => s.tier === "DISINFO").length;
 
     return (
         <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-blue-600/30 overflow-hidden relative">
@@ -115,6 +102,8 @@ export default function SourcesPage() {
                                 className="w-full bg-slate-900/60 border border-white/10 rounded-xl py-3 pl-12 pr-12 focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all outline-none placeholder:text-slate-600 text-white"
                                 placeholder="Search domain reputation (e.g. bbc.com, nytimes.com)..."
                                 type="text"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
                             />
                             <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-1 px-2 py-1 rounded bg-slate-800 border border-slate-700">
                                 <span className="text-[10px] font-black text-slate-500 tracking-tighter">⌘ K</span>
@@ -129,14 +118,14 @@ export default function SourcesPage() {
                         <div className="h-8 w-[1px] bg-white/10"></div>
                         <div className="flex items-center gap-3">
                             <div className="text-right">
-                                <p className="text-xs font-black uppercase tracking-tight text-white">Analyst_88</p>
-                                <p className="text-[10px] text-blue-500 font-bold uppercase tracking-widest">Premium_Link</p>
+                                <p className="text-xs font-black uppercase tracking-tight text-white">{user?.name || "Guest"}</p>
+                                <p className="text-[10px] text-blue-500 font-bold uppercase tracking-widest">{user?.role || "Anonymous"}</p>
                             </div>
-                            <img
-                                className="w-10 h-10 rounded-full border-2 border-blue-600/30 p-0.5"
-                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBsy0KoOeih6deZTiLc4AnLija7vGPfpe2EPB_qcHGB1yHws2cOiNHFeLYoJZk2yAq5QwwhyUvv3ESQdeNUGObEMvn6OmbcGxTyFzNx_WUkok8_5t0pX68MJo8Rn2slbNhwhXRkPBMHilGmkbF1O91QiQWieQEZrLEEsTomK-ucZ48SjemT0jIShniOnMwIKvw-CijiZJHW83SQW-J5V11B0gvfw0WmEgLnOXSRv1uC3tlaldE0OEpyxurfHzDpHNpWdlnchT0FmBQ"
-                                alt="Profile"
-                            />
+                            <div className="w-10 h-10 rounded-full border-2 border-blue-600/30 p-0.5 bg-slate-800 flex items-center justify-center">
+                                <span className="text-xs font-bold text-blue-400">
+                                    {user?.name ? user.name.split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2) : "?"}
+                                </span>
+                            </div>
                         </div>
                     </div>
                 </header>
@@ -148,9 +137,9 @@ export default function SourcesPage() {
                             <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-500 mb-6">Reputation Category</h3>
                             <div className="space-y-4">
                                 {[
-                                    { label: "Trusted", count: "1.2k", active: true },
-                                    { label: "Mixed Reliability", count: "452" },
-                                    { label: "Untrustworthy", count: "89" },
+                                    { label: "Trusted", count: trustedCount, active: true },
+                                    { label: "Mixed Reliability", count: mixedCount },
+                                    { label: "Untrustworthy", count: untrustedCount },
                                 ].map((cat, i) => (
                                     <label key={i} className={`flex items-center justify-between group cursor-pointer ${!cat.active && "opacity-60 hover:opacity-100"} transition-all`}>
                                         <div className="flex items-center gap-3">
@@ -219,7 +208,9 @@ export default function SourcesPage() {
                         <div className="flex items-end justify-between mb-12">
                             <div>
                                 <h2 className="text-3xl font-black text-white italic uppercase tracking-tighter">Domain Intelligence</h2>
-                                <p className="text-slate-500 text-sm mt-1">Real-time reputation monitoring across 14,000+ verified sources</p>
+                                <p className="text-slate-500 text-sm mt-1">
+                                    {isLoading ? "Loading sources..." : `Monitoring ${sources.length} indexed source${sources.length !== 1 ? "s" : ""}`}
+                                </p>
                             </div>
                             <div className="flex bg-slate-900 p-1 rounded-xl border border-white/5 shadow-inner">
                                 <button className="px-5 py-2 bg-blue-600 rounded-lg text-[10px] font-black uppercase tracking-widest text-slate-950 shadow-lg shadow-blue-600/20">Grid</button>
@@ -227,67 +218,76 @@ export default function SourcesPage() {
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                            {sources.map((source, i) => (
-                                <div key={i} className="glass-panel p-6 rounded-2xl border-white/5 hover:border-blue-600/40 transition-all cursor-pointer group bg-slate-900/40 hover:-translate-y-1 shadow-xl">
-                                    <div className="flex items-start justify-between mb-6">
-                                        <div className="flex items-center gap-3">
-                                            <div className="w-12 h-12 rounded-xl bg-slate-950 border border-white/10 flex items-center justify-center p-2 shadow-inner group-hover:border-blue-500/50 transition-colors">
-                                                <span className="text-[10px] font-black text-white italic opacity-80">{source.id}</span>
-                                            </div>
-                                            <div>
-                                                <h4 className="font-bold text-sm text-white group-hover:text-blue-500 transition-colors uppercase tracking-tight">{source.domain}</h4>
-                                                <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-0.5">{source.region}</p>
-                                            </div>
-                                        </div>
-                                        <span className={`px-2 py-1 rounded text-[9px] font-black uppercase tracking-[0.15em] border ${source.tier === "Trusted" ? "text-blue-500 border-blue-600/30 bg-blue-600/5 shadow-[0_0_10px_rgba(59,130,246,0.2)]" :
-                                            source.tier === "Mixed" ? "text-amber-500 border-amber-500/30 bg-amber-500/5 shadow-[0_0_10px_rgba(245,158,11,0.2)]" :
-                                                "text-purple-500 border-purple-600/30 bg-purple-600/5 shadow-[0_0_10px_rgba(168,85,247,0.2)]"
-                                            }`}>
-                                            {source.tier}
-                                        </span>
-                                    </div>
-
-                                    <div className="mb-8">
-                                        <div className="flex justify-between items-end mb-3">
-                                            <span className="text-[10px] font-black text-slate-600 uppercase tracking-tighter italic">Reliability_Index</span>
-                                            <span className={`text-xs font-black ${source.tier === "Trusted" ? "text-blue-500" :
-                                                source.tier === "Mixed" ? "text-amber-500" :
-                                                    "text-purple-500"
-                                                }`}>{source.reliability}%</span>
-                                        </div>
-                                        <div className="h-12 w-full flex items-end gap-[3px] border-b border-white/5 pb-1">
-                                            {source.bars.map((h, bi) => (
-                                                <div
-                                                    key={bi}
-                                                    className={`flex-1 rounded-t-sm transition-all duration-500 ${source.tier === "Trusted" ? "bg-blue-600/20 group-hover:bg-blue-600" :
-                                                        source.tier === "Mixed" ? "bg-amber-500/20 group-hover:bg-amber-500" :
-                                                            "bg-purple-500/20 group-hover:bg-purple-500"
-                                                        }`}
-                                                    style={{ height: `${h * 10}%`, opacity: 0.3 + (bi / 6) * 0.7 }}
-                                                ></div>
-                                            ))}
-                                        </div>
-                                    </div>
-
-                                    <div className="flex items-center justify-between text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-2">
-                                        <span className="group-hover:text-slate-300 transition-colors">{source.type}</span>
-                                        <div className="flex items-center gap-1.5 bg-white/5 px-2 py-1 rounded">
-                                            <span className="material-symbols-outlined text-[14px]">public</span>
-                                            {source.scope}
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
-
-                            {/* Add Source Card */}
-                            <div className="border-2 border-dashed border-slate-800 rounded-2xl hover:border-blue-600/40 hover:bg-blue-600/5 transition-all cursor-pointer group flex flex-col items-center justify-center p-8 min-h-[220px]">
-                                <div className="w-12 h-12 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-600 group-hover:text-blue-500 group-hover:border-blue-500/50 group-hover:scale-110 transition-all">
-                                    <span className="material-symbols-outlined text-3xl">add</span>
-                                </div>
-                                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 mt-4 group-hover:text-white transition-colors">Submit_New_Node</span>
+                        {isLoading ? (
+                            <div className="flex justify-center py-20 text-slate-500 uppercase tracking-widest font-mono text-xs animate-pulse">
+                                Scanning Source Network...
                             </div>
-                        </div>
+                        ) : filteredSources.length === 0 && sources.length === 0 ? (
+                            <div className="flex flex-col items-center justify-center py-20 bg-slate-900/40 border border-white/5 rounded-xl">
+                                <span className="material-symbols-outlined text-4xl text-slate-700 mb-4">database</span>
+                                <p className="text-slate-500 text-sm mb-2">No sources indexed yet.</p>
+                                <p className="text-slate-600 text-xs">Sources can be added by administrators via the admin panel.</p>
+                            </div>
+                        ) : (
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                                {filteredSources.map((source) => {
+                                    const tierInfo = getTierDisplay(source.tier);
+                                    const bars = generateBars();
+                                    const reliability = Math.max(0, Math.min(100, (1 - source.biasIndex) * 100));
+
+                                    return (
+                                        <div key={source.id} className="glass-panel p-6 rounded-2xl border-white/5 hover:border-blue-600/40 transition-all cursor-pointer group bg-slate-900/40 hover:-translate-y-1 shadow-xl">
+                                            <div className="flex items-start justify-between mb-6">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="w-12 h-12 rounded-xl bg-slate-950 border border-white/10 flex items-center justify-center p-2 shadow-inner group-hover:border-blue-500/50 transition-colors">
+                                                        <span className="text-[10px] font-black text-white italic opacity-80">{source.name.slice(0, 3).toUpperCase()}</span>
+                                                    </div>
+                                                    <div>
+                                                        <h4 className="font-bold text-sm text-white group-hover:text-blue-500 transition-colors uppercase tracking-tight">{source.domain}</h4>
+                                                        <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-0.5">{source.name}</p>
+                                                    </div>
+                                                </div>
+                                                <span className={`px-2 py-1 rounded text-[9px] font-black uppercase tracking-[0.15em] border ${tierInfo.borderColor}`}>
+                                                    {tierInfo.label}
+                                                </span>
+                                            </div>
+
+                                            <div className="mb-8">
+                                                <div className="flex justify-between items-end mb-3">
+                                                    <span className="text-[10px] font-black text-slate-600 uppercase tracking-tighter italic">Reliability_Index</span>
+                                                    <span className={`text-xs font-black ${tierInfo.color.split(" ")[0]}`}>{reliability.toFixed(1)}%</span>
+                                                </div>
+                                                <div className="h-12 w-full flex items-end gap-[3px] border-b border-white/5 pb-1">
+                                                    {bars.map((h, bi) => (
+                                                        <div
+                                                            key={bi}
+                                                            className={`flex-1 rounded-t-sm transition-all duration-500 ${tierInfo.barColor}`}
+                                                            style={{ height: `${h * 10}%`, opacity: 0.3 + (bi / 6) * 0.7 }}
+                                                        ></div>
+                                                    ))}
+                                                </div>
+                                            </div>
+
+                                            <div className="flex items-center justify-between text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-2">
+                                                <span className="group-hover:text-slate-300 transition-colors">Bias: {source.biasIndex.toFixed(2)}</span>
+                                                <div className="flex items-center gap-1.5 bg-white/5 px-2 py-1 rounded">
+                                                    <span className="material-symbols-outlined text-[14px]">schedule</span>
+                                                    {new Date(source.auditDate).toLocaleDateString()}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+
+                                {/* Add Source Card */}
+                                <div className="border-2 border-dashed border-slate-800 rounded-2xl hover:border-blue-600/40 hover:bg-blue-600/5 transition-all cursor-pointer group flex flex-col items-center justify-center p-8 min-h-[220px]">
+                                    <div className="w-12 h-12 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-600 group-hover:text-blue-500 group-hover:border-blue-500/50 group-hover:scale-110 transition-all">
+                                        <span className="material-symbols-outlined text-3xl">add</span>
+                                    </div>
+                                    <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 mt-4 group-hover:text-white transition-colors">Submit_New_Node</span>
+                                </div>
+                            </div>
+                        )}
 
                         {/* Status Footer */}
                         <div className="mt-16 flex items-center justify-between glass-panel px-8 py-4 rounded-xl border border-blue-600/10 bg-slate-900/40 shadow-2xl">
@@ -299,15 +299,15 @@ export default function SourcesPage() {
                                 <div className="flex items-center gap-4 border-l border-white/10 pl-8">
                                     <div className="flex items-center gap-2">
                                         <span className="text-[10px] font-bold text-slate-600 uppercase tracking-tighter">Nodes:</span>
-                                        <span className="text-[10px] font-black text-blue-500 uppercase">1.402 Active</span>
+                                        <span className="text-[10px] font-black text-blue-500 uppercase">{sources.length} Active</span>
                                     </div>
                                     <div className="flex items-center gap-2">
-                                        <span className="text-[10px] font-bold text-slate-600 uppercase tracking-tighter">Latency:</span>
-                                        <span className="text-[10px] font-black text-blue-500 uppercase">12ms</span>
+                                        <span className="text-[10px] font-bold text-slate-600 uppercase tracking-tighter">Filtered:</span>
+                                        <span className="text-[10px] font-black text-blue-500 uppercase">{filteredSources.length}</span>
                                     </div>
                                 </div>
                             </div>
-                            <span className="text-[10px] font-bold text-slate-600 uppercase tracking-widest italic">Syncing across global distributed ledger...</span>
+                            <span className="text-[10px] font-bold text-slate-600 uppercase tracking-widest italic">Live data from database...</span>
                         </div>
                     </section>
                 </main>

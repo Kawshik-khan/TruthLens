@@ -118,11 +118,11 @@ export default function AdminPage() {
                             <span className="material-symbols-outlined text-6xl text-emerald-500">grid_view</span>
                         </div>
                         <div className="flex items-center justify-between mb-4">
-                            <span className="text-[9px] font-black text-emerald-900/40 uppercase tracking-widest">Neural Uptime</span>
+                            <span className="text-[9px] font-black text-emerald-900/40 uppercase tracking-widest">Total Submissions</span>
                         </div>
                         <div className="flex items-end justify-between px-1">
-                            <h3 className="text-4xl font-bold text-emerald-500 mono-data font-mono">99.9</h3>
-                            <span className="text-emerald-500 text-xs font-bold font-mono pb-1">%</span>
+                            <h3 className="text-4xl font-bold text-emerald-500 mono-data font-mono">{stats.totalSubmissions}</h3>
+                            <div className="text-[10px] font-bold text-emerald-400 bg-emerald-400/10 px-2 py-1 rounded border border-emerald-400/20 font-mono">ACTIVE</div>
                         </div>
                     </div>
                 </div>
