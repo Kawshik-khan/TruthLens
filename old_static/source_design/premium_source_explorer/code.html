@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TruthLens | Premium Source Explorer</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1313ec",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101022",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .neon-blue {
+            box-shadow: 0 0 15px rgba(19, 19, 236, 0.4);
+            border: 1px solid rgba(19, 19, 236, 0.5);
+        }
+        .neon-amber {
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
+            border: 1px solid rgba(245, 158, 11, 0.5);
+        }
+        .neon-slate {
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.4);
+            border: 1px solid rgba(139, 92, 246, 0.5);
+        }
+        .data-grid-bg {
+            background-image: 
+                radial-gradient(circle at 2px 2px, rgba(19, 19, 236, 0.05) 1px, transparent 0);
+            background-size: 40px 40px;
+        }
+    </style>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen selection:bg-primary/30">
+<!-- Background Decoration -->
+<div class="fixed inset-0 data-grid-bg pointer-events-none opacity-50"></div>
+<div class="fixed top-0 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-[120px] pointer-events-none"></div>
+<div class="fixed bottom-0 right-1/4 w-96 h-96 bg-primary/5 rounded-full blur-[120px] pointer-events-none"></div>
+<!-- Layout Wrapper -->
+<div class="relative flex flex-col h-screen overflow-hidden">
+<!-- Header / Navigation -->
+<header class="flex-none h-20 border-b border-primary/10 glass-panel z-50 px-8 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+<span class="material-icons text-white">insights</span>
+</div>
+<h1 class="text-xl font-bold tracking-tight">TruthLens <span class="text-primary">Source Explorer</span></h1>
+</div>
+<div class="flex-1 max-w-2xl px-12">
+<div class="relative group">
+<span class="material-icons absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">search</span>
+<input class="w-full bg-slate-800/40 border-slate-700/50 rounded-xl py-3 pl-12 pr-12 focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none placeholder:text-slate-500" placeholder="Search domain reputation (e.g. bbc.com, nytimes.com)..." type="text"/>
+<div class="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-1 px-2 py-1 rounded bg-slate-700/50 border border-slate-600">
+<span class="text-[10px] font-bold text-slate-400">⌘ K</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="px-4 py-2 rounded-lg border border-slate-700 hover:bg-slate-800 transition-colors flex items-center gap-2">
+<span class="material-icons text-sm">compare_arrows</span>
+<span class="text-sm font-medium">Compare</span>
+</button>
+<div class="h-8 w-[1px] bg-slate-700"></div>
+<div class="flex items-center gap-3">
+<div class="text-right">
+<p class="text-xs font-semibold">Analyst Dashboard</p>
+<p class="text-[10px] text-slate-500">Premium Access</p>
+</div>
+<img class="w-10 h-10 rounded-full border-2 border-primary/30 p-0.5" data-alt="User profile portrait of a professional male" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBsy0KoOeih6deZTiLc4AnLija7vGPfpe2EPB_qcHGB1yHws2cOiNHFeLYoJZk2yAq5QwwhyUvv3ESQdeNUGObEMvn6OmbcGxTyFzNx_WUkok8_5t0pX68MJo8Rn2slbNhwhXRkPBMHilGmkbF1O91QiQWieQEZrLEEsTomK-ucZ48SjemT0jIShniOnMwIKvw-CijiZJHW83SQW-J5V11B0gvfw0WmEgLnOXSRv1uC3tlaldE0OEpyxurfHzDpHNpWdlnchT0FmBQ"/>
+</div>
+</div>
+</header>
+<!-- Main Workspace -->
+<main class="flex flex-1 overflow-hidden">
+<!-- Sidebar Filters -->
+<aside class="w-72 border-r border-primary/10 glass-panel overflow-y-auto p-6 space-y-8">
+<div>
+<h3 class="text-xs font-bold uppercase tracking-widest text-primary mb-4">Reputation Category</h3>
+<div class="space-y-3">
+<label class="flex items-center justify-between group cursor-pointer">
+<div class="flex items-center gap-3">
+<div class="w-4 h-4 rounded-sm border border-primary bg-primary/10 flex items-center justify-center">
+<span class="material-icons text-[12px] text-white">check</span>
+</div>
+<span class="text-sm font-medium group-hover:text-primary transition-colors">Trusted</span>
+</div>
+<span class="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-800 text-slate-400">1.2k</span>
+</label>
+<label class="flex items-center justify-between group cursor-pointer opacity-70 hover:opacity-100">
+<div class="flex items-center gap-3">
+<div class="w-4 h-4 rounded-sm border border-slate-700"></div>
+<span class="text-sm font-medium">Mixed Reliability</span>
+</div>
+<span class="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-800 text-slate-400">452</span>
+</label>
+<label class="flex items-center justify-between group cursor-pointer opacity-70 hover:opacity-100">
+<div class="flex items-center gap-3">
+<div class="w-4 h-4 rounded-sm border border-slate-700"></div>
+<span class="text-sm font-medium">Untrustworthy</span>
+</div>
+<span class="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-800 text-slate-400">89</span>
+</label>
+</div>
+</div>
+<div>
+<h3 class="text-xs font-bold uppercase tracking-widest text-primary mb-4">Region</h3>
+<select class="w-full bg-slate-800/50 border-slate-700 rounded-lg text-sm focus:ring-primary">
+<option>Global Analysis</option>
+<option>North America</option>
+<option>European Union</option>
+<option>Asia Pacific</option>
+<option>Middle East</option>
+</select>
+</div>
+<div>
+<h3 class="text-xs font-bold uppercase tracking-widest text-primary mb-4">Topic Focus</h3>
+<div class="flex flex-wrap gap-2">
+<span class="px-3 py-1.5 rounded-full bg-primary/20 text-primary text-[11px] font-bold border border-primary/30">Politics</span>
+<span class="px-3 py-1.5 rounded-full bg-slate-800 text-slate-400 text-[11px] font-bold border border-slate-700 hover:border-slate-500 cursor-pointer">Finance</span>
+<span class="px-3 py-1.5 rounded-full bg-slate-800 text-slate-400 text-[11px] font-bold border border-slate-700 hover:border-slate-500 cursor-pointer">Science</span>
+<span class="px-3 py-1.5 rounded-full bg-slate-800 text-slate-400 text-[11px] font-bold border border-slate-700 hover:border-slate-500 cursor-pointer">Technology</span>
+<span class="px-3 py-1.5 rounded-full bg-slate-800 text-slate-400 text-[11px] font-bold border border-slate-700 hover:border-slate-500 cursor-pointer">Environment</span>
+</div>
+</div>
+<div class="pt-8">
+<div class="p-4 rounded-xl bg-primary/5 border border-primary/20">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-icons text-primary text-sm">security</span>
+<span class="text-xs font-bold text-slate-300">Advanced Analytics</span>
+</div>
+<p class="text-[11px] text-slate-500 leading-relaxed">
+                            TruthLens utilizes AI-driven sentiment and factual accuracy mapping to determine reputation scores.
+                        </p>
+</div>
+</div>
+</aside>
+<!-- Grid Content -->
+<section class="flex-1 overflow-y-auto p-8 bg-background-dark/30">
+<div class="flex items-center justify-between mb-8">
+<div>
+<h2 class="text-2xl font-bold">Domain Intelligence</h2>
+<p class="text-slate-500 text-sm">Real-time reputation monitoring across 14,000+ sources</p>
+</div>
+<div class="flex bg-slate-800/50 p-1 rounded-lg border border-slate-700">
+<button class="px-3 py-1.5 bg-primary rounded-md text-sm font-medium">Grid</button>
+<button class="px-3 py-1.5 text-slate-400 text-sm font-medium hover:text-white">List</button>
+</div>
+</div>
+<!-- Domain Card Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+<!-- Card 1: BBC -->
+<div class="glass-panel rounded-xl p-5 group hover:border-primary/50 transition-all cursor-pointer">
+<div class="flex items-start justify-between mb-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded bg-white flex items-center justify-center p-1 overflow-hidden">
+<img class="w-full h-full object-contain" data-alt="Abstract favicon placeholder representing a media outlet logo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAiETjojURhHwR0dQRJJzbPAOHn82zKLyohqT1KDQG3ayDS6D8_i_KFGQmNsV1Tn9QbwrFXh8vQtAKi7HFMwvcEjZfObo_QoKy15Snx7X2zEYZpPqTRV2AsU0S3s4pHIcgoNQFMiSIT6RFMFn0VQbNyNRLRo0KJM7gDPTKHC-4eP3yOR2kUfhgJAyXAwuAl2U520DUcwyE9ujXFyRFWTGPF3lpDlGn0w1XnnxOQy-WoAsFki6wVEiQnYx9fKb36h1qm_wGILgKK_XM"/>
+</div>
+<div>
+<h4 class="font-bold text-sm">bbc.com</h4>
+<p class="text-[10px] text-slate-500">United Kingdom</p>
+</div>
+</div>
+<span class="px-2 py-1 rounded bg-primary/20 text-primary text-[10px] font-bold neon-blue uppercase tracking-wider">Trusted</span>
+</div>
+<div class="mb-6">
+<div class="flex items-end justify-between mb-2">
+<span class="text-[10px] text-slate-500 uppercase font-bold tracking-tighter">Reliability Score</span>
+<span class="text-xs font-bold text-primary">98.4%</span>
+</div>
+<div class="h-10 w-full flex items-end gap-[2px]">
+<div class="flex-1 bg-primary/20 h-4 rounded-t-sm"></div>
+<div class="flex-1 bg-primary/20 h-6 rounded-t-sm"></div>
+<div class="flex-1 bg-primary/20 h-5 rounded-t-sm"></div>
+<div class="flex-1 bg-primary/30 h-8 rounded-t-sm"></div>
+<div class="flex-1 bg-primary/40 h-7 rounded-t-sm"></div>
+<div class="flex-1 bg-primary h-10 rounded-t-sm"></div>
+</div>
+</div>
+<div class="flex items-center justify-between text-[11px] text-slate-400 pt-4 border-t border-white/5">
+<span>Mainstream News</span>
+<div class="flex items-center gap-1">
+<span class="material-icons text-[14px]">public</span>
+<span>Global</span>
+</div>
+</div>
+</div>
+<!-- Card 2: CNN -->
+<div class="glass-panel rounded-xl p-5 group hover:border-primary/50 transition-all cursor-pointer">
+<div class="flex items-start justify-between mb-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded bg-red-600 flex items-center justify-center p-1 overflow-hidden">
+<span class="font-black text-white text-xs">CNN</span>
+</div>
+<div>
+<h4 class="font-bold text-sm">cnn.com</h4>
+<p class="text-[10px] text-slate-500">United States</p>
+</div>
+</div>
+<span class="px-2 py-1 rounded bg-primary/20 text-primary text-[10px] font-bold neon-blue uppercase tracking-wider">Trusted</span>
+</div>
+<div class="mb-6">
+<div class="flex items-end justify-between mb-2">
+<span class="text-[10px] text-slate-500 uppercase font-bold tracking-tighter">Reliability Score</span>
+<span class="text-xs font-bold text-primary">91.2%</span>
+</div>
+<div class="h-10 w-full flex items-end gap-[2px]">
+<div class="flex-1 bg-primary/20 h-6 rounded-t-sm"></div>
+<div class="flex-1 bg-primary/20 h-5 rounded-t-sm"></div>
+<div class="flex-1 bg-primary/20 h-7 rounded-t-sm"></div>
+<div class="flex-1 bg-primary/30 h-9 rounded-t-sm"></div>
+<div class="flex-1 bg-primary/40 h-8 rounded-t-sm"></div>
+<div class="flex-1 bg-primary h-7 rounded-t-sm"></div>
+</div>
+</div>
+<div class="flex items-center justify-between text-[11px] text-slate-400 pt-4 border-t border-white/5">
+<span>Mainstream News</span>
+<div class="flex items-center gap-1">
+<span class="material-icons text-[14px]">public</span>
+<span>Global</span>
+</div>
+</div>
+</div>
+<!-- Card 3: Mixed Source -->
+<div class="glass-panel rounded-xl p-5 group hover:border-amber-500/50 transition-all cursor-pointer">
+<div class="flex items-start justify-between mb-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded bg-slate-800 flex items-center justify-center p-1 overflow-hidden border border-slate-700">
+<span class="material-icons text-slate-400">dynamic_feed</span>
+</div>
+<div>
+<h4 class="font-bold text-sm">dailyflash.net</h4>
+<p class="text-[10px] text-slate-500">Regional / Mixed</p>
+</div>
+</div>
+<span class="px-2 py-1 rounded bg-amber-500/20 text-amber-500 text-[10px] font-bold neon-amber uppercase tracking-wider">Mixed</span>
+</div>
+<div class="mb-6">
+<div class="flex items-end justify-between mb-2">
+<span class="text-[10px] text-slate-500 uppercase font-bold tracking-tighter">Reliability Score</span>
+<span class="text-xs font-bold text-amber-500">64.8%</span>
+</div>
+<div class="h-10 w-full flex items-end gap-[2px]">
+<div class="flex-1 bg-amber-500/20 h-3 rounded-t-sm"></div>
+<div class="flex-1 bg-amber-500/20 h-8 rounded-t-sm"></div>
+<div class="flex-1 bg-amber-500/20 h-4 rounded-t-sm"></div>
+<div class="flex-1 bg-amber-500/30 h-5 rounded-t-sm"></div>
+<div class="flex-1 bg-amber-500/40 h-3 rounded-t-sm"></div>
+<div class="flex-1 bg-amber-500 h-6 rounded-t-sm"></div>
+</div>
+</div>
+<div class="flex items-center justify-between text-[11px] text-slate-400 pt-4 border-t border-white/5">
+<span>Entertainment</span>
+<div class="flex items-center gap-1">
+<span class="material-icons text-[14px]">map</span>
+<span>NA</span>
+</div>
+</div>
+</div>
+<!-- Card 4: Untrustworthy -->
+<div class="glass-panel rounded-xl p-5 group hover:border-purple-500/50 transition-all cursor-pointer">
+<div class="flex items-start justify-between mb-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded bg-slate-800 flex items-center justify-center p-1 overflow-hidden border border-slate-700">
+<span class="material-icons text-slate-400">report_problem</span>
+</div>
+<div>
+<h4 class="font-bold text-sm">truth-o-meter.xyz</h4>
+<p class="text-[10px] text-slate-500">Unverified</p>
+</div>
+</div>
+<span class="px-2 py-1 rounded bg-purple-500/20 text-purple-500 text-[10px] font-bold neon-slate uppercase tracking-wider">Untrusted</span>
+</div>
+<div class="mb-6">
+<div class="flex items-end justify-between mb-2">
+<span class="text-[10px] text-slate-500 uppercase font-bold tracking-tighter">Reliability Score</span>
+<span class="text-xs font-bold text-purple-500">22.1%</span>
+</div>
+<div class="h-10 w-full flex items-end gap-[2px]">
+<div class="flex-1 bg-purple-500/20 h-2 rounded-t-sm"></div>
+<div class="flex-1 bg-purple-500/20 h-4 rounded-t-sm"></div>
+<div class="flex-1 bg-purple-500/20 h-2 rounded-t-sm"></div>
+<div class="flex-1 bg-purple-500/30 h-3 rounded-t-sm"></div>
+<div class="flex-1 bg-purple-500/40 h-2 rounded-t-sm"></div>
+<div class="flex-1 bg-purple-500 h-1 rounded-t-sm"></div>
+</div>
+</div>
+<div class="flex items-center justify-between text-[11px] text-slate-400 pt-4 border-t border-white/5">
+<span>Opinion/Blog</span>
+<div class="flex items-center gap-1">
+<span class="material-icons text-[14px]">language</span>
+<span>Global</span>
+</div>
+</div>
+</div>
+<!-- Duplicate for visualization -->
+<div class="glass-panel rounded-xl p-5 group hover:border-primary/50 transition-all cursor-pointer opacity-80">
+<div class="flex items-start justify-between mb-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded bg-slate-900 flex items-center justify-center p-1 overflow-hidden border border-slate-700">
+<span class="font-black text-white text-xs">NYT</span>
+</div>
+<div>
+<h4 class="font-bold text-sm">nytimes.com</h4>
+<p class="text-[10px] text-slate-500">United States</p>
+</div>
+</div>
+<span class="px-2 py-1 rounded bg-primary/20 text-primary text-[10px] font-bold neon-blue uppercase tracking-wider">Trusted</span>
+</div>
+<div class="mb-6">
+<div class="flex items-end justify-between mb-2">
+<span class="text-[10px] text-slate-500 uppercase font-bold tracking-tighter">Reliability Score</span>
+<span class="text-xs font-bold text-primary">96.5%</span>
+</div>
+<div class="h-10 w-full flex items-end gap-[2px]">
+<div class="flex-1 bg-primary/20 h-9 rounded-t-sm"></div>
+<div class="flex-1 bg-primary/20 h-8 rounded-t-sm"></div>
+<div class="flex-1 bg-primary/20 h-9 rounded-t-sm"></div>
+<div class="flex-1 bg-primary/30 h-10 rounded-t-sm"></div>
+<div class="flex-1 bg-primary/40 h-9 rounded-t-sm"></div>
+<div class="flex-1 bg-primary h-9 rounded-t-sm"></div>
+</div>
+</div>
+<div class="flex items-center justify-between text-[11px] text-slate-400 pt-4 border-t border-white/5">
+<span>Mainstream News</span>
+<div class="flex items-center gap-1">
+<span class="material-icons text-[14px]">public</span>
+<span>Global</span>
+</div>
+</div>
+</div>
+<div class="glass-panel rounded-xl p-5 group hover:border-primary/50 transition-all cursor-pointer opacity-80">
+<div class="flex items-start justify-between mb-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded bg-slate-100 flex items-center justify-center p-1 overflow-hidden">
+<span class="font-black text-slate-900 text-[10px]">REU</span>
+</div>
+<div>
+<h4 class="font-bold text-sm">reuters.com</h4>
+<p class="text-[10px] text-slate-500">United Kingdom</p>
+</div>
+</div>
+<span class="px-2 py-1 rounded bg-primary/20 text-primary text-[10px] font-bold neon-blue uppercase tracking-wider">Trusted</span>
+</div>
+<div class="mb-6">
+<div class="flex items-end justify-between mb-2">
+<span class="text-[10px] text-slate-500 uppercase font-bold tracking-tighter">Reliability Score</span>
+<span class="text-xs font-bold text-primary">99.1%</span>
+</div>
+<div class="h-10 w-full flex items-end gap-[2px]">
+<div class="flex-1 bg-primary/20 h-8 rounded-t-sm"></div>
+<div class="flex-1 bg-primary/20 h-9 rounded-t-sm"></div>
+<div class="flex-1 bg-primary/20 h-10 rounded-t-sm"></div>
+<div class="flex-1 bg-primary/30 h-10 rounded-t-sm"></div>
+<div class="flex-1 bg-primary/40 h-10 rounded-t-sm"></div>
+<div class="flex-1 bg-primary h-10 rounded-t-sm"></div>
+</div>
+</div>
+<div class="flex items-center justify-between text-[11px] text-slate-400 pt-4 border-t border-white/5">
+<span>Agency News</span>
+<div class="flex items-center gap-1">
+<span class="material-icons text-[14px]">public</span>
+<span>Global</span>
+</div>
+</div>
+</div>
+<div class="glass-panel rounded-xl p-5 group hover:border-amber-500/50 transition-all cursor-pointer opacity-80">
+<div class="flex items-start justify-between mb-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded bg-slate-800 flex items-center justify-center p-1 overflow-hidden border border-slate-700">
+<span class="material-icons text-slate-400">trending_up</span>
+</div>
+<div>
+<h4 class="font-bold text-sm">aljazeera.com</h4>
+<p class="text-[10px] text-slate-500">Qatar</p>
+</div>
+</div>
+<span class="px-2 py-1 rounded bg-amber-500/20 text-amber-500 text-[10px] font-bold neon-amber uppercase tracking-wider">Mixed</span>
+</div>
+<div class="mb-6">
+<div class="flex items-end justify-between mb-2">
+<span class="text-[10px] text-slate-500 uppercase font-bold tracking-tighter">Reliability Score</span>
+<span class="text-xs font-bold text-amber-500">72.4%</span>
+</div>
+<div class="h-10 w-full flex items-end gap-[2px]">
+<div class="flex-1 bg-amber-500/20 h-5 rounded-t-sm"></div>
+<div class="flex-1 bg-amber-500/20 h-4 rounded-t-sm"></div>
+<div class="flex-1 bg-amber-500/20 h-6 rounded-t-sm"></div>
+<div class="flex-1 bg-amber-500/30 h-7 rounded-t-sm"></div>
+<div class="flex-1 bg-amber-500/40 h-8 rounded-t-sm"></div>
+<div class="flex-1 bg-amber-500 h-6 rounded-t-sm"></div>
+</div>
+</div>
+<div class="flex items-center justify-between text-[11px] text-slate-400 pt-4 border-t border-white/5">
+<span>Mainstream News</span>
+<div class="flex items-center gap-1">
+<span class="material-icons text-[14px]">language</span>
+<span>Global</span>
+</div>
+</div>
+</div>
+<div class="glass-panel rounded-xl p-5 group hover:border-slate-500 transition-all cursor-pointer border-dashed">
+<div class="h-full flex flex-col items-center justify-center text-slate-500 gap-2 min-h-[180px]">
+<span class="material-icons text-3xl">add_circle_outline</span>
+<span class="text-xs font-bold uppercase tracking-widest">Add Custom Domain</span>
+</div>
+</div>
+</div>
+<!-- Footer Status Bar -->
+<div class="mt-12 flex items-center justify-between glass-panel px-6 py-3 rounded-lg border border-primary/20">
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+<span class="text-[10px] font-bold text-slate-400 uppercase">Engine Live</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="text-[10px] font-bold text-slate-500 uppercase tracking-tighter">Nodes Active:</span>
+<span class="text-[10px] font-bold text-primary">1,402</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="text-[10px] font-bold text-slate-500 uppercase tracking-tighter">Latency:</span>
+<span class="text-[10px] font-bold text-primary">12ms</span>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<span class="text-[10px] text-slate-500 italic">Last snapshot: Today, 14:32:01 UTC</span>
+</div>
+</div>
+</section>
+</main>
+</div>
+</body></html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>404 - Truth Not Found | TruthLens</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1313ec",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101022",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #080814;
+        }
+        .glitch-overlay {
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+        }
+        .grid-pattern {
+            background-size: 40px 40px;
+            background-image: 
+                linear-gradient(to right, rgba(19, 19, 236, 0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(19, 19, 236, 0.05) 1px, transparent 1px);
+        }
+        .glow-effect {
+            box-shadow: 0 0 20px rgba(19, 19, 236, 0.4);
+        }
+        .glow-text {
+            text-shadow: 0 0 10px rgba(19, 19, 236, 0.8);
+        }
+    </style>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen overflow-hidden flex flex-col items-center justify-center">
+<!-- Background Elements -->
+<div class="fixed inset-0 grid-pattern pointer-events-none"></div>
+<div class="fixed inset-0 glitch-overlay pointer-events-none"></div>
+<!-- Top Navigation Branding -->
+<nav class="fixed top-0 left-0 w-full p-8 flex justify-between items-center z-50">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 bg-primary rounded flex items-center justify-center">
+<span class="material-icons text-white text-sm">visibility</span>
+</div>
+<span class="font-bold tracking-tighter text-xl uppercase">TruthLens</span>
+</div>
+<div class="hidden md:flex items-center gap-6 text-xs font-medium tracking-[0.2em] opacity-50 uppercase">
+<span>System Status: Critical</span>
+<span class="w-1.5 h-1.5 bg-red-500 rounded-full"></span>
+<span>Error 0x404</span>
+</div>
+</nav>
+<!-- Main Content -->
+<main class="relative z-10 flex flex-col items-center text-center px-6">
+<!-- Fragmented Hero Graphic -->
+<div class="relative mb-8 group">
+<div class="absolute inset-0 bg-primary/20 blur-3xl rounded-full scale-150 group-hover:bg-primary/30 transition-all"></div>
+<div class="relative flex items-center justify-center">
+<!-- Large Fragmented Text -->
+<h1 class="text-[12rem] md:text-[16rem] font-bold leading-none tracking-tighter select-none opacity-10 blur-[1px] absolute">404</h1>
+<h1 class="text-[12rem] md:text-[16rem] font-bold leading-none tracking-tighter select-none text-white relative z-20">404</h1>
+<!-- Truth Lens Icon Glitch -->
+<div class="absolute -top-4 -right-4 w-24 h-24 border border-primary/50 flex items-center justify-center backdrop-blur-sm">
+<span class="material-icons text-primary text-4xl animate-pulse">filter_center_focus</span>
+</div>
+</div>
+</div>
+<!-- Typography Section -->
+<div class="max-w-xl space-y-6">
+<div class="space-y-2">
+<h2 class="text-2xl md:text-3xl font-bold tracking-[0.3em] uppercase glow-text text-primary">Truth_Not_Found</h2>
+<div class="h-[1px] w-24 bg-primary mx-auto"></div>
+</div>
+<p class="text-slate-400 font-light text-lg leading-relaxed max-w-md mx-auto">
+                The reality you are seeking has been de-indexed, fragmented, or moved to a restricted layer of the network.
+            </p>
+<!-- Action Area -->
+<div class="pt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+<a class="group relative px-8 py-4 bg-primary text-white font-bold tracking-widest uppercase text-sm rounded transition-all hover:translate-y-[-2px] active:translate-y-[0px] glow-effect overflow-hidden" href="#">
+<span class="relative z-10">Return to Dashboard</span>
+<div class="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform"></div>
+</a>
+<button class="px-8 py-4 border border-primary/30 text-primary/80 font-bold tracking-widest uppercase text-sm rounded hover:bg-primary/10 transition-colors flex items-center gap-2">
+<span class="material-icons text-sm">bug_report</span>
+                    Report Glitch
+                </button>
+</div>
+</div>
+<!-- System Data Overlay (Bottom Left) -->
+<div class="fixed bottom-10 left-10 hidden lg:block text-[10px] font-mono opacity-30 text-slate-400 uppercase tracking-widest space-y-1">
+<p>LATENCY: 14MS</p>
+<p>PROTOCOL: TRUTH_INDEX_V4</p>
+<p>LOCATION: UNKNOWN SECTOR</p>
+<p>USER_AUTH: DENIED</p>
+</div>
+<!-- Decorative Elements -->
+<div class="fixed bottom-0 right-0 p-10 opacity-10">
+<img class="w-64 h-64 object-contain mix-blend-screen grayscale" data-alt="Abstract dark digital circuit board pattern" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDsiTGOgEAHd9CaFtBnjA0DiV6wt2QS9CNv-E5gi2rB2ynx4SnEoqjOO01V1xn5nUgJUzTZNfdMGXi5RTePVTyaWlllfdmsfdRaVQeKWzRYD6IoqheiDgranVMs7_EDT3Uy9ML0jY5qmRAYzgonYu6uKaOVliXGHiNMxQa3CUoqte9KuDP1YZl1QM7CB8mt2YW5SwBRHlarCd4zU-x6MeK35myGpf2H004dZQrr4ABvlaQ7PYQ_6WwD7tLuf03Roucn6MzpbUEsjxA"/>
+</div>
+</main>
+<!-- Footer Security Message -->
+<footer class="fixed bottom-8 w-full text-center z-50">
+<p class="text-[10px] tracking-[0.5em] text-slate-500 uppercase flex items-center justify-center gap-4">
+<span class="w-12 h-[1px] bg-slate-800"></span>
+            Encrypted by TruthLens Intelligence
+            <span class="w-12 h-[1px] bg-slate-800"></span>
+</p>
+</footer>
+<!-- CSS Scanline Animation Simulation -->
+<div class="fixed inset-0 pointer-events-none z-50 overflow-hidden opacity-20">
+<div class="w-full h-1 bg-primary/20 absolute -top-1 shadow-[0_0_15px_rgba(19,19,236,0.5)]" style="animation: scanline 8s linear infinite;"></div>
+</div>
+<style>
+        @keyframes scanline {
+            0% { top: -2%; }
+            100% { top: 102%; }
+        }
+    </style>
+</body></html>

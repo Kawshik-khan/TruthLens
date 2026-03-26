@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TruthLens Admin CMS</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1313ec",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101022",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                    boxShadow: {
+                        'glow': '0 0 15px -3px rgba(19, 19, 236, 0.5), 0 4px 6px -2px rgba(19, 19, 236, 0.2)',
+                        'inner-glow': 'inset 0 0 10px rgba(19, 19, 236, 0.1)',
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            scrollbar-width: thin;
+            scrollbar-color: #1313ec #101022;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .sidebar-active {
+            background: rgba(19, 19, 236, 0.1);
+            border-right: 3px solid #1313ec;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #1313ec;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-800 dark:text-slate-200 font-display flex h-screen overflow-hidden">
+<!-- Sidebar -->
+<aside class="w-64 flex-shrink-0 border-r border-white/5 bg-background-light dark:bg-background-dark/50 hidden lg:flex flex-col">
+<div class="p-6 flex items-center gap-3">
+<div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center shadow-glow">
+<span class="material-icons text-white">visibility</span>
+</div>
+<span class="font-bold text-xl tracking-tight text-slate-900 dark:text-white">TruthLens</span>
+</div>
+<nav class="flex-1 px-4 py-4 space-y-2">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition-all" href="#">
+<span class="material-icons text-xl text-primary/70">dashboard</span>
+<span class="font-medium">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-white sidebar-active transition-all" href="#">
+<span class="material-icons text-xl text-primary">description</span>
+<span class="font-medium">Articles</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition-all" href="#">
+<span class="material-icons text-xl text-primary/70">category</span>
+<span class="font-medium">Categories</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition-all" href="#">
+<span class="material-icons text-xl text-primary/70">people</span>
+<span class="font-medium">Authors</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition-all" href="#">
+<span class="material-icons text-xl text-primary/70">analytics</span>
+<span class="font-medium">Analytics</span>
+</a>
+</nav>
+<div class="p-4 border-t border-white/5">
+<div class="bg-primary/10 rounded-xl p-4 border border-primary/20">
+<p class="text-xs text-primary font-semibold uppercase tracking-wider mb-2">Storage</p>
+<div class="w-full bg-slate-700 h-1.5 rounded-full overflow-hidden">
+<div class="bg-primary w-3/4 h-full"></div>
+</div>
+<p class="text-[10px] mt-2 text-slate-400">75% of 10GB used</p>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 flex flex-col min-w-0 overflow-hidden relative">
+<!-- Header -->
+<header class="h-20 flex items-center justify-between px-8 border-b border-white/5 bg-background-light/50 dark:bg-background-dark/50 backdrop-blur-md z-10">
+<div>
+<h1 class="text-2xl font-bold dark:text-white">Content Manager</h1>
+<p class="text-xs text-slate-500 font-medium">Manage and publish educational resources</p>
+</div>
+<div class="flex items-center gap-6">
+<div class="relative hidden sm:block">
+<span class="material-icons absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-sm">search</span>
+<input class="bg-white/5 border border-white/10 rounded-full py-2 pl-10 pr-4 text-sm focus:outline-none focus:ring-1 focus:ring-primary w-64 text-slate-300" placeholder="Search articles..." type="text"/>
+</div>
+<button class="bg-primary hover:bg-primary/90 text-white px-5 py-2.5 rounded-lg flex items-center gap-2 font-semibold shadow-glow transition-all active:scale-95">
+<span class="material-icons text-sm">add</span>
+<span>Create New Article</span>
+</button>
+<div class="flex items-center gap-3 border-l border-white/10 pl-6">
+<div class="text-right">
+<p class="text-sm font-semibold dark:text-white">Alex Rivera</p>
+<p class="text-[10px] text-slate-500">Editor-in-Chief</p>
+</div>
+<img class="w-10 h-10 rounded-full border-2 border-primary/30" data-alt="Admin user profile headshot photo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBuVh8wJM_PbnHOEmjeAemH0HFxEwyCVTHE8Jla7dG3KLAlCGWiABQs3vV_Tb7hrWrFP4qVIlDrpvrYX-sqABtMnAWqGD-fulabtEqrm30eKqFI6XBQKp1rU2tg3kyfMJKP0K-DDfReq-Hkz7ii8alYnAxODz-dplmvjo9N8CiEHY6VNUna11WBRMBbVzt-KLU1KA3BjXdC3Xwtnl8ZeJGN4pSJ6YI52HxuufxDaY4GxXPcLqI1-JQWstVtrgLQW8s69C7BFV7V1Ms"/>
+</div>
+</div>
+</header>
+<!-- Main Workspace -->
+<div class="flex-1 overflow-y-auto p-8 custom-scrollbar">
+<!-- Stats -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+<div class="glass-card p-6 rounded-xl">
+<div class="flex items-center justify-between mb-2">
+<span class="text-slate-500 text-sm font-medium">Total Articles</span>
+<span class="material-icons text-primary/60 text-lg">article</span>
+</div>
+<p class="text-3xl font-bold dark:text-white">1,284</p>
+<p class="text-xs text-emerald-500 mt-2 flex items-center gap-1">
+<span class="material-icons text-xs">trending_up</span> +12% from last month
+                    </p>
+</div>
+<div class="glass-card p-6 rounded-xl">
+<div class="flex items-center justify-between mb-2">
+<span class="text-slate-500 text-sm font-medium">Drafts</span>
+<span class="material-icons text-amber-500/60 text-lg">edit_note</span>
+</div>
+<p class="text-3xl font-bold dark:text-white">42</p>
+<p class="text-xs text-slate-500 mt-2">Needs review</p>
+</div>
+<div class="glass-card p-6 rounded-xl">
+<div class="flex items-center justify-between mb-2">
+<span class="text-slate-500 text-sm font-medium">Published</span>
+<span class="material-icons text-emerald-500/60 text-lg">task_alt</span>
+</div>
+<p class="text-3xl font-bold dark:text-white">1,242</p>
+<p class="text-xs text-emerald-500 mt-2">Live on platform</p>
+</div>
+<div class="glass-card p-6 rounded-xl">
+<div class="flex items-center justify-between mb-2">
+<span class="text-slate-500 text-sm font-medium">Monthly Views</span>
+<span class="material-icons text-purple-500/60 text-lg">visibility</span>
+</div>
+<p class="text-3xl font-bold dark:text-white">84.2k</p>
+<p class="text-xs text-emerald-500 mt-2 flex items-center gap-1">
+<span class="material-icons text-xs">trending_up</span> +5.4%
+                    </p>
+</div>
+</div>
+<!-- Table Container -->
+<div class="glass-card rounded-xl overflow-hidden mb-8">
+<div class="p-6 border-b border-white/5 flex items-center justify-between">
+<h2 class="text-lg font-bold dark:text-white">Recent Articles</h2>
+<div class="flex gap-2">
+<button class="px-3 py-1.5 bg-white/5 text-xs font-medium rounded-md text-slate-300 hover:bg-white/10 border border-white/5 transition-colors">Export CSV</button>
+<button class="px-3 py-1.5 bg-white/5 text-xs font-medium rounded-md text-slate-300 hover:bg-white/10 border border-white/5 transition-colors">Filter</button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead>
+<tr class="bg-white/2 text-slate-500 text-xs uppercase tracking-wider">
+<th class="px-6 py-4 font-semibold">Article Title</th>
+<th class="px-6 py-4 font-semibold">Status</th>
+<th class="px-6 py-4 font-semibold">Author</th>
+<th class="px-6 py-4 font-semibold">Last Updated</th>
+<th class="px-6 py-4 font-semibold text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-white/5">
+<tr class="hover:bg-primary/5 transition-colors cursor-pointer group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded bg-slate-800 overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="Cosmic space and technology article thumbnail" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAUutAbHCpUfbsXRltAAa22PQxKXyv-E-EMkOpd_5mC8weA2-JAVa1ZG1K2Ofguch_vUEztebP1hCXZexrd8O0CQf8-oNnRIiWCX2QulIQ71X6vaY3sl-RBxR2tqn0CLEmiO3UnFH3G3X6rRodmpbedfwuw9i31zlPpf_kfd_wL2oOR47zV8rqMqr3uJCPQoN_8waVWbCEAzWre8Lnlbs0gNmqpjRwNJetMFIIBAchy5g2Qiu_ZWiysQ1kIgG9ugrKOtmbaxLZ6poo"/>
+</div>
+<div>
+<p class="text-sm font-semibold dark:text-white group-hover:text-primary transition-colors">Quantum Mechanics in Simple Terms</p>
+<p class="text-[10px] text-slate-500">Science &amp; Physics</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="px-2 py-1 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">PUBLISHED</span>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Author avatar portrait male" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC_wwGoZm58GqLZQYrbjLJOzvNeWD0JBRakGy8s4tf9cEgF7T-BDfg4ZIxfYYnOrW0CHvN_-2XNLr8Ke5MURDACt-sWZgQucQEkBhJSh6lC2LnI-94-j6HIsQYhY1cPn21ggkX9pecbxfaCrZs0WVlb7dW0a0xV6q6Th6RdoT32_iqJAYYmG-vmj50iGnuVLcutjKeFum4PjyprVZNLH3ugb57Yxs_Y-Xw9pKOQV5kGmg46sRZrmRiR23hALItJz0IgQ4eXCaWGERo"/>
+</div>
+<span class="text-sm text-slate-400">Dr. Elias Thorne</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="text-sm text-slate-500">2 hours ago</span>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex justify-end gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="text-slate-500 hover:text-primary transition-colors"><span class="material-icons text-sm">edit</span></button>
+<button class="text-slate-500 hover:text-primary transition-colors"><span class="material-icons text-sm">visibility</span></button>
+<button class="text-slate-500 hover:text-red-500 transition-colors"><span class="material-icons text-sm">delete</span></button>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-primary/5 transition-colors cursor-pointer group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded bg-slate-800 overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="Laboratory chemistry experiment article thumbnail" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCqXPrlFUueoCZGRueXpiKxiw2EcsF8uzb48EZwjGl61BBpB3bA1f6WGy6v36Gj0zV9xENx8KHcUWr_O2Oi1YdSrLpvXgVC7BbgykL0ETIHiR_dN29TbXvH-9jWJ0JmSasiV_qitY2Shj7LKTAlxlAQEBhMEbgNxiLyv07r_FIogNdp8_hNy0_fTvHk6FQzPO8TJ6t1HLEghXauFtXpGiDe5eWlNZJOK2b8459vo8RIqWZTDUeleuvv_AySh1ayXt3zeJSdaPDDQcM"/>
+</div>
+<div>
+<p class="text-sm font-semibold dark:text-white group-hover:text-primary transition-colors">The Future of CRISPR Technology</p>
+<p class="text-[10px] text-slate-500">Bio-Tech</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="px-2 py-1 rounded-full text-[10px] font-bold bg-amber-500/10 text-amber-500 border border-amber-500/20">DRAFT</span>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Author avatar portrait female" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCFOkQJvtGawIkg0MJhSLwAVgn70MnnzaxCjf9F39RiU5Qu-dPKdPyCDi-D0WTRNUC2FTr9CjPBB-3DwD47orC4oejQklZAFTXArhcaQ2MXNBkwukt74NzVj8u_RoBQYiUHr8DZMLbFhs4D43wXKZbiIyREZrtPrXvIXesVMAtkvELsH07BzlLXMI_-flbZmfaAwjE5Z3HZdn3XGXzSUqNtOeJZ0zRLRGbgJDq38prQyYp7b0WpssPkFLZJ72V2x7fTrfJpDancO0E"/>
+</div>
+<span class="text-sm text-slate-400">Sarah Jenkins</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="text-sm text-slate-500">Yesterday</span>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex justify-end gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="text-slate-500 hover:text-primary transition-colors"><span class="material-icons text-sm">edit</span></button>
+<button class="text-slate-500 hover:text-primary transition-colors"><span class="material-icons text-sm">visibility</span></button>
+<button class="text-slate-500 hover:text-red-500 transition-colors"><span class="material-icons text-sm">delete</span></button>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-primary/5 transition-colors cursor-pointer group border-b-0">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded bg-slate-800 overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="Ancient Greek philosophy article thumbnail" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBIXC_MWA1S4suyVmpJhRXbVG08-jpWBXJiSvNyZjLQetRCC8YS0juVyecfNdrtn-rsJ_QHO6j3AjT-ZbX9bqymfV76WvuUJeQm9T7VgkiL48-lU0-D4vWq1ChG8MtDwATdclmpyWCKvhbjjLpLpRF4JaqY3LJgMzJAcZMidbYuqrJEaBHj7xYwq5vfjSUityS7TkcLV0i0qhBTaseTvzFTy2MsgH0Hqdu5c_pVDsNp630PkO9BF1LDXuI5OvZ3bnkW38iGCPKpUEI"/>
+</div>
+<div>
+<p class="text-sm font-semibold dark:text-white group-hover:text-primary transition-colors">Philosophical Roots of Modern Ethics</p>
+<p class="text-[10px] text-slate-500">History &amp; Philosophy</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="px-2 py-1 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">PUBLISHED</span>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Author avatar portrait male beard" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBUl_adh111ey5-zpvLU-Sha1dIy9zdA99c210l8qmoeViz25XHYdltGKIZMPifg14cee3NCbVh9jhrhc6biTbdMOs5QZt9znGQnonWgQqikiy3kYfY8TuQmn6vXTNYVreMD_6bmEbNZZoXf7_8i7lTaDFA8hyCna06b69RbtdgKT4MbLugG4sCVnTyuR3sqniqLUZmQ6DtFGepK-16MH0-86rJB2Gfi9g_zFNdsANbWuhw7dPdB97Va-QrtwMpSnrLImGKd9UF-Lc"/>
+</div>
+<span class="text-sm text-slate-400">Marcus Aurelius Jr.</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="text-sm text-slate-500">3 days ago</span>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex justify-end gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="text-slate-500 hover:text-primary transition-colors"><span class="material-icons text-sm">edit</span></button>
+<button class="text-slate-500 hover:text-primary transition-colors"><span class="material-icons text-sm">visibility</span></button>
+<button class="text-slate-500 hover:text-red-500 transition-colors"><span class="material-icons text-sm">delete</span></button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="p-6 border-t border-white/5 flex items-center justify-between">
+<p class="text-sm text-slate-500">Showing 1 to 10 of 1,284 entries</p>
+<div class="flex gap-2">
+<button class="w-8 h-8 flex items-center justify-center rounded border border-white/5 text-slate-500 hover:bg-white/5"><span class="material-icons text-sm">chevron_left</span></button>
+<button class="w-8 h-8 flex items-center justify-center rounded bg-primary text-white text-xs font-bold">1</button>
+<button class="w-8 h-8 flex items-center justify-center rounded border border-white/5 text-slate-400 hover:bg-white/5 text-xs font-bold transition-colors">2</button>
+<button class="w-8 h-8 flex items-center justify-center rounded border border-white/5 text-slate-400 hover:bg-white/5 text-xs font-bold transition-colors">3</button>
+<button class="w-8 h-8 flex items-center justify-center rounded border border-white/5 text-slate-500 hover:bg-white/5"><span class="material-icons text-sm">chevron_right</span></button>
+</div>
+</div>
+</div>
+</div>
+<!-- Sliding Sidebar Editor (Overlay simulated) -->
+<div class="absolute inset-y-0 right-0 w-[600px] bg-background-dark/95 border-l border-primary/20 backdrop-blur-xl z-30 shadow-2xl flex flex-col transform translate-x-0 transition-transform duration-300">
+<div class="p-6 border-b border-white/10 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<button class="w-8 h-8 flex items-center justify-center rounded hover:bg-white/5 text-slate-400">
+<span class="material-icons text-lg">arrow_forward</span>
+</button>
+<h3 class="font-bold text-lg text-white">Edit Article</h3>
+</div>
+<div class="flex gap-3">
+<button class="px-4 py-2 text-sm font-medium text-slate-400 hover:text-white transition-colors">Save Draft</button>
+<button class="px-4 py-2 bg-primary text-white text-sm font-bold rounded-lg shadow-glow">Publish Live</button>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto p-8 custom-scrollbar space-y-8">
+<!-- Title Field -->
+<div>
+<label class="block text-[10px] font-bold text-primary uppercase tracking-widest mb-2">Title</label>
+<input class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:border-primary focus:ring-1 focus:ring-primary outline-none text-lg font-semibold" type="text" value="The Future of CRISPR Technology"/>
+</div>
+<div class="grid grid-cols-2 gap-6">
+<div>
+<label class="block text-[10px] font-bold text-primary uppercase tracking-widest mb-2">Category</label>
+<select class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-slate-300 focus:border-primary focus:ring-1 focus:ring-primary outline-none">
+<option>Bio-Tech</option>
+<option>Science</option>
+<option>Health</option>
+</select>
+</div>
+<div>
+<label class="block text-[10px] font-bold text-primary uppercase tracking-widest mb-2">Status</label>
+<div class="flex gap-2">
+<button class="flex-1 py-2 px-3 rounded-lg border border-primary/40 bg-primary/20 text-primary text-xs font-bold flex items-center justify-center gap-2">
+<span class="material-icons text-sm">edit</span> Draft
+                            </button>
+<button class="flex-1 py-2 px-3 rounded-lg border border-white/10 bg-white/5 text-slate-500 text-xs font-bold flex items-center justify-center gap-2 hover:bg-white/10 transition-colors">
+<span class="material-icons text-sm">rocket_launch</span> Live
+                            </button>
+</div>
+</div>
+</div>
+<!-- Thumbnail Upload -->
+<div>
+<label class="block text-[10px] font-bold text-primary uppercase tracking-widest mb-2">Thumbnail</label>
+<div class="border-2 border-dashed border-white/10 rounded-xl p-8 flex flex-col items-center justify-center bg-white/2 hover:bg-white/5 transition-all cursor-pointer">
+<span class="material-icons text-4xl text-slate-600 mb-2">cloud_upload</span>
+<p class="text-sm font-medium text-slate-400">Drag and drop thumbnail here</p>
+<p class="text-[10px] text-slate-600 mt-1">Recommended size: 1280x720 (PNG/JPG)</p>
+</div>
+</div>
+<!-- Tag Management -->
+<div>
+<label class="block text-[10px] font-bold text-primary uppercase tracking-widest mb-2">Tags</label>
+<div class="bg-white/5 border border-white/10 rounded-lg p-2 flex flex-wrap gap-2">
+<span class="px-2 py-1 bg-primary/20 text-primary text-[10px] font-bold rounded flex items-center gap-1 border border-primary/20">GENETICS <span class="material-icons text-[10px] cursor-pointer">close</span></span>
+<span class="px-2 py-1 bg-primary/20 text-primary text-[10px] font-bold rounded flex items-center gap-1 border border-primary/20">MEDICINE <span class="material-icons text-[10px] cursor-pointer">close</span></span>
+<span class="px-2 py-1 bg-primary/20 text-primary text-[10px] font-bold rounded flex items-center gap-1 border border-primary/20">INNOVATION <span class="material-icons text-[10px] cursor-pointer">close</span></span>
+<input class="bg-transparent border-none focus:ring-0 text-[10px] text-white py-1 flex-1" placeholder="Add tag..." type="text"/>
+</div>
+</div>
+<!-- Markdown Editor -->
+<div class="flex flex-col h-[500px]">
+<div class="flex items-center justify-between mb-2">
+<label class="text-[10px] font-bold text-primary uppercase tracking-widest">Content Editor (Markdown)</label>
+<div class="flex gap-2">
+<button class="p-1 text-slate-500 hover:text-white"><span class="material-icons text-sm">format_bold</span></button>
+<button class="p-1 text-slate-500 hover:text-white"><span class="material-icons text-sm">format_italic</span></button>
+<button class="p-1 text-slate-500 hover:text-white"><span class="material-icons text-sm">link</span></button>
+<button class="p-1 text-slate-500 hover:text-white border-l border-white/10 pl-2 ml-1"><span class="material-icons text-sm">visibility</span></button>
+</div>
+</div>
+<div class="flex-1 flex border border-white/10 rounded-xl overflow-hidden">
+<textarea class="flex-1 bg-slate-900/50 p-4 text-sm font-mono text-slate-300 focus:outline-none resize-none"># The Future of CRISPR Technology
+
+CRISPR-Cas9 is a unique technology that enables geneticists and medical researchers to edit parts of the genome by removing, adding or altering sections of the DNA sequence. 
+
+## How it works
+It is currently the simplest, most versatile and precise method of genetic manipulation and is therefore causing a buzz in the science world.
+
+### Key Applications
+1. Genetic Disease Treatment
+2. Agricultural Resilience
+3. Synthetic Biology
+
+The implications for the next decade are profound...
+                        </textarea>
+<div class="flex-1 bg-white/2 border-l border-white/10 p-4 overflow-y-auto custom-scrollbar prose prose-invert prose-sm">
+<h1 class="text-white">The Future of CRISPR Technology</h1>
+<p class="text-slate-400">CRISPR-Cas9 is a unique technology that enables geneticists and medical researchers to edit parts of the genome by removing, adding or altering sections of the DNA sequence.</p>
+<h2 class="text-white mt-4">How it works</h2>
+<p class="text-slate-400">It is currently the simplest, most versatile and precise method of genetic manipulation and is therefore causing a buzz in the science world.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Notification Toast (Floating Accent) -->
+<div class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-slate-900/90 border border-primary/50 text-white px-6 py-3 rounded-full flex items-center gap-3 shadow-glow backdrop-blur-md z-50">
+<span class="material-icons text-emerald-500">check_circle</span>
+<span class="text-sm font-medium">Auto-save: Saved 2 minutes ago</span>
+<div class="w-px h-4 bg-white/20 mx-2"></div>
+<button class="text-[10px] font-bold text-primary hover:text-primary/80 uppercase tracking-tighter">View Live</button>
+</div>
+</body></html>

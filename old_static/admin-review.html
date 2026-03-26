@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>TruthLens | Admin Review Queue</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1313ec",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101022",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+    <style>
+        .digital-grid {
+            background-image:
+                linear-gradient(to right, rgba(19, 19, 236, 0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(19, 19, 236, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        .glass-card {
+            background: rgba(16, 16, 34, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(19, 19, 236, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .glass-card:hover {
+            border-color: rgba(19, 19, 236, 0.4);
+            background: rgba(16, 16, 34, 0.8);
+            box-shadow: 0 0 20px rgba(19, 19, 236, 0.1);
+        }
+
+        .pulse-blue {
+            box-shadow: 0 0 0 0 rgba(19, 19, 236, 0.7);
+            animation: pulse-blue 2s infinite;
+        }
+
+        .pulse-purple {
+            box-shadow: 0 0 0 0 rgba(147, 51, 234, 0.7);
+            animation: pulse-purple 2s infinite;
+        }
+
+        @keyframes pulse-blue {
+            0% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(19, 19, 236, 0.7);
+            }
+
+            70% {
+                transform: scale(1);
+                box-shadow: 0 0 0 6px rgba(19, 19, 236, 0);
+            }
+
+            100% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(19, 19, 236, 0);
+            }
+        }
+
+        @keyframes pulse-purple {
+            0% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(147, 51, 234, 0.7);
+            }
+
+            70% {
+                transform: scale(1);
+                box-shadow: 0 0 0 6px rgba(147, 51, 234, 0);
+            }
+
+            100% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(147, 51, 234, 0);
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display min-h-screen">
+    <div class="fixed inset-0 digital-grid pointer-events-none opacity-50"></div>
+    <div class="relative flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <aside
+            class="w-80 border-r border-primary/10 bg-background-light/50 dark:bg-background-dark/50 backdrop-blur-md flex flex-col">
+            <div class="p-6 border-b border-primary/10">
+                <div class="flex items-center gap-2 mb-8">
+                    <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                        <span class="material-icons text-white text-xl">security</span>
+                    </div>
+                    <h1 class="text-xl font-bold tracking-tight">TruthLens <span class="text-primary">Admin</span></h1>
+                </div>
+                <div class="space-y-6">
+                    <div>
+                        <p class="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-4">Live Statistics
+                        </p>
+                        <div class="grid grid-cols-1 gap-4">
+                            <div class="p-4 rounded-xl bg-primary/5 border border-primary/10">
+                                <p class="text-xs text-slate-400 mb-1">Queue Depth</p>
+                                <div class="flex items-end justify-between">
+                                    <h2 class="text-3xl font-bold text-primary">142</h2>
+                                    <span class="text-emerald-500 text-xs font-medium flex items-center">
+                                        <span class="material-icons text-xs mr-1">trending_down</span> 12%
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="p-4 rounded-xl bg-primary/5 border border-primary/10">
+                                <p class="text-xs text-slate-400 mb-1">Avg Response Time</p>
+                                <div class="flex items-end justify-between">
+                                    <h2 class="text-3xl font-bold text-slate-200">4m 22s</h2>
+                                    <span class="text-primary text-xs font-medium">Target: 5m</span>
+                                </div>
+                                <div class="mt-3 w-full bg-primary/10 h-1.5 rounded-full overflow-hidden">
+                                    <div class="bg-primary h-full w-[82%]"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <p class="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-4">Navigation</p>
+                        <nav class="space-y-1">
+                            <a class="flex items-center gap-3 px-4 py-3 rounded-lg bg-primary/20 text-primary font-medium"
+                                href="admin-review.html">
+                                <span class="material-icons text-xl">assignment</span>
+                                Review Queue
+                            </a>
+                            <a class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-primary/5 text-slate-400 transition-colors"
+                                href="admin-cms.html">
+                                <span class="material-icons text-xl">history</span>
+                                Audit Logs & CMS
+                            </a>
+                            <a class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-primary/5 text-slate-400 transition-colors"
+                                href="admin-sources.html">
+                                <span class="material-icons text-xl">database</span>
+                                Source Database
+                            </a>
+                            <a class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-primary/5 text-slate-400 transition-colors"
+                                href="admin.html">
+                                <span class="material-icons text-xl">dashboard</span>
+                                Overview
+                            </a>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-auto p-6">
+                <div class="flex items-center gap-3 p-3 rounded-xl bg-slate-800/50 border border-slate-700">
+                    <img class="w-10 h-10 rounded-full border-2 border-primary/30" data-alt="Moderator profile avatar"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuABKfk1NhvM4j444ZtbsG6SCyf7R-bmFQ6Rs2QXGWd8Wxwf5FfdSMtYlRiRvDWPI5qOX1vwuvEaUR3uIPB2DdecB7jHBga7qBd_-VkbOxC4s6qU1SOABLtaL2MtmlY3RP7RCg_R67VUEJzEDCgyDcsvQZ-IseJ5yPLP30loVtHXrraFF81IMniOgF7oPuNkShMVGoCl0qe_DIYZifL65I6OPoYyiGOE30eWBsJOnrgDITfxTeXvGUIG-HxLhuu_Fo_x05UkoV6xOpk" />
+                    <div class="overflow-hidden">
+                        <p class="text-sm font-semibold truncate">Alex Sterling</p>
+                        <p class="text-xs text-slate-500 truncate">Lead Moderator</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+        <!-- Main Content -->
+        <main class="flex-1 flex flex-col overflow-hidden">
+            <!-- Top Header -->
+            <header
+                class="h-20 border-b border-primary/10 flex items-center justify-between px-8 bg-background-light/30 dark:bg-background-dark/30 backdrop-blur-sm">
+                <div class="flex items-center gap-4">
+                    <h2 class="text-lg font-semibold">Review Queue</h2>
+                    <div
+                        class="flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <span class="text-[10px] font-bold text-emerald-500 uppercase tracking-tighter">Live Sync
+                            Active</span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-6">
+                    <div class="relative">
+                        <span
+                            class="material-icons absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-lg">search</span>
+                        <input
+                            class="bg-slate-800/50 border border-slate-700 rounded-lg pl-10 pr-4 py-2 text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none w-64"
+                            placeholder="Search by URL or ID..." type="text" />
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button class="p-2 rounded-lg hover:bg-slate-800 text-slate-400"><span
+                                class="material-icons">filter_list</span></button>
+                        <button class="p-2 rounded-lg hover:bg-slate-800 text-slate-400"><span
+                                class="material-icons">notifications</span></button>
+                    </div>
+                </div>
+            </header>
+            <!-- Scrollable Content -->
+            <div class="flex-1 overflow-y-auto p-8">
+                <!-- Column Headers -->
+                <div
+                    class="grid grid-cols-12 gap-4 px-6 mb-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                    <div class="col-span-5">URL / Headline</div>
+                    <div class="col-span-2">AI Score</div>
+                    <div class="col-span-2">Flag Reason</div>
+                    <div class="col-span-1">Queue Time</div>
+                    <div class="col-span-2 text-right">Actions</div>
+                </div>
+                <!-- Review Cards -->
+                <div class="space-y-4">
+                    <!-- High Priority Card -->
+                    <div class="glass-card rounded-xl p-6 grid grid-cols-12 gap-4 items-center">
+                        <div class="col-span-5 flex items-start gap-4">
+                            <div class="mt-1">
+                                <div class="w-3 h-3 rounded-full bg-primary pulse-blue"></div>
+                            </div>
+                            <div>
+                                <h3
+                                    class="font-semibold text-slate-100 mb-1 leading-tight hover:text-primary cursor-pointer transition-colors">
+                                    Breaking: New Policy Change Regarding Synthetic Media Markets</h3>
+                                <p class="text-xs text-slate-500 flex items-center gap-1">
+                                    <span class="material-icons text-[14px]">link</span>
+                                    reuters-live.com/politics/synthetic-media-2024
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-span-2">
+                            <div class="flex items-center gap-3">
+                                <div class="relative w-10 h-10 flex items-center justify-center">
+                                    <svg class="w-full h-full -rotate-90">
+                                        <circle class="text-slate-800" cx="20" cy="20" fill="transparent" r="18"
+                                            stroke="currentColor" stroke-width="3"></circle>
+                                        <circle class="text-primary" cx="20" cy="20" fill="transparent" r="18"
+                                            stroke="currentColor" stroke-dasharray="113" stroke-dashoffset="10"
+                                            stroke-width="3"></circle>
+                                    </svg>
+                                    <span class="absolute text-[10px] font-bold">92%</span>
+                                </div>
+                                <span class="text-xs font-medium text-slate-400">Critical Bias</span>
+                            </div>
+                        </div>
+                        <div class="col-span-2">
+                            <span
+                                class="px-2 py-1 rounded-md bg-red-500/10 border border-red-500/20 text-red-500 text-[10px] font-bold uppercase">Potential
+                                Deepfake</span>
+                        </div>
+                        <div class="col-span-1">
+                            <p class="text-sm font-mono text-primary font-bold">04:12</p>
+                        </div>
+                        <div class="col-span-2 flex justify-end gap-2">
+                            <button
+                                class="w-8 h-8 flex items-center justify-center rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 transition-colors"
+                                title="Add Note">
+                                <span class="material-icons text-sm">note_add</span>
+                            </button>
+                            <button
+                                class="w-8 h-8 flex items-center justify-center rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 transition-colors"
+                                title="Adjust Score">
+                                <span class="material-icons text-sm">edit</span>
+                            </button>
+                            <button
+                                class="px-4 py-1.5 rounded-lg bg-primary hover:bg-blue-700 text-white text-xs font-bold transition-all shadow-lg shadow-primary/20">
+                                APPROVE
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Standard Priority Card -->
+                    <div class="glass-card rounded-xl p-6 grid grid-cols-12 gap-4 items-center">
+                        <div class="col-span-5 flex items-start gap-4">
+                            <div class="mt-1">
+                                <div class="w-3 h-3 rounded-full bg-purple-500 pulse-purple"></div>
+                            </div>
+                            <div>
+                                <h3
+                                    class="font-semibold text-slate-100 mb-1 leading-tight hover:text-purple-500 cursor-pointer transition-colors">
+                                    Market Analysis: Global Trends in Information Technology Stocks</h3>
+                                <p class="text-xs text-slate-500 flex items-center gap-1">
+                                    <span class="material-icons text-[14px]">link</span>
+                                    fin-times.net/markets/tech-stocks-2024
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-span-2">
+                            <div class="flex items-center gap-3">
+                                <div class="relative w-10 h-10 flex items-center justify-center">
+                                    <svg class="w-full h-full -rotate-90">
+                                        <circle class="text-slate-800" cx="20" cy="20" fill="transparent" r="18"
+                                            stroke="currentColor" stroke-width="3"></circle>
+                                        <circle class="text-purple-500" cx="20" cy="20" fill="transparent" r="18"
+                                            stroke="currentColor" stroke-dasharray="113" stroke-dashoffset="60"
+                                            stroke-width="3"></circle>
+                                    </svg>
+                                    <span class="absolute text-[10px] font-bold">45%</span>
+                                </div>
+                                <span class="text-xs font-medium text-slate-400">Low Risk</span>
+                            </div>
+                        </div>
+                        <div class="col-span-2">
+                            <span
+                                class="px-2 py-1 rounded-md bg-purple-500/10 border border-purple-500/20 text-purple-400 text-[10px] font-bold uppercase">Automated
+                                Source Flag</span>
+                        </div>
+                        <div class="col-span-1">
+                            <p class="text-sm font-mono text-slate-400">12:45</p>
+                        </div>
+                        <div class="col-span-2 flex justify-end gap-2">
+                            <button
+                                class="w-8 h-8 flex items-center justify-center rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 transition-colors">
+                                <span class="material-icons text-sm">note_add</span>
+                            </button>
+                            <button
+                                class="w-8 h-8 flex items-center justify-center rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 transition-colors">
+                                <span class="material-icons text-sm">edit</span>
+                            </button>
+                            <button
+                                class="px-4 py-1.5 rounded-lg bg-primary/20 hover:bg-primary/30 text-primary text-xs font-bold border border-primary/30 transition-all">
+                                APPROVE
+                            </button>
+                        </div>
+                    </div>
+                    <!-- High Priority Card 2 -->
+                    <div class="glass-card rounded-xl p-6 grid grid-cols-12 gap-4 items-center">
+                        <div class="col-span-5 flex items-start gap-4">
+                            <div class="mt-1">
+                                <div class="w-3 h-3 rounded-full bg-primary pulse-blue"></div>
+                            </div>
+                            <div>
+                                <h3
+                                    class="font-semibold text-slate-100 mb-1 leading-tight hover:text-primary cursor-pointer transition-colors">
+                                    Controversial: Leaked Audio Reveals Secret Corporate Merger</h3>
+                                <p class="text-xs text-slate-500 flex items-center gap-1">
+                                    <span class="material-icons text-[14px]">link</span>
+                                    insider-leak.io/audio/confidential-merger
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-span-2">
+                            <div class="flex items-center gap-3">
+                                <div class="relative w-10 h-10 flex items-center justify-center">
+                                    <svg class="w-full h-full -rotate-90">
+                                        <circle class="text-slate-800" cx="20" cy="20" fill="transparent" r="18"
+                                            stroke="currentColor" stroke-width="3"></circle>
+                                        <circle class="text-primary" cx="20" cy="20" fill="transparent" r="18"
+                                            stroke="currentColor" stroke-dasharray="113" stroke-dashoffset="15"
+                                            stroke-width="3"></circle>
+                                    </svg>
+                                    <span class="absolute text-[10px] font-bold">88%</span>
+                                </div>
+                                <span class="text-xs font-medium text-slate-400">Manipulation</span>
+                            </div>
+                        </div>
+                        <div class="col-span-2">
+                            <span
+                                class="px-2 py-1 rounded-md bg-amber-500/10 border border-amber-500/20 text-amber-500 text-[10px] font-bold uppercase">AI
+                                Voice Clone</span>
+                        </div>
+                        <div class="col-span-1">
+                            <p class="text-sm font-mono text-primary font-bold">02:54</p>
+                        </div>
+                        <div class="col-span-2 flex justify-end gap-2">
+                            <button
+                                class="w-8 h-8 flex items-center justify-center rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 transition-colors">
+                                <span class="material-icons text-sm">note_add</span>
+                            </button>
+                            <button
+                                class="w-8 h-8 flex items-center justify-center rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 transition-colors">
+                                <span class="material-icons text-sm">edit</span>
+                            </button>
+                            <button
+                                class="px-4 py-1.5 rounded-lg bg-primary hover:bg-blue-700 text-white text-xs font-bold transition-all shadow-lg shadow-primary/20">
+                                APPROVE
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Standard Priority Card 2 -->
+                    <div
+                        class="glass-card rounded-xl p-6 grid grid-cols-12 gap-4 items-center opacity-70 grayscale-[0.5]">
+                        <div class="col-span-5 flex items-start gap-4">
+                            <div class="mt-1">
+                                <div class="w-3 h-3 rounded-full bg-slate-600"></div>
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-2 mb-1">
+                                    <h3 class="font-semibold text-slate-400 leading-tight">Environmental Report: Ocean
+                                        Temperature Fluctuations</h3>
+                                    <span class="material-icons text-slate-600 text-sm">lock</span>
+                                </div>
+                                <p class="text-xs text-slate-600 flex items-center gap-1">
+                                    <span class="material-icons text-[14px]">link</span>
+                                    science-daily.edu/reports/ocean-temp
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-span-2">
+                            <div class="flex items-center gap-3">
+                                <div class="relative w-10 h-10 flex items-center justify-center opacity-50">
+                                    <svg class="w-full h-full -rotate-90">
+                                        <circle class="text-slate-800" cx="20" cy="20" fill="transparent" r="18"
+                                            stroke="currentColor" stroke-width="3"></circle>
+                                        <circle class="text-slate-500" cx="20" cy="20" fill="transparent" r="18"
+                                            stroke="currentColor" stroke-dasharray="113" stroke-dashoffset="100"
+                                            stroke-width="3"></circle>
+                                    </svg>
+                                    <span class="absolute text-[10px] font-bold">12%</span>
+                                </div>
+                                <span class="text-xs font-medium text-slate-600">Neutral</span>
+                            </div>
+                        </div>
+                        <div class="col-span-2">
+                            <span
+                                class="px-2 py-1 rounded-md bg-slate-800/50 border border-slate-700 text-slate-600 text-[10px] font-bold uppercase">Routine
+                                Scan</span>
+                        </div>
+                        <div class="col-span-1">
+                            <p class="text-sm font-mono text-slate-600">--:--</p>
+                        </div>
+                        <div class="col-span-2 flex justify-end gap-2">
+                            <p class="text-xs text-slate-500 font-medium italic">Being reviewed by system...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Footer Toolbar -->
+            <footer
+                class="h-16 border-t border-primary/10 px-8 flex items-center justify-between bg-background-light/50 dark:bg-background-dark/50 backdrop-blur-md">
+                <div class="flex items-center gap-4 text-xs text-slate-500">
+                    <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-primary"></span> High
+                        Priority (2)</span>
+                    <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-purple-500"></span>
+                        Standard (12)</span>
+                    <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-slate-600"></span>
+                        Processing (28)</span>
+                </div>
+                <div class="flex items-center gap-4">
+                    <button
+                        class="flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-300 transition-colors">
+                        <span class="material-icons text-sm">download</span>
+                        Export Report
+                    </button>
+                    <button
+                        class="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary/20 hover:bg-primary/30 text-xs font-semibold text-primary border border-primary/20 transition-colors">
+                        <span class="material-icons text-sm">refresh</span>
+                        Force Refresh
+                    </button>
+                </div>
+            </footer>
+        </main>
+    </div>
+    <!-- Quick Note Overlay (Conceptual) -->
+    <div
+        class="fixed bottom-8 right-8 w-80 glass-card rounded-xl p-4 shadow-2xl border-primary/20 translate-y-full opacity-0 pointer-events-none transition-all">
+        <div class="flex items-center justify-between mb-3">
+            <h4 class="text-sm font-bold flex items-center gap-2">
+                <span class="material-icons text-primary text-sm">sticky_note_2</span>
+                Active Note
+            </h4>
+            <button class="text-slate-500 hover:text-white"><span class="material-icons text-sm">close</span></button>
+        </div>
+        <textarea
+            class="w-full bg-slate-900/50 border border-slate-700 rounded-lg p-3 text-xs text-slate-300 focus:ring-1 focus:ring-primary outline-none h-24 mb-3 resize-none"
+            placeholder="Type moderator observations..."></textarea>
+        <button
+            class="w-full py-2 bg-primary text-white text-[10px] font-bold rounded-lg uppercase tracking-widest">Save
+            Observation</button>
+    </div>
+
+    ```
+</body>
+
+</html>

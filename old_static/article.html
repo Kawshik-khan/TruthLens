@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>TruthLens | Understanding Neural Networks</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1313ec",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101022",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+    <style>
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #101022;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #1313ec;
+            border-radius: 10px;
+        }
+
+        .prose blockquote {
+            border-left: 4px solid #1313ec;
+            box-shadow: -10px 0 20px -10px rgba(19, 19, 236, 0.3);
+        }
+
+        .reading-progress {
+            height: 100vh;
+            width: 3px;
+            background: rgba(19, 19, 236, 0.1);
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 50;
+        }
+
+        .reading-progress-bar {
+            width: 100%;
+            height: 45%;
+            /* Mock progress */
+            background: #1313ec;
+            box-shadow: 0 0 15px #1313ec;
+        }
+    </style>
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark font-display text-slate-800 dark:text-slate-200 antialiased selection:bg-primary/30 selection:text-white">
+    <!-- Reading Progress Bar (Fixed) -->
+    <div class="reading-progress">
+        <div class="reading-progress-bar"></div>
+    </div>
+    <!-- Navigation Bar -->
+    <nav
+        class="sticky top-0 z-40 w-full bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-primary/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center space-x-4">
+                    <a href="index.html"
+                        class="text-primary font-extrabold text-2xl tracking-tighter flex items-center">
+                        <span class="material-icons mr-2">lens</span>
+                        TRUTHLENS
+                    </a>
+                    <div class="hidden md:flex items-center space-x-2 text-sm text-slate-500">
+                        <span class="material-icons text-xs">chevron_right</span>
+                        <a class="hover:text-primary transition-colors" href="learn.html">Learn</a>
+                        <span class="material-icons text-xs">chevron_right</span>
+                        <span class="text-slate-300">Neural Networks</span>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-6">
+                    <button class="text-slate-400 hover:text-primary transition-colors">
+                        <span class="material-icons">search</span>
+                    </button>
+                    <a href="learn.html"
+                        class="bg-primary text-white px-5 py-2 rounded-lg font-semibold text-sm hover:opacity-90 transition-all shadow-lg shadow-primary/20">
+                        Library
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+            <!-- Article Content Column -->
+            <div class="lg:col-span-8">
+                <!-- Article Header -->
+                <header class="mb-12">
+                    <div class="flex items-center space-x-3 mb-6">
+                        <span
+                            class="bg-primary/20 text-primary px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">Education</span>
+                        <span class="text-slate-500 text-sm">• 8 min read</span>
+                    </div>
+                    <h1
+                        class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-slate-900 dark:text-white leading-[1.1] mb-8">
+                        The Deep Architecture of <span class="text-primary">Neural Networks</span>
+                    </h1>
+                    <div class="flex items-center space-x-4">
+                        <img alt="Author" class="w-12 h-12 rounded-full border-2 border-primary/30"
+                            data-alt="Portrait of a professional male educator"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBRlssTVWKHnthaXUgw5s64RyYH8rYNjvkoOogresvkiMiom5A66LOHWHr8KITV7tMGnSpUSEgonjQv2dMBKCToNniXRxSRMP2XbwdwgDzjj7M6RMi31JPoUfsbgSIsLZ3h6kXAr4DXjnHAdCFJvMnz41Axihhl73noAfrQ-tYCaqJzDVj9KaynPCDHyVakaEBZitwe_kBoY8cfnJnrXTo3qlnk2fZhADF6g6lWOzJnddQ2cxmzD80mvcYNBiE59S2dUFVghlM95yg" />
+                        <div>
+                            <p class="font-bold text-slate-900 dark:text-slate-100">Dr. Julian Vance</p>
+                            <p class="text-xs text-slate-500">Published on Oct 24, 2023 • Senior ML Architect</p>
+                        </div>
+                    </div>
+                </header>
+                <!-- Featured Image -->
+                <div class="relative group mb-12 rounded-xl overflow-hidden shadow-2xl shadow-primary/10">
+                    <img alt="Main Header" class="w-full h-[400px] object-cover"
+                        data-alt="Abstract blue digital network connections visualization"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuAEybItZBasyMM8wbApiYkUbuy-iOlZjIxPo8Q9R7IhuPn5rRcBHVKMZnHvI6W6WAXVJjaA0Ir9EppFfIDqZ4jWglMas6IRG5INd18VoBOCrjwQlLFY7WHLnWaF5LZNapfObRum3Av46Ji-o4BGX_JWr_sW5Os3GqjsU7iL0C9DE5wL-1SsI1Qavo0blQVRyZjZBrn8R6Yii1uf30BIJT4UEkUTOneYAjL6JmkQfXgz2-kMBe4dcxft5J4ykF0t5CmGdRYbNH2FMvk" />
+                    <div class="absolute inset-0 bg-gradient-to-t from-background-dark via-transparent opacity-60">
+                    </div>
+                </div>
+                <!-- Markdown Content -->
+                <article class="prose prose-invert max-w-none prose-lg">
+                    <p class="text-xl text-slate-400 leading-relaxed mb-8">
+                        In the landscape of artificial intelligence, neural networks serve as the fundamental backbone.
+                        Inspired by the biological neurons of the human brain, these mathematical constructs have
+                        evolved from simple perceptrons to deep architectures capable of generative mastery.
+                    </p>
+                    <h2 class="text-2xl font-bold text-white mb-4 flex items-center">
+                        <span class="w-8 h-1 bg-primary mr-3 rounded-full"></span>
+                        The Biological Blueprint
+                    </h2>
+                    <p class="mb-6 text-slate-300">
+                        At its core, a neural network is an interconnected assembly of nodes, called neurons, that work
+                        in concert to process information. Each connection carries a weight that is adjusted during the
+                        learning process, effectively "teaching" the system how to recognize patterns.
+                    </p>
+                    <blockquote class="bg-primary/5 p-8 italic text-slate-200 rounded-r-lg mb-8 text-xl">
+                        "The goal of deep learning is not to simulate the brain, but to simulate the results the brain
+                        achieves through mathematical approximation."
+                    </blockquote>
+                    <h3 class="text-xl font-bold text-white mb-4">Gradient Descent &amp; Backpropagation</h3>
+                    <p class="mb-6 text-slate-300">
+                        How does a machine actually learn? It's through an iterative process of trial and error guided
+                        by calculus. When the network makes a mistake, it calculates the 'error' and propagates it
+                        backwards through the layers.
+                    </p>
+                    <div class="bg-[#0c0c1a] border border-primary/20 rounded-lg p-6 mb-8 overflow-x-auto">
+                        <pre class="text-sm font-mono text-primary/80"><code><span class="text-white"># Simplified Training Loop</span>
+for epoch in range(epochs):
+    output = model(input_data)
+    loss = criterion(output, targets)
+    <span class="text-white">loss.backward()</span>  # The magic happens here
+    optimizer.step()</code></pre>
+                    </div>
+                    <h2 class="text-2xl font-bold text-white mb-4 flex items-center">
+                        <span class="w-8 h-1 bg-primary mr-3 rounded-full"></span>
+                        The Multi-Layer Perceptron (MLP)
+                    </h2>
+                    <p class="mb-6 text-slate-300">
+                        An MLP consists of at least three layers of nodes: an input layer, a hidden layer, and an output
+                        layer. Except for the input nodes, each node is a neuron that uses a nonlinear activation
+                        function. Its ability to solve problems which are not linearly separable is what set the stage
+                        for modern deep learning.
+                    </p>
+                    <ul class="space-y-4 mb-8">
+                        <li class="flex items-start">
+                            <span class="material-icons text-primary mr-3 mt-1">check_circle</span>
+                            <span><strong class="text-white">Input Layer:</strong> Receives raw data and passes it to
+                                the first hidden layer.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="material-icons text-primary mr-3 mt-1">check_circle</span>
+                            <span><strong class="text-white">Hidden Layers:</strong> Perform mathematical
+                                transformations to extract features.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="material-icons text-primary mr-3 mt-1">check_circle</span>
+                            <span><strong class="text-white">Output Layer:</strong> Produces the final prediction or
+                                classification.</span>
+                        </li>
+                    </ul>
+                </article>
+                <!-- Share Section -->
+                <div
+                    class="mt-16 pt-8 border-t border-primary/10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                    <div class="flex items-center space-x-4">
+                        <span class="text-sm font-bold uppercase tracking-widest text-slate-500">Share this:</span>
+                        <div class="flex space-x-3">
+                            <button
+                                class="w-10 h-10 rounded-lg bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all flex items-center justify-center">
+                                <span class="material-icons text-sm">share</span>
+                            </button>
+                            <button
+                                class="w-10 h-10 rounded-lg bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all flex items-center justify-center">
+                                <span class="material-icons text-sm">link</span>
+                            </button>
+                            <button
+                                class="w-10 h-10 rounded-lg bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all flex items-center justify-center">
+                                <span class="material-icons text-sm">bookmark_border</span>
+                            </button>
+                        </div>
+                    </div>
+                    <button class="flex items-center space-x-2 text-slate-400 hover:text-primary transition-colors">
+                        <span class="material-icons">flag</span>
+                        <span class="text-sm font-medium">Report content</span>
+                    </button>
+                </div>
+            </div>
+            <!-- Sidebar Column -->
+            <aside class="lg:col-span-4 space-y-8">
+                <!-- Tags Card -->
+                <div
+                    class="bg-background-light dark:bg-slate-900/50 border border-primary/10 rounded-xl p-6 backdrop-blur-sm">
+                    <h3 class="text-lg font-bold text-white mb-6 flex items-center">
+                        <span class="material-icons text-primary mr-2">tag</span>
+                        Related Tags
+                    </h3>
+                    <div class="flex flex-wrap gap-2">
+                        <a class="px-3 py-1 bg-primary/10 text-primary border border-primary/20 rounded-md text-sm hover:bg-primary/20 transition-all"
+                            href="index.html">#NeuralNetworks</a>
+                        <a class="px-3 py-1 bg-primary/10 text-primary border border-primary/20 rounded-md text-sm hover:bg-primary/20 transition-all"
+                            href="index.html">#DeepLearning</a>
+                        <a class="px-3 py-1 bg-primary/10 text-primary border border-primary/20 rounded-md text-sm hover:bg-primary/20 transition-all"
+                            href="index.html">#AIArchitecture</a>
+                        <a class="px-3 py-1 bg-primary/10 text-primary border border-primary/20 rounded-md text-sm hover:bg-primary/20 transition-all"
+                            href="index.html">#MachineLearning</a>
+                        <a class="px-3 py-1 bg-primary/10 text-primary border border-primary/20 rounded-md text-sm hover:bg-primary/20 transition-all"
+                            href="index.html">#Calculus</a>
+                    </div>
+                </div>
+                <!-- Related Articles Card -->
+                <div
+                    class="bg-background-light dark:bg-slate-900/50 border border-primary/10 rounded-xl p-6 backdrop-blur-sm">
+                    <h3 class="text-lg font-bold text-white mb-6 flex items-center">
+                        <span class="material-icons text-primary mr-2">library_books</span>
+                        You Might Like
+                    </h3>
+                    <div class="space-y-6">
+                        <a class="group block" href="index.html">
+                            <div class="flex gap-4">
+                                <div
+                                    class="relative flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border border-primary/10">
+                                    <img alt="Related"
+                                        class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                                        data-alt="Blue glowing server room with lights"
+                                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuB9iksAKny0VJKE-Am-ghMowTI7tJ97RWv60JnMnqiLYxoLhm1FYxsFLdkKxK_YwGHzl-v2KoCK0g_oEMnB1nSal5rOb3XGAVmiP5zU7gRcxVAG0S6Dtq74opQiyKyHxi6SfNrerEEtpsaA-v1rtYP5ah7do4cVikZZfgbYumC5oCPJMSD8cVjauEX9LTbJuQHev9dyzJMAMLx4S6O2-6GnFSkXhPfl_3qfrSImFj5lhVaJNAremoU_2OUSBavBY8aIGRCEg7qH3eU" />
+                                </div>
+                                <div>
+                                    <h4
+                                        class="text-sm font-bold text-slate-200 group-hover:text-primary transition-colors line-clamp-2">
+                                        The Evolution of Transformer Models</h4>
+                                    <p class="text-xs text-slate-500 mt-1">12 min read • AI Theory</p>
+                                </div>
+                            </div>
+                        </a>
+                        <a class="group block" href="index.html">
+                            <div class="flex gap-4">
+                                <div
+                                    class="relative flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border border-primary/10">
+                                    <img alt="Related"
+                                        class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                                        data-alt="Close up of computer hardware microchip"
+                                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuBxXxHouxpd_212ObBmR3bNsQ1KcuMh7sZpmwzndyntPwWXY06ZpCLI9JlgTCdxrytjr-7FhFjyMMn7u7oxs6XS2c2aOkGwsJ4YSa9NQ0bYMp9xt181YOtMk35AgA2eO7PCtGfalON7Wd5cnbrEs_AyzETCRlYV7ICGoL0Sjkt8HAjSG82OZTHRg3XEenb0ITzA1Qzwt58lVe-U_3dehoSFbyVDut0mtAedHPRgKzlmROqPju_1ofbEiP8Mywsr1mI7dcMsVTLOcIc" />
+                                </div>
+                                <div>
+                                    <h4
+                                        class="text-sm font-bold text-slate-200 group-hover:text-primary transition-colors line-clamp-2">
+                                        Hardware Acceleration for ML</h4>
+                                    <p class="text-xs text-slate-500 mt-1">15 min read • Engineering</p>
+                                </div>
+                            </div>
+                        </a>
+                        <a class="group block" href="index.html">
+                            <div class="flex gap-4">
+                                <div
+                                    class="relative flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border border-primary/10">
+                                    <img alt="Related"
+                                        class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                                        data-alt="Mathematical equations handwritten on a blackboard"
+                                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuDmINgTo5bLe2tBjuJWez8iFXdgmv8hqNz0E96-cS02B-xgjs7rzOSjjatDhz0D_euCL05QY5DzMk-Cyk8XoEXGE2a9zf9VtdZ5NS6Op3693LiUcd08QkP_mUB36tgFSWlacSXFWNCwYpkuU9QksWn0IW75zQ274wBaer9IioPKoCA7a7x03cQnK-pMrwTP737YF_sEIebrZIkUxWPRz7-MAoc1t1QiRvK3CK2tAMwv6lNIZ4J99LBVqluWPMoxqT-h5BzXqD3uI-4" />
+                                </div>
+                                <div>
+                                    <h4
+                                        class="text-sm font-bold text-slate-200 group-hover:text-primary transition-colors line-clamp-2">
+                                        Linear Algebra Essentials</h4>
+                                    <p class="text-xs text-slate-500 mt-1">10 min read • Mathematics</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <!-- Newsletter Card -->
+                <div
+                    class="bg-primary rounded-xl p-8 text-white relative overflow-hidden group shadow-xl shadow-primary/30">
+                    <div class="relative z-10">
+                        <h3 class="text-xl font-bold mb-2">Deepen Your Knowledge</h3>
+                        <p class="text-white/80 text-sm mb-6">Get weekly insights into the world of AI and technology
+                            delivered to your inbox.</p>
+                        <form class="space-y-3" onsubmit="return false;">
+                            <input
+                                class="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-sm placeholder-white/50 focus:ring-2 focus:ring-white/50 focus:border-transparent outline-none"
+                                placeholder="Email address" type="email" />
+                            <button
+                                class="w-full bg-white text-primary font-bold py-2 rounded-lg text-sm hover:bg-slate-100 transition-colors">Subscribe
+                                Now</button>
+                        </form>
+                    </div>
+                    <div
+                        class="absolute -right-8 -bottom-8 opacity-20 pointer-events-none group-hover:scale-110 transition-transform">
+                        <span class="material-icons text-[120px]">send</span>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </main>
+    <footer class="bg-background-light dark:bg-background-dark border-t border-primary/10 py-12 mt-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+                <div class="space-y-4">
+                    <div class="text-primary font-extrabold text-2xl tracking-tighter flex items-center">
+                        <span class="material-icons mr-2">lens</span>
+                        TRUTHLENS
+                    </div>
+                    <p class="text-slate-500 text-sm max-w-xs">
+                        Educational clarity in an age of digital noise. Master the fundamentals of tomorrow's technology
+                        today.
+                    </p>
+                </div>
+                <div class="grid grid-cols-2 gap-8">
+                    <div>
+                        <h4 class="font-bold text-white mb-4 text-sm uppercase tracking-widest">Platform</h4>
+                        <ul class="space-y-2 text-sm text-slate-500">
+                            <li><a class="hover:text-primary" href="index.html">Library</a></li>
+                            <li><a class="hover:text-primary" href="index.html">Certifications</a></li>
+                            <li><a class="hover:text-primary" href="index.html">Instructors</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-white mb-4 text-sm uppercase tracking-widest">Company</h4>
+                        <ul class="space-y-2 text-sm text-slate-500">
+                            <li><a class="hover:text-primary" href="index.html">About</a></li>
+                            <li><a class="hover:text-primary" href="index.html">Careers</a></li>
+                            <li><a class="hover:text-primary" href="index.html">Privacy</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="flex flex-col items-end">
+                    <div class="flex space-x-4 mb-6">
+                        <a class="text-slate-500 hover:text-primary transition-colors" href="index.html"><span
+                                class="material-icons">facebook</span></a>
+                        <a class="text-slate-500 hover:text-primary transition-colors" href="index.html"><span
+                                class="material-icons text-[20px] font-bold">𝕏</span></a>
+                        <a class="text-slate-500 hover:text-primary transition-colors" href="index.html"><span
+                                class="material-icons">rss_feed</span></a>
+                    </div>
+                    <p class="text-slate-500 text-xs text-right">© 2023 TruthLens Education. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

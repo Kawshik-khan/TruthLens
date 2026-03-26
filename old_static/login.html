@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>TruthLens | Premium Login</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1313ec",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101022",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .grid-pattern {
+            background-image: radial-gradient(rgba(19, 19, 236, 0.1) 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+
+        .glass-card {
+            background: rgba(16, 16, 34, 0.75);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(19, 19, 236, 0.2);
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(19, 19, 236, 0.05);
+        }
+
+        .glow-input:focus {
+            box-shadow: 0 0 15px rgba(19, 19, 236, 0.3);
+            border-color: #1313ec;
+        }
+
+        .primary-glow {
+            box-shadow: 0 0 20px rgba(19, 19, 236, 0.4);
+        }
+    </style>
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark min-h-screen flex items-center justify-center overflow-hidden font-display">
+    <!-- Background Elements -->
+    <div class="fixed inset-0 grid-pattern pointer-events-none"></div>
+    <div class="fixed -top-24 -left-24 w-96 h-96 bg-primary/10 rounded-full blur-[120px] pointer-events-none"></div>
+    <div class="fixed -bottom-24 -right-24 w-96 h-96 bg-primary/10 rounded-full blur-[120px] pointer-events-none"></div>
+    <!-- Main Content -->
+    <main class="relative z-10 w-full max-w-md px-6">
+        <!-- Branding Area -->
+        <div class="text-center mb-8">
+            <a href="index.html"
+                class="inline-flex items-center justify-center p-3 rounded-xl bg-primary/20 border border-primary/30 mb-4">
+                <span class="material-icons text-primary text-4xl">center_focus_strong</span>
+            </a>
+            <h1 class="text-3xl font-bold text-slate-900 dark:text-white tracking-tight"><a
+                    href="index.html">TruthLens</a></h1>
+            <p class="text-slate-500 dark:text-slate-400 mt-2 text-sm uppercase tracking-widest">Verify the Reality</p>
+        </div>
+        <!-- Login Card -->
+        <div class="glass-card rounded-xl p-8 transition-all duration-300">
+            <form class="space-y-6">
+                <!-- Email Field -->
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-2 ml-1"
+                        for="email">Corporate Email</label>
+                    <div class="relative">
+                        <span
+                            class="absolute left-3 top-1/2 -translate-y-1/2 material-icons text-slate-400 text-sm">alternate_email</span>
+                        <input
+                            class="w-full bg-slate-100/50 dark:bg-background-dark/50 border border-slate-300 dark:border-primary/20 rounded-lg py-3 pl-10 pr-4 text-slate-900 dark:text-white glow-input outline-none transition-all placeholder:text-slate-500"
+                            id="email" placeholder="username@truthlens.ai" type="email" />
+                    </div>
+                </div>
+                <!-- Password Field -->
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase ml-1"
+                            for="password">Security Key</label>
+                        <a class="text-xs text-primary hover:text-primary/80 transition-colors font-medium"
+                            href="feedback.html">Lost access?</a>
+                    </div>
+                    <div class="relative">
+                        <span
+                            class="absolute left-3 top-1/2 -translate-y-1/2 material-icons text-slate-400 text-sm">lock_open</span>
+                        <input
+                            class="w-full bg-slate-100/50 dark:bg-background-dark/50 border border-slate-300 dark:border-primary/20 rounded-lg py-3 pl-10 pr-4 text-slate-900 dark:text-white glow-input outline-none transition-all placeholder:text-slate-500"
+                            id="password" placeholder="••••••••••••" type="password" />
+                    </div>
+                </div>
+                <!-- Action Button -->
+                <a href="dashboard.html"
+                    class="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-3.5 rounded-lg primary-glow transition-all active:scale-[0.98] flex items-center justify-center gap-2">
+                    Initialize Session
+                    <span class="material-icons text-sm">arrow_forward</span>
+                </a>
+            </form>
+            <!-- Divider -->
+            <div class="relative my-8">
+                <div class="absolute inset-0 flex items-center">
+                    <div class="w-full border-t border-slate-300 dark:border-primary/10"></div>
+                </div>
+                <div class="relative flex justify-center text-xs uppercase">
+                    <span
+                        class="bg-background-light dark:bg-[#15152a] px-3 text-slate-500 dark:text-slate-400 font-medium tracking-wider">Secure
+                        SSO</span>
+                </div>
+            </div>
+            <!-- SSO Options -->
+            <div class="grid grid-cols-3 gap-4">
+                <button
+                    class="flex items-center justify-center p-3 rounded-lg border border-slate-300 dark:border-primary/20 hover:bg-primary/10 transition-colors group">
+                    <img alt="" class="w-5 h-5 opacity-70 group-hover:opacity-100 transition-opacity"
+                        data-alt="Google logo icon"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuDjsM2p9H0_oEsJv36Ucv-I36tcYRA-CEpBBZ1iGgky8vlpl1boLalzGq1LqIDWgTbzFDS3KrnUwU7NanhWnB2PC55C0H_VzWnpiVYxtQjZdZrnJDEabKOfUKf9d8PBjVbDT4LZvpbPleQLYlu34nm9IpfTPcRVR-WSKkVie_1hyNhwiTpld7duM-yfuWEvWNXtglSTTbqR1f9rYEy5FKgneP4JDJo1piQmHVZg3CJsML4PhrKQuDjCNnUQcF4RlWBI5JhmBhnedf0" />
+                </button>
+                <button
+                    class="flex items-center justify-center p-3 rounded-lg border border-slate-300 dark:border-primary/20 hover:bg-primary/10 transition-colors group">
+                    <img alt="" class="w-5 h-5 opacity-70 group-hover:opacity-100 transition-opacity"
+                        data-alt="Microsoft logo icon"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuC0vQCxoU3lEnKgpnOE-xDjJF3gn5I2BlxT8HzQC67QtIayEOwKCowC_QRxVlvV6BYJbWamjNA18mVyu7lW69wvl2wsKiT211jL6czOtCi1pscrz4vDbxFQa27u_fB2gupE72VYiRu3vfUSjcED8b4dvGnbl8bxpsQVimezrHJkYn61VOV3jt3Iwhl5ZBHq4fnWn8-wHoM6ptl53M0462kMKshChCjwUTmkg3hmYvOmI_nF8lEmnd6CH4-XZQY2FaQ-DI81OG0dkm8" />
+                </button>
+                <button
+                    class="flex items-center justify-center p-3 rounded-lg border border-slate-300 dark:border-primary/20 hover:bg-primary/10 transition-colors group">
+                    <img alt=""
+                        class="w-5 h-5 opacity-70 group-hover:opacity-100 transition-opacity invert dark:invert-0"
+                        data-alt="GitHub logo icon"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuCljbnpHB1mn8BNDp_7sey8xHpKgfQIbko1Y4X2ulIQTFOvyRyFqK5ciFJS7HdCN4UQsEYocv7OK9Ctql-bi6IzAiiken4DOelJi6_XcJ5FendKM_WrMjhsEHaw22wFJcvzrS0Q806ImqzY1NAa56tUDdM4atT_CNExMhmMZFQ5Aiq-dKPCmSL-LQ-sMVuObwsG8VUvQcY87pKTeEAFGebne-tykEHMYnPKtDhB_fhJ6fpk894dGmstBFU3gJGqHSQkQOYT22ecU1g" />
+                </button>
+            </div>
+            <!-- Footer Link -->
+            <p class="mt-8 text-center text-sm text-slate-500 dark:text-slate-400">
+                New researcher?
+                <a class="text-primary font-semibold hover:underline decoration-2 underline-offset-4 ml-1"
+                    href="register.html">Initialize new account</a>
+            </p>
+        </div>
+        <!-- Security Badge -->
+        <div class="mt-8 flex items-center justify-center gap-2">
+            <div class="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]"></div>
+            <span class="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-[0.2em] font-medium">Secure
+                Environment · SSL 256-bit</span>
+        </div>
+    </main>
+    <!-- Decorative Elements -->
+    <div class="absolute bottom-10 left-10 hidden xl:block">
+        <div class="p-4 glass-card rounded-lg border-l-4 border-l-primary">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full overflow-hidden bg-slate-800">
+                    <img alt="" class="w-full h-full object-cover" data-alt="Portrait of a modern technology executive"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuAkdMR1o7qKvrWAFKNgotBW4fa1-6LwLqXI6S5foP27_jYvAEtjZ4ghEuO8gY_juQBV02CGJrKboG2wku8QHUH3a5jVuTHIoBRJjYWMQyAHvxGqkFHVGxXGbwP7eEokYcSOL-PnrjoLnR_N3e4E8D7Lf1J0KGc3Up3Z2UehSpV8_u8P8HMrsvs_6teMdlu2X6GnX0W27vt5HtYJHWegg61Cq3mDYfIYJKamtbaYmBKgJlomHFcJVO_MGvr3k9x8908Xuv3ikcBJAGE" />
+                </div>
+                <div>
+                    <p class="text-xs text-slate-300 font-bold">Verified Operator</p>
+                    <p class="text-[10px] text-primary">Marcus K. Intelligence Dir.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="absolute top-10 right-10 hidden xl:block opacity-20">
+        <div class="flex flex-col gap-1 items-end font-mono text-[10px] text-primary">
+            <span>SYS_READY: AUTH_PROTOCOL_INIT</span>
+            <span>NODE: NORTH_ATLANTIC_22</span>
+            <span>THREAT_LEVEL: MINIMAL</span>
+        </div>
+    </div>
+</body>
+
+</html>

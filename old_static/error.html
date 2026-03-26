@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>System Status | TruthLens</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1313ec",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101022",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        .glass-panel {
+            background: rgba(16, 16, 34, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .glow-effect {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(19, 19, 236, 0.15) 0%, rgba(19, 19, 236, 0) 70%);
+            z-index: -1;
+        }
+    </style>
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark font-display text-slate-800 dark:text-slate-200 min-h-screen flex flex-col items-center justify-center p-6 relative overflow-hidden">
+    <!-- Ambient Glow Backgrounds -->
+    <div class="glow-effect top-[-100px] left-[-100px]"></div>
+    <div class="glow-effect bottom-[-100px] right-[-100px]"></div>
+    <!-- Header / Brand -->
+    <header class="absolute top-12 left-0 right-0 flex justify-center">
+        <a href="index.html"
+            class="flex items-center space-x-2 opacity-60 hover:opacity-100 transition-opacity cursor-default">
+            <div class="w-8 h-8 bg-primary rounded flex items-center justify-center">
+                <span class="material-icons text-white text-sm">visibility</span>
+            </div>
+            <span class="text-xl font-bold tracking-tight text-slate-900 dark:text-white uppercase">TruthLens</span>
+        </a>
+    </header>
+    <!-- Main Content Area -->
+    <main class="w-full max-w-2xl mx-auto flex flex-col items-center">
+        <!-- Signal Icon Container -->
+        <div class="relative mb-12">
+            <div class="absolute inset-0 bg-primary/20 blur-2xl rounded-full scale-125"></div>
+            <div
+                class="relative w-24 h-24 rounded-full bg-background-dark border border-primary/30 flex items-center justify-center">
+                <span class="material-icons text-primary text-5xl">sensors</span>
+            </div>
+            <!-- Decorative Orbitals -->
+            <div
+                class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 border border-primary/10 rounded-full">
+            </div>
+            <div
+                class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-44 h-44 border border-primary/5 rounded-full">
+            </div>
+        </div>
+        <!-- Glassmorphic Card -->
+        <div class="glass-panel w-full p-10 md:p-14 rounded-xl shadow-2xl text-center">
+            <div
+                class="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-semibold uppercase tracking-widest mb-6">
+                Status: Calibration Required
+            </div>
+            <h1 class="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-4 tracking-tight">
+                System Calibration in Progress
+            </h1>
+            <p class="text-slate-600 dark:text-slate-400 text-lg leading-relaxed max-w-md mx-auto mb-10">
+                We are currently fine-tuning our sensors to provide the most accurate data. We'll be back online as soon
+                as the signal stabilizes.
+            </p>
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <button
+                    class="w-full sm:w-auto px-8 py-3.5 bg-primary hover:bg-primary/90 text-white font-semibold rounded-lg shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-2">
+                    <span class="material-icons text-sm">refresh</span>
+                    Retry Connection
+                </button>
+                <a class="w-full sm:w-auto px-8 py-3.5 bg-slate-200 dark:bg-white/5 hover:bg-slate-300 dark:hover:bg-white/10 text-slate-900 dark:text-white font-semibold rounded-lg transition-all flex items-center justify-center gap-2"
+                    href="methodology.html">
+                    <span class="material-icons text-sm">bar_chart</span>
+                    System Status
+                </a>
+            </div>
+        </div>
+        <!-- Technical Metadata -->
+        <div class="mt-12 text-center">
+            <div
+                class="flex items-center justify-center space-x-4 text-xs font-mono text-slate-500 dark:text-slate-500 uppercase tracking-widest">
+                <span>Ref: 503_TL_CALIBRATION</span>
+                <span class="w-1 h-1 bg-slate-700 rounded-full"></span>
+                <span>Node: US-EAST-01</span>
+                <span class="w-1 h-1 bg-slate-700 rounded-full"></span>
+                <span>Timestamp: 1715892000</span>
+            </div>
+        </div>
+    </main>
+    <!-- Footer Support -->
+    <footer class="absolute bottom-10 left-0 right-0 text-center">
+        <p class="text-sm text-slate-500 dark:text-slate-500">
+            Need immediate assistance? Contact <a class="text-primary hover:underline"
+                href="mailto:support@truthlens.ai">support@truthlens.ai</a>
+        </p>
+    </footer>
+    <!-- Background Decoration Image (Abstract Signal/Network) -->
+    <div class="absolute inset-0 -z-20 opacity-10 pointer-events-none overflow-hidden">
+        <img alt="Abstract network and data connections" class="w-full h-full object-cover"
+            data-alt="Abstract deep blue cosmic network pattern"
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuAaJ7lktvHvvQRCOAHfaZQ03ygrQ-pHCphFc-8UnylbwoHluCAhbkuji85Skfwa2AXtHjCyEnCfLdkVFrqBRyBQp4SVoOQvImD64CgrLz3fzyQjwvEtafxDtTRd4YQpi_IvLZBB4dLgGcpyBEWbWxYfrw2b1SJICf4NmJm7WH2_ktOfm8hUXRt51plNEZJ4vgRyvNtCFLzLMigWh4jU0csLIHdesMnb8Zx2dFi_TOO_fjozM1gypC4FdYmmDt-ewXk32pvi7aoNuSs" />
+    </div>
+</body>
+
+</html>

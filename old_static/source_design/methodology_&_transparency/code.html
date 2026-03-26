@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TruthLens | Methodology &amp; Transparency</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1313ec",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101022",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glow-primary {
+            box-shadow: 0 0 20px rgba(19, 19, 236, 0.3);
+        }
+        .geometric-bg {
+            background-image: radial-gradient(circle at 2px 2px, rgba(19, 19, 236, 0.05) 1px, transparent 0);
+            background-size: 40px 40px;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-800 dark:text-slate-200 selection:bg-primary/30 selection:text-white">
+<!-- Navigation -->
+<nav class="fixed top-0 w-full z-50 glass border-b border-white/10">
+<div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 bg-primary rounded flex items-center justify-center">
+<span class="material-icons text-white text-xl">lens</span>
+</div>
+<span class="text-xl font-bold tracking-tight text-slate-900 dark:text-white">TruthLens</span>
+</div>
+<div class="hidden md:flex items-center gap-8 text-sm font-medium">
+<a class="hover:text-primary transition-colors" href="#">Analyzer</a>
+<a class="text-primary" href="#">Methodology</a>
+<a class="hover:text-primary transition-colors" href="#">API Docs</a>
+<a class="bg-primary hover:bg-primary/90 text-white px-5 py-2 rounded-lg transition-all" href="#">Get Started</a>
+</div>
+</div>
+</nav>
+<main class="relative pt-32 pb-24 geometric-bg">
+<!-- Hero Section: Transparency Statement -->
+<section class="max-w-7xl mx-auto px-6 mb-32">
+<div class="grid lg:grid-cols-2 gap-16 items-center">
+<div>
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold uppercase tracking-widest mb-6">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+</span>
+                        Open Algorithm
+                    </div>
+<h1 class="text-5xl lg:text-7xl font-bold text-slate-900 dark:text-white mb-8 leading-[1.1]">
+                        Integrity Through <span class="text-primary">Radical</span> Transparency.
+                    </h1>
+<p class="text-xl text-slate-600 dark:text-slate-400 leading-relaxed max-w-xl mb-10">
+                        TruthLens isn't a black box. We believe that for AI to fight misinformation, its own logic must be visible, auditable, and beyond reproach.
+                    </p>
+<div class="flex gap-4">
+<button class="bg-primary text-white px-8 py-4 rounded-xl font-semibold hover:shadow-lg hover:shadow-primary/25 transition-all">View Github Repo</button>
+<button class="px-8 py-4 rounded-xl font-semibold border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-white/5 transition-all">Whitepaper</button>
+</div>
+</div>
+<div class="relative">
+<div class="absolute -inset-4 bg-primary/20 blur-3xl rounded-full"></div>
+<div class="relative glass rounded-3xl p-8 border-primary/20 glow-primary">
+<div class="aspect-square flex items-center justify-center">
+<div class="relative w-full h-full">
+<!-- Abstract Algorithm Visual -->
+<div class="absolute inset-0 flex items-center justify-center">
+<div class="w-64 h-64 border-2 border-primary/30 rounded-full flex items-center justify-center">
+<div class="w-48 h-48 border border-primary/50 rounded-full flex items-center justify-center">
+<div class="w-32 h-32 bg-primary/10 border-2 border-primary rounded-full flex items-center justify-center">
+<span class="material-icons text-primary text-5xl">insights</span>
+</div>
+</div>
+</div>
+<!-- Orbiting nodes -->
+<div class="absolute top-1/4 right-1/4 w-4 h-4 bg-primary rounded-full"></div>
+<div class="absolute bottom-1/4 left-1/4 w-4 h-4 bg-primary rounded-full"></div>
+<div class="absolute top-1/2 -right-2 w-3 h-3 bg-white rounded-full"></div>
+</div>
+<img alt="Neural network visualization" class="w-full h-full object-cover rounded-2xl opacity-40 mix-blend-overlay" data-alt="Abstract glowing neural network and data nodes" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDzUCsHFU5CgjaIGL07lwUSH_ikJId_xRIo4jkGFQPuX505T6yVUmTdHDYYWMixxWnj2qFmllc2lgEJKBT-ngQTg-KaoubuhHkVJ09qcDRwuCE_47Wg4beCCPbK55fEBtLk1qCOgVGlwE7s3w9_M_VoorvSqM67vl3P6QDfgJSFoqOBL6PGxAfkUzOOZqnT6Jam55LXrJUVT5Mj55YhHsuEFsp1Dulqn6PEIUH5gasZnwqRckvAAVg-m6qm-d7NDoezxPjabGGL_K4"/>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Scoring Methodology Breakdown -->
+<section class="max-w-7xl mx-auto px-6 mb-32">
+<div class="text-center mb-16">
+<h2 class="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-4">The Triple-Verification Engine</h2>
+<p class="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">Our scoring system processes every claim through three distinct layers of analysis to ensure a 99.4% accuracy rate in bias detection.</p>
+</div>
+<div class="grid md:grid-cols-3 gap-8">
+<!-- NLP Analysis -->
+<div class="glass p-8 rounded-2xl hover:border-primary/50 transition-all group">
+<div class="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center mb-6 group-hover:bg-primary transition-colors">
+<span class="material-icons text-primary group-hover:text-white">psychology</span>
+</div>
+<h3 class="text-xl font-bold mb-4">NLP Analysis</h3>
+<p class="text-slate-600 dark:text-slate-400 leading-relaxed mb-6">
+                        Using advanced Natural Language Processing to detect semantic drift, hyperbolic framing, and emotional manipulation tactics in text.
+                    </p>
+<ul class="space-y-3 text-sm text-slate-500 dark:text-slate-400">
+<li class="flex items-center gap-2"><span class="material-icons text-primary text-xs">check_circle</span> Sentiment Analysis</li>
+<li class="flex items-center gap-2"><span class="material-icons text-primary text-xs">check_circle</span> Logical Fallacy Detection</li>
+<li class="flex items-center gap-2"><span class="material-icons text-primary text-xs">check_circle</span> Linguistic Bias Scoring</li>
+</ul>
+</div>
+<!-- Metadata Scrutiny -->
+<div class="glass p-8 rounded-2xl hover:border-primary/50 transition-all group">
+<div class="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center mb-6 group-hover:bg-primary transition-colors">
+<span class="material-icons text-primary group-hover:text-white">fingerprint</span>
+</div>
+<h3 class="text-xl font-bold mb-4">Metadata Scrutiny</h3>
+<p class="text-slate-600 dark:text-slate-400 leading-relaxed mb-6">
+                        Every piece of content has a digital trail. We trace source origins, distribution patterns, and publisher history to determine credibility.
+                    </p>
+<ul class="space-y-3 text-sm text-slate-500 dark:text-slate-400">
+<li class="flex items-center gap-2"><span class="material-icons text-primary text-xs">check_circle</span> Source Reputation Index</li>
+<li class="flex items-center gap-2"><span class="material-icons text-primary text-xs">check_circle</span> Domain Age &amp; History</li>
+<li class="flex items-center gap-2"><span class="material-icons text-primary text-xs">check_circle</span> Distribution Bot-Detection</li>
+</ul>
+</div>
+<!-- Cross-referencing -->
+<div class="glass p-8 rounded-2xl hover:border-primary/50 transition-all group">
+<div class="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center mb-6 group-hover:bg-primary transition-colors">
+<span class="material-icons text-primary group-hover:text-white">hub</span>
+</div>
+<h3 class="text-xl font-bold mb-4">Cross-referencing</h3>
+<p class="text-slate-600 dark:text-slate-400 leading-relaxed mb-6">
+                        Real-time validation against our verified Knowledge Graph, consisting of over 500 million peer-reviewed facts and data points.
+                    </p>
+<ul class="space-y-3 text-sm text-slate-500 dark:text-slate-400">
+<li class="flex items-center gap-2"><span class="material-icons text-primary text-xs">check_circle</span> Real-time Fact Checking</li>
+<li class="flex items-center gap-2"><span class="material-icons text-primary text-xs">check_circle</span> Peer-review Verification</li>
+<li class="flex items-center gap-2"><span class="material-icons text-primary text-xs">check_circle</span> Contradiction Mapping</li>
+</ul>
+</div>
+</div>
+</section>
+<!-- Ethics Statement Section -->
+<section class="max-w-7xl mx-auto px-6 mb-32">
+<div class="bg-primary/5 rounded-[2.5rem] p-8 md:p-16 border border-primary/10 relative overflow-hidden">
+<div class="absolute top-0 right-0 w-96 h-96 bg-primary/10 blur-[100px] -mr-48 -mt-48"></div>
+<div class="relative z-10 grid lg:grid-cols-2 gap-16 items-center">
+<div>
+<h2 class="text-3xl font-bold mb-6">Neutrality First: Our Ethics Promise</h2>
+<p class="text-lg text-slate-600 dark:text-slate-400 mb-8 leading-relaxed">
+                            Our models are trained on diverse datasets to minimize algorithmic bias. We strictly adhere to privacy standards, ensuring that content analysis is performed without storing user identities or sensitive personal data.
+                        </p>
+<div class="space-y-6">
+<div class="flex gap-4">
+<div class="flex-shrink-0 w-12 h-12 rounded-full border border-primary/30 flex items-center justify-center">
+<span class="material-icons text-primary">security</span>
+</div>
+<div>
+<h4 class="font-bold mb-1">Zero Data Retention</h4>
+<p class="text-sm text-slate-500">Inputs are discarded immediately after analysis is complete.</p>
+</div>
+</div>
+<div class="flex gap-4">
+<div class="flex-shrink-0 w-12 h-12 rounded-full border border-primary/30 flex items-center justify-center">
+<span class="material-icons text-primary">balance</span>
+</div>
+<div>
+<h4 class="font-bold mb-1">Political Neutrality</h4>
+<p class="text-sm text-slate-500">Weighting systems are balanced by a multi-partisan ethics board.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="glass p-2 rounded-2xl overflow-hidden shadow-2xl">
+<img alt="Cybersecurity and ethics" class="w-full h-auto rounded-xl grayscale opacity-50 dark:opacity-80" data-alt="Abstract digital lock and shield representing data privacy" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAAT1zMlkZjwuVX-IOn42mbCQZxgU8IScsEfeOoKxml868pOxDndy--FVPCtbhJZisyxvC6RglXski39miCa_4fU_GscQJ-F-bIOJS-FELzhdTAfNYdG78DNisLk6RUtYUUpng45N4z5gK4OHY9F0CAsA5CKrrBR7tVhvm9B-NCiKB4ZXEgzsxzwpeGKjUSUAYwZWt8IkU4Hz04sVvZSz5laELjViUOB9Fk9b0JlrHJ5clvCQOFQ5JKhJ217VRfHLC3Ta50kQFLrbc"/>
+</div>
+</div>
+</div>
+</section>
+<!-- Limitations Disclaimer -->
+<section class="max-w-4xl mx-auto px-6">
+<div class="glass border-primary/30 p-10 rounded-[2rem] relative overflow-hidden">
+<div class="flex flex-col md:flex-row gap-8 items-start">
+<div class="bg-primary/20 p-4 rounded-2xl">
+<span class="material-icons text-primary text-4xl">warning_amber</span>
+</div>
+<div>
+<h3 class="text-2xl font-bold mb-4 text-slate-900 dark:text-white">Known Limitations &amp; Edge Cases</h3>
+<p class="text-slate-600 dark:text-slate-400 leading-relaxed mb-6">
+                            While our AI is industry-leading, users should be aware of technical boundaries. TruthLens is an interpretive tool meant to assist human judgment, not replace it.
+                        </p>
+<div class="grid sm:grid-cols-2 gap-4">
+<div class="p-4 rounded-xl bg-white/5 border border-white/5 text-sm text-slate-500">
+<strong class="text-slate-900 dark:text-white block mb-1 italic">Satire Detection</strong>
+                                Subtle satire or sarcasm can occasionally be flagged as factual inaccuracy.
+                            </div>
+<div class="p-4 rounded-xl bg-white/5 border border-white/5 text-sm text-slate-500">
+<strong class="text-slate-900 dark:text-white block mb-1 italic">Breaking News</strong>
+                                Events occurring in the last 15 minutes may lack sufficient cross-reference data.
+                            </div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="border-t border-white/10 py-12 bg-background-light dark:bg-background-dark/50">
+<div class="max-w-7xl mx-auto px-6">
+<div class="flex flex-col md:flex-row justify-between items-center gap-8">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 bg-primary rounded flex items-center justify-center">
+<span class="material-icons text-white text-sm">lens</span>
+</div>
+<span class="font-bold tracking-tight">TruthLens</span>
+</div>
+<div class="flex gap-8 text-sm text-slate-500">
+<a class="hover:text-primary" href="#">Privacy Policy</a>
+<a class="hover:text-primary" href="#">Terms of Service</a>
+<a class="hover:text-primary" href="#">Contact Support</a>
+<a class="hover:text-primary" href="#">Cookie Settings</a>
+</div>
+<div class="flex gap-4">
+<a class="w-10 h-10 rounded-full glass flex items-center justify-center hover:bg-primary transition-colors" href="#">
+<img alt="Twitter" class="w-5 h-5 opacity-70" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBOlCUNt7c3E-h7X5QOyYmmb4fRm3EF8XH39yjheYKzUjilGL65V5v_LYZI9qS98TT9ELvR-2bgzg3NAAHnImzItTwhR7D_SO6wIqo3dl-L5HO8hL556gT0o2HvXzedHtPj2mtvJjoep_n5UzHo7ZFytgN_xpxOkmULmzSK8FPAUWEquD9VpKmJTv0SO-sH4Iwv35jwdrFEMPInxym1TgF6IWmer04M5Ik--70dDDb6KYUXBK7zcXTeOavywCSHwXuRQhwc5raePSA"/>
+</a>
+<a class="w-10 h-10 rounded-full glass flex items-center justify-center hover:bg-primary transition-colors" href="#">
+<img alt="Github" class="w-5 h-5 opacity-70" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCvtH52v4GzhPyprScaeadhbQAwJ6onEzVv5lXSqjwg_GZoNSAxNZXmqOd_ribb-csNPCt7KVXM3W-0G7uYVudwnWPGA2dsFpL0SbVAp2oyiMxfS8vNg_6UZgQtExpk-tfBIPTNkMn8GrU1CfZVY7vXEWybUtPFLS_oZmrifGgm1BOiKuHEJ7-MGAS6qJEXc302Bj1mbFMZZNAoEi8Pvoka3vhBY0fWYUb-aCzDvNxcdXCyvjPSs4d4pO9EAteGF2rDRXp_HHIjYbk"/>
+</a>
+</div>
+</div>
+<p class="text-center mt-12 text-slate-500 text-xs">
+                © 2024 TruthLens AI Systems. All analytical results are probabilistic.
+            </p>
+</div>
+</footer>
+</body></html>

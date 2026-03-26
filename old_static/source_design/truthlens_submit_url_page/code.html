@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TruthLens - Premium Misinformation Analysis</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Outfit:wght@400;600;700&amp;family=JetBrains+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#818cf8",
+                        accent: "#c084fc",
+                        "dark-bg": "#050505",
+                        "card-bg": "#0d0d0d",
+                    },
+                    fontFamily: {
+                        sans: ["Inter", "sans-serif"],
+                        display: ["Outfit", "sans-serif"],
+                        mono: ["JetBrains Mono", "monospace"],
+                    },
+                },
+            },
+        };
+    </script>
+<style type="text/tailwindcss">
+        @layer base {
+            body {
+                @apply bg-dark-bg text-slate-100 antialiased selection:bg-primary/30;
+            }
+        }
+        .tech-grid {
+            background-image: 
+                linear-gradient(to right, rgba(255,255,255,0.02) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+        .glow-border {
+            box-shadow: 0 0 15px rgba(129, 140, 248, 0.1), inset 0 0 1px rgba(255, 255, 255, 0.1);
+        }
+        .glass-input {
+            background: rgba(13, 13, 13, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-input:focus-within {
+            border-color: rgba(129, 140, 248, 0.5);
+            box-shadow: 0 0 30px rgba(129, 140, 248, 0.15);
+        }
+        .metadata-glow {
+            filter: drop-shadow(0 0 20px rgba(129, 140, 248, 0.1));
+        }
+        .scan-line {
+            background: linear-gradient(to bottom, transparent, rgba(129, 140, 248, 0.2), transparent);
+            height: 100px;
+            width: 100%;
+            position: absolute;
+            top: -100px;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="dark overflow-x-hidden">
+<div class="fixed inset-0 tech-grid pointer-events-none"></div>
+<div class="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[500px] bg-primary/5 blur-[120px] rounded-full pointer-events-none"></div>
+<nav class="fixed top-0 w-full z-50 px-6 py-5 border-b border-white/5 bg-dark-bg/80 backdrop-blur-xl">
+<div class="max-w-7xl mx-auto flex items-center justify-between">
+<div class="flex items-center gap-3 group cursor-pointer">
+<div class="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center border border-primary/30 group-hover:border-primary/60 transition-colors">
+<span class="material-symbols-outlined text-primary text-2xl">lens_blur</span>
+</div>
+<span class="font-display font-bold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">TruthLens</span>
+</div>
+<div class="hidden lg:flex items-center gap-10">
+<a class="text-sm font-medium text-slate-400 hover:text-white transition-colors" href="#">Analyzer</a>
+<a class="text-sm font-medium text-slate-400 hover:text-white transition-colors" href="#">Education Hub</a>
+<a class="text-sm font-medium text-slate-400 hover:text-white transition-colors" href="#">Case Studies</a>
+<a class="text-sm font-medium text-slate-400 hover:text-white transition-colors" href="#">Global Metrics</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="px-6 py-2.5 rounded-full text-sm font-semibold border border-white/10 hover:bg-white/5 transition-all">
+                    Member Access
+                </button>
+</div>
+</div>
+</nav>
+<main class="relative pt-40 pb-24 px-6 min-h-screen flex flex-col items-center">
+<div class="max-w-4xl w-full text-center space-y-8 mb-16">
+<div class="inline-flex items-center gap-3 px-4 py-1.5 bg-primary/5 border border-primary/20 text-primary rounded-full text-[10px] font-bold uppercase tracking-[0.2em]">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+</span>
+                Neural Processing Active
+            </div>
+<h1 class="font-display text-5xl md:text-7xl font-bold tracking-tight leading-[1.05]">
+                Verify the Digital <br/>
+<span class="bg-clip-text text-transparent bg-gradient-to-b from-primary via-accent to-indigo-300">Information Stream</span>
+</h1>
+<p class="text-slate-400 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed font-light">
+                Advanced cross-referencing and bias detection. Paste a URL to begin the high-fidelity credibility assessment.
+            </p>
+</div>
+<div class="max-w-4xl w-full space-y-10">
+<div class="relative group">
+<div class="absolute -inset-2 bg-gradient-to-r from-primary/20 to-accent/20 rounded-3xl blur-2xl opacity-0 group-focus-within:opacity-100 transition duration-1000"></div>
+<div class="relative glass-input p-2 rounded-[2rem] shadow-2xl">
+<div class="flex flex-col md:flex-row gap-2">
+<div class="flex-grow relative flex items-center">
+<span class="material-symbols-outlined absolute left-6 text-slate-500">link</span>
+<input class="w-full pl-16 pr-6 py-5 bg-transparent border-none focus:ring-0 text-white placeholder:text-slate-600 font-display text-lg tracking-wide" id="urlInput" placeholder="Enter article source URL..." type="url"/>
+</div>
+<button class="bg-primary hover:bg-primary/90 text-dark-bg px-10 py-5 rounded-2xl font-bold flex items-center justify-center gap-3 shadow-lg transition-all active:scale-[0.98] disabled:opacity-50 group/btn" id="analyzeBtn" onclick="startAnalysis()">
+<span class="text-sm uppercase tracking-widest">Init Analysis</span>
+<span class="material-symbols-outlined text-xl transition-transform group-hover/btn:translate-x-1">cognition</span>
+</button>
+</div>
+<div class="absolute -bottom-8 left-6 flex items-center gap-2 text-[11px] font-mono uppercase tracking-widest text-slate-500 transition-opacity opacity-0" id="validationMsg">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+<span class="text-emerald-500/80">Protocol Validated: URL format recognized</span>
+</div>
+</div>
+</div>
+<div class="hidden opacity-0 transform translate-y-4 transition-all duration-700 ease-out" id="previewCard">
+<div class="relative group/card overflow-hidden rounded-3xl border border-white/10 bg-card-bg/50 backdrop-blur-md metadata-glow">
+<div class="flex flex-col md:flex-row">
+<div class="md:w-2/5 h-56 md:h-auto overflow-hidden relative">
+<img alt="Article Preview" class="w-full h-full object-cover grayscale-[40%] group-hover/card:grayscale-0 transition-all duration-700 group-hover/card:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA4Awx0WrY8byLSlPNShUzLvPQNPDsckXU8yIQPCXiKEft_Ss7vtq9kGfAwYa5FljRRUd9-bXcmZ8UhZ0HYdkWaAeFNXk7SznwNJSpiWaHcTaea9fxxKePtl2mpvXyBhI2H2LMxN-LIr9C8sPa8VIfsNTi8bedMb8MaTCNFKpk7d5D8hVuCFLkKA2AMLIykpgVHQpGnpMESzDi74MveAt1WShfr5IZI1yHDaaZgswgB4WvHUDSQkDyr36OTM6aHkD4LrNINyeHPKe4"/>
+<div class="absolute inset-0 bg-gradient-to-r from-card-bg via-transparent to-transparent"></div>
+</div>
+<div class="p-8 md:w-3/5 flex flex-col justify-between relative">
+<div>
+<div class="flex items-center gap-3 mb-4">
+<span class="px-3 py-1 rounded-md bg-white/5 border border-white/10 text-[10px] font-mono font-bold uppercase text-primary tracking-tighter">Source Detected</span>
+<span class="text-slate-600 font-mono text-[10px]">// 0.42ms latency</span>
+</div>
+<h3 class="text-2xl font-display font-semibold text-white mb-4 leading-tight group-hover/card:text-primary transition-colors">
+                                    Major Scientific Breakthrough Announced in Renewable Energy Storage Efficiency
+                                </h3>
+<p class="text-slate-400 text-sm leading-relaxed font-light">
+                                    New research points to a massive leap in solid-state battery density, potentially redefining the grid-scale storage landscape for the next decade.
+                                </p>
+</div>
+<div class="mt-8 pt-6 border-t border-white/5 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full border border-white/10 p-0.5">
+<div class="w-full h-full rounded-full bg-slate-800 flex items-center justify-center">
+<span class="material-symbols-outlined text-slate-400 text-sm">fingerprint</span>
+</div>
+</div>
+<div>
+<p class="text-[10px] uppercase tracking-widest text-slate-500 font-bold">Author Identity</p>
+<p class="text-xs text-slate-200">Elena Richardson</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-[10px] uppercase tracking-widest text-slate-500 font-bold">Timestamp</p>
+<p class="text-xs text-slate-400">2024.10.24</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="hidden flex flex-col items-center py-20 space-y-6" id="loadingState">
+<div class="relative">
+<div class="w-20 h-20 border-2 border-primary/10 border-t-primary rounded-full animate-spin"></div>
+<div class="absolute inset-0 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary animate-pulse">radar</span>
+</div>
+</div>
+<div class="text-center space-y-2">
+<p class="font-mono text-sm tracking-[0.3em] text-primary uppercase animate-pulse">Scanning Content</p>
+<p class="text-xs text-slate-500 max-w-xs mx-auto">Retrieving cross-reference data from distributed nodes...</p>
+</div>
+</div>
+</div>
+<div class="max-w-5xl w-full mt-24">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<div class="group p-8 rounded-3xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] transition-all cursor-pointer border-t-primary/20">
+<div class="w-12 h-12 bg-primary/10 text-primary rounded-xl flex items-center justify-center mb-6 border border-primary/20 group-hover:scale-110 group-hover:bg-primary/20 transition-all">
+<span class="material-symbols-outlined">menu_book</span>
+</div>
+<h4 class="font-display font-bold text-xl mb-3">Education Hub</h4>
+<p class="text-sm text-slate-400 leading-relaxed">Master the methodologies used by bad actors to manipulate public perception.</p>
+</div>
+<div class="group p-8 rounded-3xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] transition-all cursor-pointer border-t-accent/20">
+<div class="w-12 h-12 bg-accent/10 text-accent rounded-xl flex items-center justify-center mb-6 border border-accent/20 group-hover:scale-110 group-hover:bg-accent/20 transition-all">
+<span class="material-symbols-outlined">database</span>
+</div>
+<h4 class="font-display font-bold text-xl mb-3">Bias Database</h4>
+<p class="text-sm text-slate-400 leading-relaxed">Access historical bias ratings for over 4,500 global news publications.</p>
+</div>
+<div class="group p-8 rounded-3xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] transition-all cursor-pointer border-t-indigo-500/20">
+<div class="w-12 h-12 bg-indigo-500/10 text-indigo-400 rounded-xl flex items-center justify-center mb-6 border border-indigo-500/20 group-hover:scale-110 group-hover:bg-indigo-500/20 transition-all">
+<span class="material-symbols-outlined">history_toggle_off</span>
+</div>
+<h4 class="font-display font-bold text-xl mb-3">Analysis Log</h4>
+<p class="text-sm text-slate-400 leading-relaxed">Secure history of your past URL verifications and trend comparisons.</p>
+</div>
+</div>
+</div>
+</main>
+<footer class="py-12 border-t border-white/5 bg-dark-bg/50 relative overflow-hidden">
+<div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8 relative z-10">
+<div class="flex items-center gap-2 opacity-60">
+<span class="material-symbols-outlined text-primary text-sm">shield_with_heart</span>
+<p class="text-slate-500 text-xs font-mono uppercase tracking-widest">TruthLens Integrity Engine © 2024</p>
+</div>
+<div class="flex gap-10">
+<a class="text-slate-500 hover:text-primary transition-colors text-xs font-mono uppercase" href="#">Protocol</a>
+<a class="text-slate-500 hover:text-primary transition-colors text-xs font-mono uppercase" href="#">Transparency</a>
+<a class="text-slate-500 hover:text-primary transition-colors text-xs font-mono uppercase" href="#">API Access</a>
+</div>
+</div>
+</footer>
+<script>
+        const urlInput = document.getElementById('urlInput');
+        const validationMsg = document.getElementById('validationMsg');
+        const previewCard = document.getElementById('previewCard');
+        const analyzeBtn = document.getElementById('analyzeBtn');
+        const loadingState = document.getElementById('loadingState');
+        urlInput.addEventListener('input', (e) => {
+            const val = e.target.value;
+            if (val.length > 5 && val.startsWith('http')) {
+                validationMsg.classList.remove('opacity-0');
+                previewCard.classList.remove('hidden');
+                setTimeout(() => {
+                    previewCard.classList.remove('opacity-0', 'translate-y-4');
+                }, 50);
+            } else {
+                validationMsg.classList.add('opacity-0');
+                previewCard.classList.add('opacity-0', 'translate-y-4');
+                setTimeout(() => {
+                    if (previewCard.classList.contains('opacity-0')) {
+                        previewCard.classList.add('hidden');
+                    }
+                }, 700);
+            }
+        });
+        function startAnalysis() {
+            if (!urlInput.value) return;
+            analyzeBtn.disabled = true;
+            analyzeBtn.innerHTML = `
+                <span class="w-4 h-4 border-2 border-dark-bg/30 border-t-dark-bg rounded-full animate-spin"></span>
+                <span class="text-sm uppercase tracking-widest">Processing</span>
+            `;
+            previewCard.classList.add('opacity-30', 'scale-[0.98]');
+            loadingState.classList.remove('hidden');
+            // Interaction Simulation
+            setTimeout(() => {
+                alert("Analysis Module Complete. Results ready.");
+                location.reload(); 
+            }, 3000);
+        }
+    </script>
+
+</body></html>

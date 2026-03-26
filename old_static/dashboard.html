@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>TruthLens - User Dashboard &amp; History</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1313ec",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101022",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        .glass {
+            background: rgba(19, 19, 236, 0.05);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .grid-bg {
+            background-image: radial-gradient(rgba(19, 19, 236, 0.1) 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+
+        .glow-hover:hover {
+            box-shadow: 0 0 15px rgba(19, 19, 236, 0.4);
+        }
+    </style>
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark font-display text-slate-800 dark:text-slate-100 min-h-screen grid-bg">
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <aside
+            class="w-64 border-r border-slate-200 dark:border-slate-800 flex flex-col fixed h-full bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md">
+            <a href="index.html" class="flex items-center gap-3">
+                <div class="w-8 h-8 bg-primary rounded flex items-center justify-center">
+                    <span class="material-icons text-white text-lg">fact_check</span>
+                </div>
+                <h1 class="font-bold text-xl tracking-tight">TruthLens</h1>
+            </a>
+            <nav class="flex-1 px-4 py-4 space-y-2">
+                <a class="flex items-center gap-3 px-4 py-3 bg-primary/10 text-primary rounded-lg font-medium transition-colors"
+                    href="dashboard.html">
+                    <span class="material-icons">dashboard</span>
+                    Dashboard
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-primary hover:bg-primary/5 rounded-lg font-medium transition-all group"
+                    href="dashboard.html">
+                    <span class="material-icons">history</span>
+                    History
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-primary hover:bg-primary/5 rounded-lg font-medium transition-all group"
+                    href="index.html">
+                    <span class="material-icons">notifications</span>
+                    Notifications
+                    <span class="ml-auto w-2 h-2 bg-primary rounded-full"></span>
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-primary hover:bg-primary/5 rounded-lg font-medium transition-all group"
+                    href="sources.html">
+                    <span class="material-icons">insights</span>
+                    Sources
+                </a>
+                <div class="pt-4 mt-4 border-t border-slate-200 dark:border-slate-800">
+                    <a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-primary hover:bg-primary/5 rounded-lg font-medium transition-all group"
+                        href="methodology.html">
+                        <span class="material-icons">settings</span>
+                        Settings
+                    </a>
+                </div>
+            </nav>
+            <div class="p-6">
+                <a href="submit.html"
+                    class="w-full bg-primary hover:bg-primary/90 text-white py-3 rounded-lg font-semibold flex items-center justify-center gap-2 glow-hover transition-all">
+                    <span class="material-icons text-sm">add</span>
+                    New Analysis
+                </a>
+            </div>
+        </aside>
+        <!-- Main Content -->
+        <main class="flex-1 ml-64 p-8 max-w-7xl">
+            <!-- Header Section -->
+            <div class="flex justify-between items-end mb-8">
+                <div>
+                    <h2 class="text-3xl font-bold tracking-tight mb-2">User Dashboard</h2>
+                    <p class="text-slate-500 dark:text-slate-400">Welcome back, monitoring global truth metrics.</p>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="text-right">
+                        <div class="text-xs font-bold uppercase tracking-widest text-slate-400">Last Synced</div>
+                        <div class="text-sm font-medium">2 mins ago</div>
+                    </div>
+                    <img alt="User Avatar" class="w-12 h-12 rounded-full border-2 border-primary object-cover"
+                        data-alt="Close up portrait of a professional man"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuC99S2byNQVlBnfQkEPB4lYOGoqIDlat-RNv5KkSctd_JghDtfhgT_0Yn7YFozj9bTvYlI3snD6roiW8PLd-7eO8Tp3KLEBv2VNb7aavx7dbN8PXT5jfjATDvmYPbEwu7xYGQ_P11ogO8MW4JZSYwXrfvdde_ee3YX4HiB86jgkHB6CzxtA4dHOGo5-05AiUPcM4N-8719X0klSIaFSsjtxe7IicEmdmX02ki8j-rtY_ky5r7JfYqxKdGQCvplXO737jQ9b8HY918Q" />
+                </div>
+            </div>
+            <!-- Profile Glass Card -->
+            <section class="glass rounded-xl p-8 mb-10 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-64 h-64 bg-primary/10 blur-[100px] rounded-full -mr-20 -mt-20">
+                </div>
+                <div class="flex flex-col md:flex-row md:items-center gap-8 relative z-10">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-3 mb-4">
+                            <h3 class="text-2xl font-bold">Alex Rivera</h3>
+                            <span
+                                class="bg-primary/20 text-primary text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full border border-primary/30">
+                                Elite Fact-Checker
+                            </span>
+                        </div>
+                        <div class="grid grid-cols-2 lg:grid-cols-4 gap-6">
+                            <div>
+                                <div class="text-slate-400 text-xs font-semibold uppercase mb-1">Reputation</div>
+                                <div class="text-2xl font-bold text-primary">12,450 pts</div>
+                            </div>
+                            <div>
+                                <div class="text-slate-400 text-xs font-semibold uppercase mb-1">Submissions</div>
+                                <div class="text-2xl font-bold">158</div>
+                            </div>
+                            <div>
+                                <div class="text-slate-400 text-xs font-semibold uppercase mb-1">Global Rank</div>
+                                <div class="text-2xl font-bold">#42</div>
+                            </div>
+                            <div>
+                                <div class="text-slate-400 text-xs font-semibold uppercase mb-1">Member Since</div>
+                                <div class="text-2xl font-bold">Oct 2023</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        class="w-full md:w-48 flex flex-col items-center justify-center p-6 bg-background-light dark:bg-background-dark/50 rounded-xl border border-slate-200 dark:border-slate-800">
+                        <div class="relative w-24 h-24 flex items-center justify-center mb-3">
+                            <svg class="w-full h-full transform -rotate-90">
+                                <circle class="text-slate-200 dark:text-slate-800" cx="48" cy="48" fill="transparent"
+                                    r="42" stroke="currentColor" stroke-width="6"></circle>
+                                <circle class="text-primary" cx="48" cy="48" fill="transparent" r="42"
+                                    stroke="currentColor" stroke-dasharray="263.8" stroke-dashoffset="13.2"
+                                    stroke-width="6"></circle>
+                            </svg>
+                            <span class="absolute text-xl font-bold">95%</span>
+                        </div>
+                        <div class="text-xs font-bold text-slate-400 uppercase">Accuracy Score</div>
+                    </div>
+                </div>
+            </section>
+            <!-- History Section -->
+            <section>
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-xl font-bold">Submission History</h3>
+                    <div class="flex gap-4">
+                        <div class="relative">
+                            <span class="material-icons absolute left-3 top-2.5 text-slate-400 text-sm">search</span>
+                            <input
+                                class="bg-background-light dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-sm rounded-lg pl-10 pr-4 py-2 focus:ring-primary focus:border-primary w-64"
+                                placeholder="Search URLs..." type="text" />
+                        </div>
+                        <button
+                            class="flex items-center gap-2 px-4 py-2 border border-slate-200 dark:border-slate-800 rounded-lg text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                            <span class="material-icons text-sm">filter_list</span>
+                            Filter
+                        </button>
+                    </div>
+                </div>
+                <div class="space-y-4">
+                    <!-- History Item 1 -->
+                    <div
+                        class="group flex items-center gap-6 p-4 bg-background-light dark:bg-background-dark/30 border border-slate-200 dark:border-slate-800 rounded-xl hover:border-primary/50 transition-all hover:bg-primary/[0.02]">
+                        <div
+                            class="w-24 h-16 rounded overflow-hidden flex-shrink-0 bg-slate-200 dark:bg-slate-800 relative">
+                            <img alt="Article Thumbnail" class="w-full h-full object-cover opacity-60"
+                                data-alt="Blurred news headline text background"
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBI7TbBnazE_qEx7s4i81NMqSIrjo-JF7i2yfBlOZOlhhI9PFonfJ7wohTzBVcJarVXPnDasaAp2yDzp2pVXnS1WKYNdFvBEzfhYxQm6wOoS3_LV4_a4eLhSKWpS-FqrYBJqUNRI2bWrPaIrzWU5K66KW_BdXujXlLXQcyjWz5zHEhHBn8M5XAdnqDUa2GZflzAUw6T-AAKQ1Us1lhPR3BNeQi38pdo0YR6WrMVbMgRcilG1Z2KWKS31-NoBbBVE97WI6dymS5dmkc" />
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div
+                                class="flex items-center gap-2 text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">
+                                <span>Global News Network</span>
+                                <span>•</span>
+                                <span>2 hours ago</span>
+                            </div>
+                            <h4 class="text-lg font-semibold truncate group-hover:text-primary transition-colors">The
+                                Impact of AI on Modern Truth Verification Systems</h4>
+                        </div>
+                        <div class="flex items-center gap-8">
+                            <div class="text-center">
+                                <div class="text-[10px] font-bold text-slate-400 uppercase mb-1">Trust Score</div>
+                                <div class="text-lg font-bold text-green-500">98/100</div>
+                            </div>
+                            <div
+                                class="px-3 py-1 rounded bg-green-500/10 text-green-500 text-xs font-bold border border-green-500/20">
+                                VERIFIED
+                            </div>
+                            <div class="flex gap-2">
+                                <a href="report.html"
+                                    class="p-2 text-slate-400 hover:text-primary hover:bg-primary/10 rounded transition-all"
+                                    title="View Report">
+                                    <span class="material-icons">visibility</span>
+                                </a>
+                                <button
+                                    class="p-2 text-slate-400 hover:text-red-500 hover:bg-red-500/10 rounded transition-all"
+                                    title="Delete">
+                                    <span class="material-icons">delete_outline</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- History Item 2 -->
+                    <div
+                        class="group flex items-center gap-6 p-4 bg-background-light dark:bg-background-dark/30 border border-slate-200 dark:border-slate-800 rounded-xl hover:border-primary/50 transition-all hover:bg-primary/[0.02]">
+                        <div
+                            class="w-24 h-16 rounded overflow-hidden flex-shrink-0 bg-slate-200 dark:bg-slate-800 relative">
+                            <img alt="Article Thumbnail" class="w-full h-full object-cover opacity-60"
+                                data-alt="Social media post interface screenshot"
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCQ2l6aocIT3x9QRJnwvF1rWYP-_K0gmQCsje3SGSDcOmVJblyNYYG56rIVI876WJA1EDRA8ml8CQ5R-I3Sscg3R287chgqlxZT-cZRk_0rgbqmFZf3fkscoWUmbZvSdd9YQHy8P6qiZqhhe5C63thkWn3zkCl3MdKPvflCQGR5kdKtNmUdg7bi8J0HmeOFY7eUT33ilhEIGXgd56TBFxpathCDXbMOm-_HnwU9Uo18Awz4d4ynNQY3Al0vS2cYk6Ft_LDP-KOUkJ8" />
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div
+                                class="flex items-center gap-2 text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">
+                                <span>Social Feed Tracker</span>
+                                <span>•</span>
+                                <span>Yesterday</span>
+                            </div>
+                            <h4 class="text-lg font-semibold truncate group-hover:text-primary transition-colors">
+                                Unverified Reports of Market Volatility in Tech Sector</h4>
+                        </div>
+                        <div class="flex items-center gap-8">
+                            <div class="text-center">
+                                <div class="text-[10px] font-bold text-slate-400 uppercase mb-1">Trust Score</div>
+                                <div class="text-lg font-bold text-red-500">14/100</div>
+                            </div>
+                            <div
+                                class="px-3 py-1 rounded bg-red-500/10 text-red-500 text-xs font-bold border border-red-500/20">
+                                FLAGGED
+                            </div>
+                            <div class="flex gap-2">
+                                <button
+                                    class="p-2 text-slate-400 hover:text-primary hover:bg-primary/10 rounded transition-all">
+                                    <span class="material-icons">visibility</span>
+                                </button>
+                                <button
+                                    class="p-2 text-slate-400 hover:text-red-500 hover:bg-red-500/10 rounded transition-all">
+                                    <span class="material-icons">delete_outline</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- History Item 3 -->
+                    <div
+                        class="group flex items-center gap-6 p-4 bg-background-light dark:bg-background-dark/30 border border-slate-200 dark:border-slate-800 rounded-xl hover:border-primary/50 transition-all hover:bg-primary/[0.02]">
+                        <div
+                            class="w-24 h-16 rounded overflow-hidden flex-shrink-0 bg-slate-200 dark:bg-slate-800 relative">
+                            <img alt="Article Thumbnail" class="w-full h-full object-cover opacity-60"
+                                data-alt="Digital abstract blue data visual"
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCFRk6Ccce0vFokgGVfxoMQe3gvVXMqyzOcZV8ATXKKMtWk1-Vadcd2YhtYaB7dmU5m-pgl5pvoI3WVVOylwcAum1kKyNjCFrN1SYU3BQbmj4E7ixDly3PNZW9vFSaVkiRkCpQBi1sUBPIHIxP3yzS-dNzHzxPCL6iCHX7XSDrxuyySTT_5wT-AFWXfjNmd4Rt0zVBQe0tNFlZJ97KhbufZrqrPYSrr1Xe0kJneUFio-HaDBHJZG12kpQABd31VTRtnKl8IEon2T-8" />
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div
+                                class="flex items-center gap-2 text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">
+                                <span>Science Weekly</span>
+                                <span>•</span>
+                                <span>3 days ago</span>
+                            </div>
+                            <h4 class="text-lg font-semibold truncate group-hover:text-primary transition-colors">New
+                                Quantum Computing Milestone Achieved by Lab Consortium</h4>
+                        </div>
+                        <div class="flex items-center gap-8">
+                            <div class="text-center">
+                                <div class="text-[10px] font-bold text-slate-400 uppercase mb-1">Trust Score</div>
+                                <div class="text-lg font-bold text-blue-500">76/100</div>
+                            </div>
+                            <div
+                                class="px-3 py-1 rounded bg-blue-500/10 text-blue-500 text-xs font-bold border border-blue-500/20">
+                                RELIABLE
+                            </div>
+                            <div class="flex gap-2">
+                                <button
+                                    class="p-2 text-slate-400 hover:text-primary hover:bg-primary/10 rounded transition-all">
+                                    <span class="material-icons">visibility</span>
+                                </button>
+                                <button
+                                    class="p-2 text-slate-400 hover:text-red-500 hover:bg-red-500/10 rounded transition-all">
+                                    <span class="material-icons">delete_outline</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Load More -->
+                <div class="mt-8 flex justify-center">
+                    <button
+                        class="px-8 py-3 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg text-sm font-semibold transition-all">
+                        Load More History
+                    </button>
+                </div>
+            </section>
+        </main>
+    </div>
+    <!-- Map Component Placeholder (for requirements) -->
+    <div class="hidden" data-location="San Francisco" style=""></div>
+</body>
+
+</html>
