@@ -260,6 +260,10 @@ Example: &quot;Scientists discover water on Mars in 2024&quot;"
                                                 <span className="material-symbols-outlined text-sm">refresh</span>
                                                 New Check
                                             </button>
+                                            <Link href={`/analyze`} className="text-purple-500 hover:text-purple-400 text-xs font-bold uppercase tracking-widest flex items-center gap-2">
+                                                <span className="material-symbols-outlined text-sm">neurology</span>
+                                                AI Deep Analysis
+                                            </Link>
                                             <Link href={`/report?id=${analysisResult.id}`} className="text-blue-500 hover:text-blue-400 text-xs font-bold uppercase tracking-widest flex items-center gap-2">
                                                 Full Report
                                                 <span className="material-symbols-outlined text-sm">arrow_forward</span>

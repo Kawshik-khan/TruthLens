@@ -32,14 +32,21 @@ export async function POST(req: Request) {
         // Trigger verification using the claim text
         const verification = await verifyNews(content, submissionTitle);
 
+        // Postgres strictly rejects null bytes (\u0000) inside of TEXT fields. 
+        // We must sanitize user content and API JSON strings before saving.
+        const sanitize = (str: string) => str ? str.replace(/\0/g, '') : '';
+        const cleanContent = sanitize(content);
+        const cleanTitle = sanitize(submissionTitle);
+        const cleanCitations = sanitize(JSON.stringify(verification.citations));
+
         const submission = await db.submission.create({
             data: {
-                content,
+                content: cleanContent,
                 url: url || null,
-                title: submissionTitle,
+                title: cleanTitle,
                 trustScore: verification.accuracy,
                 status: verification.status,
-                citations: JSON.stringify(verification.citations),
+                citations: cleanCitations,
                 userId,
             },
         });

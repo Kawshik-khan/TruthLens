@@ -18,6 +18,7 @@ interface NavbarProps {
 export default function Navbar({ links, cta }: NavbarProps) {
     const defaultLinks = [
         { name: "Analyzer", href: "/submit" },
+        { name: "AI Analyze", href: "/analyze" },
         { name: "Sources", href: "/sources" },
         { name: "Education", href: "/learn" },
         { name: "Methodology", href: "/methodology" },

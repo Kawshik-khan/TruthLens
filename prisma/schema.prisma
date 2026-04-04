@@ -6,33 +6,58 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model User {
-  id            String       @id @default(cuid())
+  id            String         @id @default(cuid())
   name          String
-  email         String       @unique
+  email         String         @unique
   password      String
-  role          String       @default("STUDENT") // STUDENT, EDUCATOR, RESEARCHER, ADMIN
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
+  role          String         @default("STUDENT") // STUDENT, EDUCATOR, RESEARCHER, ADMIN
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
   submissions   Submission[]
+  chatMessages  ChatMessage[]
 }
 
 model Submission {
-  id          String   @id @default(cuid())
+  id          String       @id @default(cuid())
   title       String
-  content     String?  // The raw text claim submitted by the user
-  url         String?  // Optional URL if provided
+  content     String?      // The raw text claim submitted by the user
+  url         String?      // Optional URL if provided
   trustScore  Int
-  status      String   // VERIFIED, FLAGGED, RELIABLE, FAKE
-  citations   String?  // JSON string of matching URLs
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  status      String       // VERIFIED, FLAGGED, RELIABLE, FAKE
+  citations   String?      // JSON string of matching URLs
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
   userId      String
-  user        User     @relation(fields: [userId], references: [id])
+  user        User         @relation(fields: [userId], references: [id])
+  aiAnalyses  AIAnalysis[]
+}
+
+model AIAnalysis {
+  id             String     @id @default(cuid())
+  submissionId   String
+  submission     Submission @relation(fields: [submissionId], references: [id])
+  type           String     // FAKE_NEWS, SENTIMENT, SUMMARY, CLAIMS
+  result         String     // JSON string of AI result
+  confidence     Float
+  modelUsed      String
+  processingTime Int        // milliseconds
+  createdAt      DateTime   @default(now())
+}
+
+model ChatMessage {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  role      String   // USER, ASSISTANT
+  content   String
+  context   String?  // JSON: related submission/analysis IDs
+  createdAt DateTime @default(now())
 }
 
 model Source {

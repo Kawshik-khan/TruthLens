@@ -6,10 +6,60 @@ export interface VerificationResult {
 }
 
 /**
- * Step 1: Search Google News RSS for real articles related to the claim.
- * This is FREE and requires no API key.
+ * Step 1: Search the web for sources related to the claim.
+ * Uses Serper API (entire internet) if SERPER_API_KEY is available in .env.
+ * Falls back to Google News RSS (free, news-only) if no API key is set.
  */
-async function searchGoogleNews(query: string): Promise<{ title: string; url: string; source: string }[]> {
+async function searchWeb(query: string): Promise<{ title: string; url: string; source: string; snippet?: string }[]> {
+    const serperKey = process.env.SERPER_API_KEY;
+
+    if (serperKey && serperKey.trim() !== "") {
+        console.log("Using Serper API for full internet search...");
+        try {
+            const response = await fetch("https://google.serper.dev/search", {
+                method: "POST",
+                headers: {
+                    "X-API-KEY": serperKey,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    q: query.slice(0, 300),
+                    gl: "us",
+                    hl: "en",
+                    num: 8 // Get top 8 results
+                })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                const items: { title: string; url: string; source: string; snippet?: string }[] = [];
+                
+                if (data.organic && Array.isArray(data.organic)) {
+                    for (const result of data.organic) {
+                        try {
+                            const hostname = new URL(result.link).hostname.replace("www.", "");
+                            items.push({
+                                title: result.title,
+                                url: result.link,
+                                source: hostname,
+                                snippet: result.snippet
+                            });
+                        } catch {
+                            // Invalid URL, skip
+                        }
+                    }
+                    return items;
+                }
+            } else {
+                console.warn("Serper API returned:", response.status, "Falling back to Google News.");
+            }
+        } catch (error) {
+            console.error("Serper API error:", error, "Falling back to Google News.");
+        }
+    }
+
+    // Fallback: Google News RSS
+    console.log("Using Google News RSS fallback...");
     try {
         const encodedQuery = encodeURIComponent(query.slice(0, 150));
         const rssUrl = `https://news.google.com/rss/search?q=${encodedQuery}&hl=en&gl=US&ceid=US:en`;
@@ -24,15 +74,12 @@ async function searchGoogleNews(query: string): Promise<{ title: string; url: st
         }
 
         const xml = await response.text();
-
-        // Parse RSS XML to extract articles
         const items: { title: string; url: string; source: string }[] = [];
         const itemRegex = /<item>([\s\S]*?)<\/item>/g;
         let match;
 
         while ((match = itemRegex.exec(xml)) !== null && items.length < 8) {
             const itemXml = match[1];
-
             const titleMatch = itemXml.match(/<title><!\[CDATA\[(.*?)\]\]>|<title>(.*?)<\/title>/);
             const linkMatch = itemXml.match(/<link>(.*?)<\/link>|<link><!\[CDATA\[(.*?)\]\]>/);
             const sourceMatch = itemXml.match(/<source[^>]*>(.*?)<\/source>|<source[^>]*><!\[CDATA\[(.*?)\]\]><\/source>/);
@@ -172,14 +219,14 @@ Respond in EXACTLY this JSON format (no markdown, no code blocks, just raw JSON)
 
 /**
  * Main verification function:
- * 1. Search Google News (free, no API key needed) for real article links
+ * 1. Search the Web (Serper API or Google News RSS) for real article links
  * 2. Send claim + found articles to Gemini for AI-powered analysis (no grounding = no strict rate limit)
  */
 export async function verifyNews(claim: string, title?: string): Promise<VerificationResult> {
     const searchQuery = title || claim.slice(0, 150);
 
-    // Step 1: Get real news articles from Google News RSS (free)
-    const newsArticles = await searchGoogleNews(searchQuery);
+    // Step 1: Get real web sources
+    const newsArticles = await searchWeb(searchQuery);
 
     // Step 2: Analyze with Gemini AI (without grounding tool)
     const geminiResult = await analyzeWithGemini(claim, newsArticles);
@@ -220,7 +267,7 @@ export async function verifyNews(claim: string, title?: string): Promise<Verific
     }
 
     // Boost confidence if many diverse news sources corroborate
-    const uniqueSources = new Set(newsArticles.map(a => a.source));
+    const uniqueSources = new Set(newsArticles.map((a: { source: string }) => a.source));
     if (uniqueSources.size >= 3 && status !== "FAKE") {
         accuracy = Math.min(accuracy + 5, 98);
     }
@@ -229,6 +276,6 @@ export async function verifyNews(claim: string, title?: string): Promise<Verific
         accuracy,
         status,
         citations: newsArticles.slice(0, 8),
-        aiAnalysis: geminiResult.analysis || `Claim analyzed. Found ${newsArticles.length} related articles.`,
+        aiAnalysis: geminiResult.analysis || `Claim analyzed. Found ${newsArticles.length} related sources online.`,
     };
 }
