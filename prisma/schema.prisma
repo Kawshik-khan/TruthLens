@@ -21,6 +21,7 @@ model User {
   updatedAt     DateTime       @updatedAt
   submissions   Submission[]
   chatMessages  ChatMessage[]
+  quizProgress  UserQuizProgress[]
 }
 
 model Submission {
@@ -61,13 +62,30 @@ model ChatMessage {
 }
 
 model Source {
+  id            String   @id @default(cuid())
+  domain        String   @unique
+  name          String
+  tier          String   // TRUSTED, QUESTIONABLE, DISINFO
+  biasIndex     Float
+  category      String   // NEWS, SOCIAL_MEDIA, BLOG, FORUM, GOVERNMENT, EDUCATIONAL
+  region        String?  // US, UK, EU, GLOBAL, etc.
+  description    String?
+  credibilityScore Float   @default(50.0) // 0-100 dynamic score
+  lastUpdated   DateTime @updatedAt
+  auditDate     DateTime @default(now())
+  auditor       String
+  biasHistory   BiasHistory[]
+}
+
+model BiasHistory {
   id          String   @id @default(cuid())
-  domain      String   @unique
-  name        String
-  tier        String   // TRUSTED, QUESTIONABLE, DISINFO
+  sourceId    String
+  source      Source    @relation(fields: [sourceId], references: [id])
   biasIndex   Float
+  tier        String   // TRUSTED, QUESTIONABLE, DISINFO
   auditDate   DateTime @default(now())
   auditor     String
+  reason      String?  // Reason for bias rating change
 }
 
 model Feedback {
@@ -76,4 +94,43 @@ model Feedback {
   email     String
   message   String
   createdAt DateTime @default(now())
+}
+
+model Quiz {
+  id            String   @id @default(cuid())
+  title         String
+  description   String
+  category      String   // SYNTHETIC_MEDIA, ALGORITHMIC_BIAS, COGNITIVE_WARFARE, DATA_ETHICS
+  difficulty    String   // BEGINNER, INTERMEDIATE, ADVANCED
+  timeLimit     Int      // minutes
+  questions     QuizQuestion[]
+  userProgress  UserQuizProgress[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model QuizQuestion {
+  id            String   @id @default(cuid())
+  quizId        String
+  quiz          Quiz     @relation(fields: [quizId], references: [id])
+  questionText  String
+  questionType  String   // MULTIPLE_CHOICE, TRUE_FALSE, SHORT_ANSWER
+  options       String?  // JSON array for multiple choice
+  correctAnswer String
+  explanation   String?
+  points        Int      @default(1)
+  order         Int
+}
+
+model UserQuizProgress {
+  id            String   @id @default(cuid())
+  userId         String
+  user          User     @relation(fields: [userId], references: [id])
+  quizId         String
+  quiz           Quiz      @relation(fields: [quizId], references: [id])
+  score          Int      @default(0)
+  totalPoints    Int
+  completedAt    DateTime?
+  startedAt      DateTime @default(now())
+  createdAt      DateTime @default(now())
 }

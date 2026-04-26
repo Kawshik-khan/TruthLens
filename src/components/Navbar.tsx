@@ -31,8 +31,8 @@ export default function Navbar({ links, cta }: NavbarProps) {
         <nav className="fixed top-0 w-full z-50 px-6 py-5 border-b border-white/5 bg-slate-950/80 backdrop-blur-xl">
             <div className="max-w-7xl mx-auto flex items-center justify-between">
                 <Link href="/" className="flex items-center gap-3 group">
-                    <div className="w-10 h-10 bg-indigo-500/10 rounded-lg flex items-center justify-center border border-indigo-500/30 group-hover:border-indigo-600/60 transition-colors">
-                        <span className="material-symbols-outlined text-indigo-400 text-2xl">biotech</span>
+                    <div className="w-10 h-10 bg-indigo-500/10 rounded-lg flex items-center justify-center border border-indigo-500/30 group-hover:border-indigo-600/60 transition-colors overflow-hidden">
+                        <img src="/logo.png" alt="TruthLens Logo" className="w-full h-full object-contain" />
                     </div>
                     <span className="font-display font-bold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400 uppercase italic">TruthLens</span>
                 </Link>

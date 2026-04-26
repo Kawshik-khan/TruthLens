@@ -5,9 +5,41 @@ import Footer from "@/components/Footer";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 
+interface Source {
+  id: string;
+  domain: string;
+  name: string;
+  tier: "TRUSTED" | "QUESTIONABLE" | "DISINFO";
+  biasIndex: number;
+  credibilityScore: number;
+  category: string;
+  region?: string;
+  description?: string;
+  lastUpdated: string;
+  auditDate: string;
+  auditor: string;
+  biasHistory: Array<{
+    biasIndex: number;
+    tier: string;
+    auditDate: string;
+    auditor: string;
+    reason?: string;
+  }>;
+}
+
 export default function AdminSourcesPage() {
-    const [sources, setSources] = useState<any[]>([]);
+    const [sources, setSources] = useState<Source[]>([]);
+    const [filteredSources, setFilteredSources] = useState<Source[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [selectedCategory, setSelectedCategory] = useState("");
+    const [selectedTier, setSelectedTier] = useState("");
+    const [showCreateModal, setShowCreateModal] = useState(false);
+    const [editingSource, setEditingSource] = useState<Source | null>(null);
+    const [showDeleteModal, setShowDeleteModal] = useState<Source | null>(null);
+
+  const categories = ["NEWS", "SOCIAL_MEDIA", "BLOG", "FORUM", "GOVERNMENT", "EDUCATIONAL"];
+  const tiers = ["TRUSTED", "QUESTIONABLE", "DISINFO"];
     const [selectedSource, setSelectedSource] = useState<any>(null);
     const [isPanelOpen, setIsPanelOpen] = useState(false);
 

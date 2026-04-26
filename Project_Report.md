@@ -85,3 +85,33 @@
 3. **[Task 3]**: Finalize development of the Administrative Command Center for global platform oversight.
 4. **[Task 4]**: Populate and integrate the Bias Database API (`/api/sources`) to provide users with historical bias ratings.
 5. **[Task 5]**: Build out the structured Educational Module (`/learn`) and interactive misinformation quizzes.
+
+---
+
+## 6. Acknowledgements, Inspiration, and Open-Source Attributions
+
+To maintain full academic integrity and transparency, this section details the open-source libraries, external inspiration, and naming context for the TruthLens project, addressing any similarities to existing online platforms.
+
+### 6.1. Project Naming and Conceptual Similarities
+The name **"TruthLens"** was chosen to represent the project's goal of acting as a lens to view the truth in media. We acknowledge that due to the nature of the domain (AI and fact-checking), this is a common conceptual name. There are existing online platforms (such as `aitruthlens.org`, `truthlens.us`, and `usetruthlens.com`) and academic papers (e.g., *TruthLens: AI-Powered Fake News and Misinformation Detection Using Multimodal Analysis*) that share this name. **This project is an independent academic implementation and is not affiliated with, nor a direct clone of, these commercial products or research papers.** The similarities lie primarily in the shared domain of AI-powered misinformation detection and the coincidental use of a highly relevant project name.
+
+### 6.2. Open-Source AI Models and Architecture Parallels
+The AI verification methodology in this project utilizes standard, industry-recognized NLP approaches. Our AI service is built using **FastAPI** and integrates pre-trained, open-source models from **Hugging Face**, including:
+*   `facebook/bart-large-mnli` (for zero-shot fake news classification)
+*   `distilbert-base-uncased-finetuned-sst-2-english` (for sentiment analysis)
+*   `facebook/bart-large-cnn` (for summarization)
+
+Because these are standard open-source models widely used in the machine learning community for fact-checking and NLP tasks, the architectural flow and analysis outcomes of our platform may closely resemble other open-source fact-checking repositories (such as the `botirk38/fact-checker` repository available on GitHub). However, our full-stack implementation—combining a Next.js App Router frontend, a custom PostgreSQL/Prisma database schema, and a bespoke FastAPI microservice—was developed specifically for this project.
+
+### 6.3. External References and Open-Source Libraries Used
+In accordance with course policies on utilizing open-source materials, the following core technologies, APIs, and learning resources were utilized to build this platform:
+*   **Frontend Framework:** Next.js 16 and React 19.
+*   **Backend & API:** Next.js Edge Routes, FastAPI (Python), and Uvicorn.
+*   **Database:** PostgreSQL managed via Prisma ORM.
+*   **Authentication:** Custom JWT implementation using the `jose` library.
+*   **External APIs:** 
+    *   **Serper.dev API:** Used for real-time Google search cross-referencing and retrieving citation links.
+    *   **Google Gemini API (Optional):** Used for advanced chatbot reasoning and fallback text analysis.
+*   **Tutorials and Learning Sources:** General documentation for Next.js, FastAPI, Hugging Face Transformers, and Prisma was heavily referenced during development. Any structural inspiration drawn from online AI fact-checking tutorials (including standard YouTube guides on building AI SaaS platforms) was adapted to fit the specific requirements and custom UI/UX design of this project.
+
+We affirm that all integrated open-source code and libraries have been used in compliance with their respective open-source licenses, and the core application logic and system integration represent original development effort for this course.

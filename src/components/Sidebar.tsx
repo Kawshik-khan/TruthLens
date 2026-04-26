@@ -27,8 +27,8 @@ export default function Sidebar() {
         <aside className="w-64 border-r border-white/10 flex flex-col fixed h-full glass-panel z-50">
             <div className="p-6">
                 <Link href="/" className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-indigo-600 rounded flex items-center justify-center shadow-lg shadow-indigo-500/20">
-                        <span className="material-symbols-outlined text-white text-lg">fact_check</span>
+                    <div className="w-8 h-8 bg-indigo-600 rounded flex items-center justify-center shadow-lg shadow-indigo-500/20 overflow-hidden">
+                        <img src="/logo.png" alt="TruthLens Logo" className="w-full h-full object-contain" />
                     </div>
                     <h1 className="font-bold text-xl tracking-tight text-white uppercase italic">TruthLens</h1>
                 </Link>
