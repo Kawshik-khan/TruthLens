@@ -33,14 +33,14 @@ export async function POST(req: Request) {
     if (!(await checkAdmin())) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     try {
-        const { domain, name, tier, biasIndex } = await req.json();
+        const { domain, name, tier, biasIndex, category = "NEWS" } = await req.json();
         const source = await (db as any).source.create({
             data: {
                 domain,
                 name,
                 tier,
                 biasIndex: parseFloat(biasIndex) || 0,
-                category: "NEWS", // Add required category field
+                category,
                 auditDate: new Date(),
                 auditor: "System Admin",
             },
