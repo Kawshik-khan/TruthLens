@@ -1,6 +1,7 @@
 import { db } from "@/lib/db";
 import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
+import { config, validateEmailDomain, isValidRole } from "@/lib/config";
 
 export async function POST(req: Request) {
     console.log("Registration request received");
@@ -11,7 +12,23 @@ export async function POST(req: Request) {
 
         if (!name || !email || !password) {
             return NextResponse.json(
-                { error: "Missing required fields" },
+                { error: "Name, email, and password are required" },
+                { status: 400 }
+            );
+        }
+
+        // Validate email domain if whitelist is configured
+        if (!validateEmailDomain(email)) {
+            return NextResponse.json(
+                { error: "Email domain is not allowed" },
+                { status: 400 }
+            );
+        }
+
+        // Validate role if provided
+        if (role && !isValidRole(role)) {
+            return NextResponse.json(
+                { error: `Invalid role. Must be one of: ${config.auth.availableRoles.join(', ')}` },
                 { status: 400 }
             );
         }
@@ -27,14 +44,14 @@ export async function POST(req: Request) {
             );
         }
 
-        const hashedPassword = await bcrypt.hash(password, 10);
+        const hashedPassword = await bcrypt.hash(password, config.auth.passwordHashRounds);
 
         const user = await db.user.create({
             data: {
                 name,
                 email,
                 password: hashedPassword,
-                role: role || "STUDENT",
+                role: role || config.auth.defaultUserRole,
             },
         });
 

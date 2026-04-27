@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { config } from "@/lib/config";
 
 export default function LoginPage() {
     const [email, setEmail] = useState("");
@@ -50,8 +51,8 @@ export default function LoginPage() {
                     <Link href="/" className="inline-flex items-center justify-center p-3 rounded-xl bg-primary/20 border border-primary/30 mb-4 transition-all hover:bg-primary/30">
                         <span className="material-icons text-primary text-4xl">center_focus_strong</span>
                     </Link>
-                    <h1 className="text-3xl font-bold text-white tracking-tight">TruthLens</h1>
-                    <p className="text-slate-500 mt-2 text-sm uppercase tracking-widest">Verify the Reality</p>
+                    <h1 className="text-3xl font-bold text-white tracking-tight">{config.app.name}</h1>
+                    <p className="text-slate-500 mt-2 text-sm uppercase tracking-widest">{config.app.tagline}</p>
                 </div>
 
                 {/* Login Card */}
@@ -69,7 +70,7 @@ export default function LoginPage() {
                                 <span className="absolute left-3 top-1/2 -translate-y-1/2 material-icons text-slate-500 text-sm">alternate_email</span>
                                 <input
                                     className="w-full bg-slate-900/50 border border-white/10 rounded-lg py-3 pl-10 pr-4 text-white outline-none transition-all placeholder:text-slate-600 focus:border-primary/50 focus:ring-1 focus:ring-primary/20"
-                                    id="email" placeholder="username@truthlens.ai" type="email"
+                                    id="email" placeholder={`username@${config.auth.domainWhitelist[0] || 'example.com'}`} type="email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     required
@@ -81,7 +82,7 @@ export default function LoginPage() {
                         <div>
                             <div className="flex justify-between items-center mb-2">
                                 <label className="block text-xs font-semibold text-slate-500 uppercase ml-1" htmlFor="password">Security Key</label>
-                                <Link className="text-xs text-primary hover:text-primary/80 transition-colors font-medium" href="/feedback">Lost access?</Link>
+                                <Link className="text-xs text-primary hover:text-primary/80 transition-colors font-medium" href={`mailto:${config.app.supportEmail}`}>Lost access?</Link>
                             </div>
                             <div className="relative">
                                 <span className="absolute left-3 top-1/2 -translate-y-1/2 material-icons text-slate-500 text-sm">lock_open</span>

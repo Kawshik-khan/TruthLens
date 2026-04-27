@@ -3,12 +3,13 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { config } from "@/lib/config";
 
 export default function RegisterPage() {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [role, setRole] = useState("STUDENT");
+    const [role, setRole] = useState(config.auth.defaultUserRole);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
     const router = useRouter();
@@ -51,7 +52,7 @@ export default function RegisterPage() {
                     <Link href="/" className="inline-flex items-center justify-center w-16 h-16 rounded-xl bg-indigo-500/20 border border-indigo-500/30 mb-6 shadow-[0_0_20px_rgba(99,102,241,0.2)] transition-all hover:bg-indigo-500/30">
                         <span className="material-icons text-indigo-400 text-4xl">travel_explore</span>
                     </Link>
-                    <h1 className="text-4xl font-bold tracking-tight text-white mb-2">TruthLens</h1>
+                    <h1 className="text-4xl font-bold tracking-tight text-white mb-2">{config.app.name}</h1>
                     <p className="text-slate-400 text-lg">Join the mission to identify truth in a digital world.</p>
                 </div>
 
@@ -85,7 +86,7 @@ export default function RegisterPage() {
                                 <span className="material-icons absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-sm">alternate_email</span>
                                 <input
                                     className="block w-full bg-slate-900/50 border-0 pl-10 pr-4 py-3 text-white focus:ring-0 focus:outline-none placeholder:text-slate-600 rounded-lg"
-                                    id="email" placeholder="alex@truthlens.ai" required type="email"
+                                    id="email" placeholder={`alex@${config.auth.domainWhitelist[0] || 'example.com'}`} required type="email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                 />
@@ -110,7 +111,7 @@ export default function RegisterPage() {
                         <div className="space-y-3">
                             <label className="block text-sm font-medium text-slate-400">Identify Your Role</label>
                             <div className="grid grid-cols-3 gap-3">
-                                {["STUDENT", "EDUCATOR", "RESEARCHER"].map((r) => (
+                                {config.auth.availableRoles.filter(r => r !== 'ADMIN').map((r) => (
                                     <button
                                         key={r}
                                         type="button"
@@ -131,7 +132,7 @@ export default function RegisterPage() {
                                 disabled={isLoading}
                                 className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-4 rounded-lg shadow-[0_0_20px_rgba(99,102,241,0.3)] transition-all flex items-center justify-center gap-2 group uppercase text-sm tracking-widest disabled:opacity-50"
                             >
-                                {isLoading ? "Joining..." : "Join TruthLens"}
+                                {isLoading ? "Joining..." : `Join ${config.app.name}`}
                                 <span className="material-icons text-sm transition-transform group-hover:translate-x-1">arrow_forward</span>
                             </button>
                         </div>

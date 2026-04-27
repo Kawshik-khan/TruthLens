@@ -3,8 +3,9 @@ import bcrypt from "bcryptjs";
 import { SignJWT } from "jose";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
+import { config, validateEmailDomain, getCookieSettings, getTokenExpiration } from "@/lib/config";
 
-const secret = new TextEncoder().encode(process.env.AUTH_SECRET);
+const secret = new TextEncoder().encode(config.security.authSecret);
 
 export async function POST(req: Request) {
     try {
@@ -12,7 +13,15 @@ export async function POST(req: Request) {
 
         if (!email || !password) {
             return NextResponse.json(
-                { error: "Missing required fields" },
+                { error: "Email and password are required" },
+                { status: 400 }
+            );
+        }
+
+        // Validate email domain if whitelist is configured
+        if (!validateEmailDomain(email)) {
+            return NextResponse.json(
+                { error: "Email domain is not allowed" },
                 { status: 400 }
             );
         }
@@ -43,7 +52,7 @@ export async function POST(req: Request) {
             role: user.role
         })
             .setProtectedHeader({ alg: "HS256" })
-            .setExpirationTime("24h")
+            .setExpirationTime(getTokenExpiration())
             .sign(secret);
 
         const response = NextResponse.json(
@@ -51,13 +60,8 @@ export async function POST(req: Request) {
             { status: 200 }
         );
 
-        // Set cookie
-        (await cookies()).set("auth_token", token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            maxAge: 60 * 60 * 24, // 1 day
-            path: "/",
-        });
+        // Set cookie with configurable settings
+        (await cookies()).set("auth_token", token, getCookieSettings());
 
         return response;
     } catch (error) {
