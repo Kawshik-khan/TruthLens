@@ -2,6 +2,7 @@ import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
 import { jwtVerify } from "jose";
 import { cookies } from "next/headers";
+import { BiasScoringAlgorithm } from "@/lib/biasScoring";
 
 const secret = new TextEncoder().encode(process.env.AUTH_SECRET);
 
@@ -54,6 +55,17 @@ export async function POST(request: Request) {
             );
         }
 
+        // Calculate proper credibility score using the algorithm
+        const metrics = {
+            submissionCount: 0,
+            averageTrustScore: 0,
+            userReports: 0,
+            ageInDays: 0,
+            lastUpdated: new Date()
+        };
+        
+        const credibilityScore = BiasScoringAlgorithm.calculateCredibilityScore(biasIndex, metrics);
+
         // Create new source
         const source = await (db as any).source.create({
             data: {
@@ -64,7 +76,7 @@ export async function POST(request: Request) {
                 category: category || "NEWS",
                 region,
                 description,
-                credibilityScore: biasIndex, // Initialize with bias index
+                credibilityScore, // Use calculated credibility score
                 auditor: payload.email || "system"
             }
         });

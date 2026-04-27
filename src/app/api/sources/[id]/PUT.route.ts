@@ -2,6 +2,7 @@ import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
 import { jwtVerify } from "jose";
 import { cookies } from "next/headers";
+import { BiasScoringAlgorithm } from "@/lib/biasScoring";
 
 const secret = new TextEncoder().encode(process.env.AUTH_SECRET);
 
@@ -88,7 +89,17 @@ export async function PUT(
         if (tier) updateData.tier = tier;
         if (biasIndex !== undefined) {
             updateData.biasIndex = biasIndex;
-            updateData.credibilityScore = biasIndex;
+            
+            // Calculate proper credibility score using the algorithm
+            const metrics = {
+                submissionCount: 0,
+                averageTrustScore: 0,
+                userReports: 0,
+                ageInDays: 0,
+                lastUpdated: new Date()
+            };
+            
+            updateData.credibilityScore = BiasScoringAlgorithm.calculateCredibilityScore(biasIndex, metrics);
         }
         if (category) updateData.category = category;
         if (region) updateData.region = region;
