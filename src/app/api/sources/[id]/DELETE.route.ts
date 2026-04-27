@@ -7,7 +7,7 @@ const secret = new TextEncoder().encode(process.env.AUTH_SECRET);
 
 export async function DELETE(
     request: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
         // Verify admin authentication
@@ -17,9 +17,11 @@ export async function DELETE(
         const { payload } = await jwtVerify(token, secret);
         if (payload.role !== "ADMIN") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
+        const { id } = await params;
+
         // Check if source exists
-        const existingSource = await db.source.findUnique({
-            where: { id: params.id }
+        const existingSource = await (db as any).source.findUnique({
+            where: { id }
         });
 
         if (!existingSource) {
@@ -49,13 +51,13 @@ export async function DELETE(
         }
 
         // Delete bias history first (due to foreign key constraint)
-        await db.biasHistory.deleteMany({
-            where: { sourceId: params.id }
+        await (db as any).biasHistory.deleteMany({
+            where: { sourceId: id }
         });
 
         // Delete source
-        await db.source.delete({
-            where: { id: params.id }
+        await (db as any).source.delete({
+            where: { id }
         });
 
         return NextResponse.json(

@@ -7,7 +7,7 @@ const secret = new TextEncoder().encode(process.env.AUTH_SECRET);
 
 export async function POST(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Verify user authentication
@@ -16,6 +16,7 @@ export async function POST(
 
     const { payload } = await jwtVerify(token, secret);
     const userId = payload.sub as string;
+    const { id } = await params;
 
     const body = await request.json();
     const { answers } = body;
@@ -29,7 +30,7 @@ export async function POST(
 
     // Get quiz with questions and correct answers
     const quiz = await (db as any).quiz.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         questions: {
           orderBy: { order: 'asc' }
@@ -48,7 +49,7 @@ export async function POST(
     const existingProgress = await (db as any).userQuizProgress.findFirst({
       where: {
         userId,
-        quizId: params.id
+        quizId: id
       }
     });
 
@@ -100,7 +101,7 @@ export async function POST(
       where: {
         userId_quizId: {
           userId,
-          quizId: params.id
+          quizId: id
         }
       },
       update: {
@@ -110,7 +111,7 @@ export async function POST(
       },
       create: {
         userId,
-        quizId: params.id,
+        quizId: id,
         score: totalScore,
         totalPoints,
         completedAt: new Date()

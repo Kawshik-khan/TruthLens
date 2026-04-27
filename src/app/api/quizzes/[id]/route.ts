@@ -3,11 +3,12 @@ import { NextResponse } from "next/server";
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const quiz = await (db as any).quiz.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         questions: {
           orderBy: { order: 'asc' }
@@ -50,9 +51,10 @@ export async function GET(
 
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const body = await request.json();
     const { 
       title, 
@@ -65,7 +67,7 @@ export async function PUT(
 
     // Check if quiz exists
     const existingQuiz = await (db as any).quiz.findUnique({
-      where: { id: params.id }
+      where: { id }
     });
 
     if (!existingQuiz) {
@@ -106,7 +108,7 @@ export async function PUT(
 
     // Update quiz
     const updatedQuiz = await (db as any).quiz.update({
-      where: { id: params.id },
+      where: { id },
       data: updateData,
       include: {
         questions: {
@@ -119,13 +121,13 @@ export async function PUT(
     if (questions && Array.isArray(questions)) {
       // Delete existing questions
       await (db as any).quizQuestion.deleteMany({
-        where: { quizId: params.id }
+        where: { quizId: id }
       });
 
       // Create new questions
       await (db as any).quizQuestion.createMany({
         data: questions.map((q: any, index: number) => ({
-          quizId: params.id,
+          quizId: id,
           questionText: q.questionText,
           questionType: q.questionType,
           options: q.questionType === "MULTIPLE_CHOICE" ? JSON.stringify(q.options) : null,
@@ -149,12 +151,13 @@ export async function PUT(
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     // Check if quiz exists
     const existingQuiz = await (db as any).quiz.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         _count: {
           select: { userProgress: true }
@@ -182,7 +185,7 @@ export async function DELETE(
 
     // Delete quiz and questions (cascade)
     await (db as any).quiz.delete({
-      where: { id: params.id }
+      where: { id }
     });
 
     return NextResponse.json(

@@ -7,9 +7,11 @@ const secret = new TextEncoder().encode(process.env.AUTH_SECRET);
 
 export async function PUT(
     request: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
+        const { id } = await params;
+
         // Verify admin authentication
         const token = (await cookies()).get("auth_token")?.value;
         if (!token) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -18,11 +20,19 @@ export async function PUT(
         if (payload.role !== "ADMIN") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
         const body = await request.json();
-        const { domain, name, tier, biasIndex, category, region, description } = body;
+        const { 
+          domain,
+          name,
+          tier,
+          biasIndex,
+          category,
+          region,
+          description
+        } = body;
 
         // Check if source exists
-        const existingSource = await db.source.findUnique({
-            where: { id: params.id }
+        const existingSource = await (db as any).source.findUnique({
+            where: { id }
         });
 
         if (!existingSource) {
@@ -33,12 +43,15 @@ export async function PUT(
         }
 
         // Check for domain conflict if domain is being changed
-        if (domain && domain !== existingSource.domain) {
-            const domainConflict = await db.source.findUnique({
-                where: { domain: domain.toLowerCase() }
+        if (domain && domain.toLowerCase() !== existingSource.domain.toLowerCase()) {
+            const conflictingSource = await (db as any).source.findFirst({
+                where: {
+                    domain: domain.toLowerCase(),
+                    id: { not: id }
+                }
             });
 
-            if (domainConflict) {
+            if (conflictingSource) {
                 return NextResponse.json(
                     { error: "Source with this domain already exists" },
                     { status: 409 }
@@ -83,7 +96,7 @@ export async function PUT(
 
         // Update source
         const updatedSource = await (db as any).source.update({
-            where: { id: params.id },
+            where: { id },
             data: updateData
         });
 
@@ -91,7 +104,7 @@ export async function PUT(
         if (biasIndex !== undefined && biasIndex !== existingSource.biasIndex) {
             await (db as any).biasHistory.create({
                 data: {
-                    sourceId: params.id,
+                    sourceId: id,
                     biasIndex,
                     tier: tier || existingSource.tier,
                     auditor: payload.email || "system",
