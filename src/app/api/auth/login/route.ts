@@ -18,17 +18,20 @@ export async function POST(req: Request) {
             );
         }
 
-        // Validate email domain if whitelist is configured
-        if (!validateEmailDomain(email)) {
-            return NextResponse.json(
-                { error: "Email domain is not allowed" },
-                { status: 400 }
-            );
-        }
+        // Email validation removed - allow any domain
+        // if (config.auth.domainWhitelist.length > 0 && !validateEmailDomain(email)) {
+        //     console.log('Email validation failed for:', email, 'Domain:', email.split('@')[1], 'Whitelist:', config.auth.domainWhitelist);
+        //     return NextResponse.json(
+        //         { error: "Email domain is not allowed" },
+        //         { status: 400 }
+        //     );
+        // }
 
         const user = await db.user.findUnique({
             where: { email },
         });
+        
+        console.log('User lookup for email:', email, 'Found user:', user);
 
         if (!user) {
             return NextResponse.json(
@@ -38,6 +41,8 @@ export async function POST(req: Request) {
         }
 
         const isPasswordValid = await bcrypt.compare(password, user.password);
+        
+        console.log('Password comparison result:', isPasswordValid);
 
         if (!isPasswordValid) {
             return NextResponse.json(

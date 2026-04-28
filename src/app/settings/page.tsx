@@ -424,7 +424,7 @@ export default function SettingsPage() {
   );
 }
 
-function PasswordChangeForm({ onSubmit }: { onSubmit: (current: string, new: string) => void }) {
+function PasswordChangeForm({ onSubmit }: { onSubmit: (current: string, newPassword: string) => void }) {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");

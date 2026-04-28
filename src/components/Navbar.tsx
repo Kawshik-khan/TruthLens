@@ -49,7 +49,7 @@ export default function Navbar({ links, cta }: NavbarProps) {
                             {cta.name}
                         </Link>
                     ) : (
-                        <Link href="/login" className="px-6 py-2.5 rounded-full text-sm font-semibold border border-white/10 hover:bg-white/5 transition-all text-white">
+                        <Link href="/auth" className="px-6 py-2.5 rounded-full text-sm font-semibold border border-white/10 hover:bg-white/5 transition-all text-white">
                             Member Access
                         </Link>
                     )}

@@ -17,13 +17,13 @@ export async function POST(req: Request) {
             );
         }
 
-        // Validate email domain if whitelist is configured
-        if (!validateEmailDomain(email)) {
-            return NextResponse.json(
-                { error: "Email domain is not allowed" },
-                { status: 400 }
-            );
-        }
+        // Email validation removed - allow any domain
+        // if (config.auth.domainWhitelist.length > 0 && !validateEmailDomain(email)) {
+        //     return NextResponse.json(
+        //         { error: "Email domain is not allowed" },
+        //         { status: 400 }
+        //     );
+        // }
 
         // Validate role if provided
         if (role && !isValidRole(role)) {
