@@ -30,7 +30,14 @@ export default function MethodologyPage() {
                                 TruthLens isn&apos;t a black box. We believe that for AI to fight misinformation, its own logic must be visible, auditable, and beyond reproach.
                             </p>
                             <div className="flex gap-6">
-                                <button className="bg-indigo-600 text-slate-950 px-10 py-4 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-indigo-500 transition-all shadow-xl shadow-indigo-600/30">View GitHub Repo</button>
+                                <a
+                                    className="bg-indigo-600 text-slate-950 px-10 py-4 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-indigo-500 transition-all shadow-xl shadow-indigo-600/30 inline-flex items-center justify-center"
+                                    href="https://github.com/Kawshik-khan/TruthLens"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                >
+                                    View GitHub Repo
+                                </a>
                                 <button className="px-10 py-4 rounded-xl font-black text-xs uppercase tracking-widest border border-white/10 text-white hover:bg-white/5 transition-all">Download Whitepaper</button>
                             </div>
                         </div>

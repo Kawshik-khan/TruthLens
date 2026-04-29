@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
 import { config } from "@/lib/config";
 
 export default function AuthPage() {
@@ -103,24 +102,44 @@ export default function AuthPage() {
       <div className="lg:w-[40%] w-full lg:min-h-screen min-h-[40vh] relative bg-gradient-to-br from-[#0A0F1F] via-[#1a2332] to-[#0d1929] flex items-center justify-center p-8">
         {/* Background Effects */}
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-20 left-20 w-32 h-32 bg-blue-500/20 rounded-full blur-xl"></div>
-          <div className="absolute bottom-20 right-20 w-40 h-40 bg-[#4F7CFF]/10 rounded-full blur-2xl"></div>
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-[#4F7CFF]/5 rounded-full blur-3xl"></div>
+          <div className="absolute inset-0 opacity-40" style={{ backgroundImage: "radial-gradient(rgba(79, 124, 255, 0.18) 1px, transparent 1px)", backgroundSize: "28px 28px" }}></div>
+          <div className="absolute top-20 left-16 w-40 h-40 bg-[#4F7CFF]/20 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-12 right-12 w-52 h-52 bg-[#06B6D4]/10 rounded-full blur-3xl"></div>
+          <div className="absolute inset-x-0 top-0 h-64 bg-gradient-to-b from-[#4F7CFF]/10 to-transparent"></div>
         </div>
 
-        {/* Content - Image with 25% blur at bottom */}
-        <div className="relative z-10 w-full h-full flex items-center justify-center">
-          {/* Hero Image - Fills entire left panel */}
-          <div className="relative w-full h-full">
-            <Image
-              src="/Avater_auth.png"
-              alt="TruthLens Hero"
-              fill
-              className="object-cover"
-            />
-            
-            {/* 15% smooth progressive blur effect at bottom - single continuous gradient */}
-            <div className="absolute bottom-0 left-0 right-0 h-[15%] bg-gradient-to-t from-white/35 via-white/15 via-white/5 to-transparent backdrop-blur-lg"></div>
+        {/* Content */}
+        <div className="relative z-10 w-full max-w-md flex flex-col items-center justify-start gap-8 pt-8 lg:pt-14">
+          <div className="w-full rounded-[2rem] border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl shadow-[#4F7CFF]/10 p-6 lg:p-8">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="text-[10px] uppercase tracking-[0.35em] text-[#94A3B8] mb-3">TruthLens Platform</p>
+                <h1 className="text-3xl lg:text-4xl font-black text-[#F8FAFC] leading-tight">
+                  Verify what matters.
+                </h1>
+              </div>
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#4F7CFF] to-[#06B6D4] flex items-center justify-center shadow-lg shadow-[#4F7CFF]/30">
+                <span className="material-icons text-white text-3xl">center_focus_strong</span>
+              </div>
+            </div>
+
+            <div className="mt-8 grid grid-cols-2 gap-3">
+              <div className="rounded-2xl border border-white/10 bg-[#0A0F1F]/60 p-4">
+                <p className="text-xs uppercase tracking-widest text-[#94A3B8]">Signal</p>
+                <p className="mt-2 text-xl font-bold text-white">Clarity</p>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-[#0A0F1F]/60 p-4">
+                <p className="text-xs uppercase tracking-widest text-[#94A3B8]">Trust</p>
+                <p className="mt-2 text-xl font-bold text-white">Evidence</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="text-center max-w-sm">
+            <p className="text-sm uppercase tracking-[0.3em] text-[#6B8FFF] font-semibold mb-3">{config.app.tagline}</p>
+            <p className="text-[#94A3B8] text-sm lg:text-base leading-relaxed">
+              A secure workspace for checking claims, tracking sources, and making every decision easier to audit.
+            </p>
           </div>
         </div>
       </div>
