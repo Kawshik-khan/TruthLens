@@ -17,6 +17,8 @@ const outfit = Outfit({
   subsets: ["latin"],
 });
 
+
+
 export const metadata: Metadata = {
   title: "TruthLens | Premium AI Misinformation Awareness",
   description: "Advanced AI-driven forensic analysis for the modern information landscape.",

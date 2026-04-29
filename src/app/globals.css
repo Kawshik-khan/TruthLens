@@ -1,27 +1,69 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-primary: #3B82F6;
-  --color-dark-bg: #020617;
-  --color-accent-blue: #60A5FA;
+  --color-primary: #ffffff;
+  --color-dark-bg: #000000;
+  --color-surface: #0a0a0a;
+  --color-gray: #1a1a1a;
+  --color-accent-electric: #3B82F6;
+  --color-accent-indigo: #6366F1;
+  --color-accent-emerald: #10B981;
+  --color-accent-red: #EF4444;
 
-  --font-sans: "Inter", var(--font-geist-sans);
+  --font-sans: "Geist", "Inter", var(--font-geist-sans);
 }
 
 :root {
-  --background: #020617;
-  --foreground: #cbd5e1;
-  --grid-color: rgba(255, 255, 255, 0.03);
-  --glow-color: rgba(59, 130, 246, 0.5);
+  --background: #000000;
+  --foreground: #ffffff;
+  --surface: #0a0a0a;
+  --gray: #1a1a1a;
+  --grid-color: rgba(255, 255, 255, 0.02);
+  --glow-color: rgba(255, 255, 255, 0.1);
+}
+
+html {
+  background: #000000;
 }
 
 body {
+  min-height: 100vh;
   background-color: var(--background);
   color: var(--foreground);
   background-image:
+    radial-gradient(circle at top, rgba(37, 99, 235, 0.12), transparent 28%),
+    radial-gradient(circle at 75% 18%, rgba(59, 130, 246, 0.08), transparent 24%),
+    radial-gradient(circle at 50% 100%, rgba(16, 185, 129, 0.05), transparent 32%),
     linear-gradient(var(--grid-color) 1px, transparent 1px),
     linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
-  background-size: 40px 40px;
+  background-size: auto, auto, auto, 20px 20px, 20px 20px;
+  background-attachment: fixed;
+  position: relative;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(transparent 0%, rgba(255, 255, 255, 0.025) 50%, transparent 100%),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 100% 100%, 28px 28px, 28px 28px;
+  opacity: 0.6;
+  mask-image: radial-gradient(circle at center, black 48%, transparent 100%);
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 14%, rgba(96, 165, 250, 0.12), transparent 24%);
+  filter: blur(30px);
+  opacity: 0.7;
 }
 
 .lens-glow {
@@ -29,13 +71,358 @@ body {
 }
 
 .glass-panel {
-  background: rgba(15, 23, 42, 0.6);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(8, 12, 24, 0.8);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.34);
+  transition: all 0.3s ease;
+}
+
+.glass-panel:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 44px rgba(0, 0, 0, 0.46);
+}
+
+/* Bento Grid Layout */
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 1rem;
+}
+
+.bento-item {
+  border-radius: 1.25rem;
+  background: rgba(10, 16, 32, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.3s ease;
+}
+
+.bento-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 44px rgba(0, 0, 0, 0.5);
+  border-color: rgba(59, 130, 246, 0.24);
+}
+
+/* Scroll Reveal */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.scroll-reveal {
+  animation: fadeInUp 0.6s ease-out forwards;
 }
 
 .hero-gradient {
-  background: radial-gradient(circle at center, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
+  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+}
+
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 30s linear infinite;
+}
+
+@keyframes pulse-slow {
+  0% {
+    opacity: 0.6;
+    transform: scale(0.98);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.02);
+  }
+
+  100% {
+    opacity: 0.6;
+    transform: scale(0.98);
+  }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 4s ease-in-out infinite;
+}
+
+/* ===============================
+   TruthLens Radar Core Background
+   Pure CSS futuristic lens effect
+   =============================== */
+
+/* Main radar container */
+.radar-core {
+  position: relative;
+  width: 520px;
+  height: 520px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Ambient glow behind */
+.radar-core::before {
+  content: "";
+  position: absolute;
+  inset: -80px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(37, 99, 235, 0.22), transparent 70%);
+  filter: blur(70px);
+  z-index: 0;
+}
+
+/* Horizontal beam */
+.radar-core::after {
+  content: "";
+  position: absolute;
+  width: 130%;
+  height: 2px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(96, 165, 250, 0.2),
+    rgba(255, 255, 255, 0.95),
+    rgba(96, 165, 250, 0.2),
+    transparent
+  );
+  top: 50%;
+  left: -15%;
+  transform: translateY(-50%);
+  filter: blur(2px);
+  z-index: 2;
+}
+
+/* Ring base */
+.ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(59, 130, 246, 0.14);
+  box-shadow: 0 0 18px rgba(59, 130, 246, 0.08);
+  z-index: 1;
+}
+
+/* Multiple rings */
+.r1 {
+  width: 120px;
+  height: 120px;
+}
+
+.r2 {
+  width: 190px;
+  height: 190px;
+}
+
+.r3 {
+  width: 270px;
+  height: 270px;
+}
+
+.r4 {
+  width: 350px;
+  height: 350px;
+}
+
+.r5 {
+  width: 440px;
+  height: 440px;
+}
+
+.r6 {
+  width: 510px;
+  height: 510px;
+}
+
+/* Rotating arc rings */
+.arc {
+  position: absolute;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  border-top: 2px solid rgba(96, 165, 250, 0.95);
+  border-right: 2px solid rgba(37, 99, 235, 0.6);
+  animation: spin linear infinite;
+  z-index: 3;
+}
+
+.arc1 {
+  width: 170px;
+  height: 170px;
+  animation-duration: 14s;
+}
+
+.arc2 {
+  width: 310px;
+  height: 310px;
+  animation-duration: 24s;
+  animation-direction: reverse;
+}
+
+.arc3 {
+  width: 470px;
+  height: 470px;
+  animation-duration: 38s;
+}
+
+/* Center glowing core */
+.core {
+  position: absolute;
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    #ffffff 0%,
+    #60a5fa 18%,
+    #2563eb 45%,
+    rgba(37, 99, 235, 0.35) 65%,
+    transparent 78%
+  );
+  box-shadow:
+    0 0 18px #60a5fa,
+    0 0 45px rgba(37, 99, 235, 0.85),
+    0 0 90px rgba(37, 99, 235, 0.45);
+  animation: pulseCore 4s ease-in-out infinite;
+  z-index: 5;
+}
+
+/* Inner lens ring */
+.core::before {
+  content: "";
+  position: absolute;
+  inset: -26px;
+  border-radius: 50%;
+  border: 1px solid rgba(96, 165, 250, 0.35);
+}
+
+/* Tiny particles */
+.dot {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #93c5fd;
+  box-shadow: 0 0 10px #60a5fa;
+  animation: twinkle 3s infinite ease-in-out;
+  z-index: 4;
+}
+
+/* Random particle positions */
+.d1 {
+  top: 18%;
+  left: 50%;
+}
+
+.d2 {
+  top: 26%;
+  left: 70%;
+  animation-delay: 0.8s;
+}
+
+.d3 {
+  top: 50%;
+  left: 88%;
+  animation-delay: 1.4s;
+}
+
+.d4 {
+  top: 72%;
+  left: 68%;
+  animation-delay: 0.5s;
+}
+
+.d5 {
+  top: 82%;
+  left: 48%;
+  animation-delay: 1.8s;
+}
+
+.d6 {
+  top: 68%;
+  left: 20%;
+  animation-delay: 2.4s;
+}
+
+.d7 {
+  top: 42%;
+  left: 12%;
+  animation-delay: 0.3s;
+}
+
+.d8 {
+  top: 22%;
+  left: 28%;
+  animation-delay: 1.1s;
+}
+
+/* Animations */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulseCore {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.95;
+  }
+
+  50% {
+    transform: scale(1.08);
+    opacity: 1;
+  }
+}
+
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: scale(0.8);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.6);
+  }
+}
+
+.surface-card {
+  background: rgba(8, 12, 24, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(24px);
+  box-shadow: 0 16px 60px rgba(0, 0, 0, 0.42);
+}
+
+.surface-card:hover {
+  border-color: rgba(59, 130, 246, 0.24);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.54), 0 0 0 1px rgba(59, 130, 246, 0.08);
+}
+
+.hero-lens {
+  background:
+    radial-gradient(circle at center, rgba(37, 99, 235, 0.92) 0%, rgba(8, 15, 31, 0.45) 24%, rgba(0, 0, 0, 0) 62%),
+    radial-gradient(circle at center, rgba(96, 165, 250, 0.2), transparent 45%);
+}
+
+.soft-grid {
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+  background-size: 24px 24px;
 }
 
 .glass {

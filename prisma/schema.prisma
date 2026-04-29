@@ -1,90 +1,92 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
-  url = env("DIRECT_URL")
 }
 
 model User {
-  id            String         @id @default(cuid())
+  id            String             @id @default(cuid())
   name          String
-  email         String         @unique
+  email         String             @unique
   password      String
-  role          String         @default("STUDENT") // STUDENT, EDUCATOR, RESEARCHER, ADMIN
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  submissions   Submission[]
+  role          String             @default("STUDENT")
+  avatar        String?
+  bio           String?
+  preferences   String?
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
   chatMessages  ChatMessage[]
+  notifications Notification[]
+  securityLogs  SecurityLog[]
+  submissions   Submission[]
   quizProgress  UserQuizProgress[]
+  sessions      UserSession[]
 }
 
 model Submission {
-  id          String       @id @default(cuid())
-  title       String
-  content     String?      // The raw text claim submitted by the user
-  url         String?      // Optional URL if provided
-  trustScore  Int
-  status      String       // VERIFIED, FLAGGED, RELIABLE, FAKE
-  citations   String?      // JSON string of matching URLs
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-  userId      String
-  user        User         @relation(fields: [userId], references: [id])
-  aiAnalyses  AIAnalysis[]
+  id         String       @id @default(cuid())
+  title      String
+  content    String?
+  url        String?
+  trustScore Int
+  status     String
+  citations  String?
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  userId     String
+  aiAnalyses AIAnalysis[]
+  user       User         @relation(fields: [userId], references: [id])
 }
 
 model AIAnalysis {
   id             String     @id @default(cuid())
   submissionId   String
-  submission     Submission @relation(fields: [submissionId], references: [id])
-  type           String     // FAKE_NEWS, SENTIMENT, SUMMARY, CLAIMS
-  result         String     // JSON string of AI result
+  type           String
+  result         String
   confidence     Float
   modelUsed      String
-  processingTime Int        // milliseconds
+  processingTime Int
   createdAt      DateTime   @default(now())
+  submission     Submission @relation(fields: [submissionId], references: [id])
 }
 
 model ChatMessage {
   id        String   @id @default(cuid())
   userId    String
-  user      User     @relation(fields: [userId], references: [id])
-  role      String   // USER, ASSISTANT
+  role      String
   content   String
-  context   String?  // JSON: related submission/analysis IDs
+  context   String?
   createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
 }
 
 model Source {
-  id            String   @id @default(cuid())
-  domain        String   @unique
-  name          String
-  tier          String   // TRUSTED, QUESTIONABLE, DISINFO
-  biasIndex     Float
-  category      String   // NEWS, SOCIAL_MEDIA, BLOG, FORUM, GOVERNMENT, EDUCATIONAL
-  region        String?  // US, UK, EU, GLOBAL, etc.
-  description    String?
-  credibilityScore Float   @default(50.0) // 0-100 dynamic score
-  lastUpdated   DateTime @updatedAt
-  auditDate     DateTime @default(now())
-  auditor       String
-  biasHistory   BiasHistory[]
+  id               String        @id @default(cuid())
+  domain           String        @unique
+  name             String
+  tier             String
+  biasIndex        Float
+  category         String
+  region           String?
+  description      String?
+  credibilityScore Float         @default(50.0)
+  lastUpdated      DateTime      @updatedAt
+  auditDate        DateTime      @default(now())
+  auditor          String
+  biasHistory      BiasHistory[]
 }
 
 model BiasHistory {
-  id          String   @id @default(cuid())
-  sourceId    String
-  source      Source    @relation(fields: [sourceId], references: [id])
-  biasIndex   Float
-  tier        String   // TRUSTED, QUESTIONABLE, DISINFO
-  auditDate   DateTime @default(now())
-  auditor     String
-  reason      String?  // Reason for bias rating change
+  id        String   @id @default(cuid())
+  sourceId  String
+  biasIndex Float
+  tier      String
+  auditDate DateTime @default(now())
+  auditor   String
+  reason    String?
+  source    Source   @relation(fields: [sourceId], references: [id])
 }
 
 model Feedback {
@@ -96,40 +98,79 @@ model Feedback {
 }
 
 model Quiz {
-  id            String   @id @default(cuid())
-  title         String
-  description   String
-  category      String   // SYNTHETIC_MEDIA, ALGORITHMIC_BIAS, COGNITIVE_WARFARE, DATA_ETHICS
-  difficulty    String   // BEGINNER, INTERMEDIATE, ADVANCED
-  timeLimit     Int      // minutes
-  questions     QuizQuestion[]
-  userProgress  UserQuizProgress[]
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id           String             @id @default(cuid())
+  title        String
+  description  String
+  category     String
+  difficulty   String
+  timeLimit    Int
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+  questions    QuizQuestion[]
+  userProgress UserQuizProgress[]
 }
 
 model QuizQuestion {
-  id            String   @id @default(cuid())
+  id            String  @id @default(cuid())
   quizId        String
-  quiz          Quiz     @relation(fields: [quizId], references: [id])
   questionText  String
-  questionType  String   // MULTIPLE_CHOICE, TRUE_FALSE, SHORT_ANSWER
-  options       String?  // JSON array for multiple choice
+  questionType  String
+  options       String?
   correctAnswer String
   explanation   String?
-  points        Int      @default(1)
+  points        Int     @default(1)
   order         Int
+  quiz          Quiz    @relation(fields: [quizId], references: [id])
 }
 
 model UserQuizProgress {
-  id            String   @id @default(cuid())
-  userId         String
-  user          User     @relation(fields: [userId], references: [id])
-  quizId         String
-  quiz           Quiz      @relation(fields: [quizId], references: [id])
-  score          Int      @default(0)
-  totalPoints    Int
-  completedAt    DateTime?
-  startedAt      DateTime @default(now())
-  createdAt      DateTime @default(now())
+  id          String    @id @default(cuid())
+  userId      String
+  quizId      String
+  score       Int       @default(0)
+  totalPoints Int
+  completedAt DateTime?
+  startedAt   DateTime  @default(now())
+  createdAt   DateTime  @default(now())
+  quiz        Quiz      @relation(fields: [quizId], references: [id])
+  user        User      @relation(fields: [userId], references: [id])
+}
+
+model Notification {
+  id         String   @id @default(cuid())
+  userId     String
+  title      String
+  message    String
+  type       String
+  category   String
+  isRead     Boolean  @default(false)
+  actionUrl  String?
+  actionText String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model UserSession {
+  id           String   @id @default(cuid())
+  userId       String
+  token        String
+  deviceInfo   String?
+  isActive     Boolean  @default(true)
+  expiresAt    DateTime
+  createdAt    DateTime @default(now())
+  lastAccessed DateTime @default(now())
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model SecurityLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  action    String
+  ipAddress String?
+  userAgent String?
+  success   Boolean
+  details   String?
+  createdAt DateTime @default(now())
+  user      User?    @relation(fields: [userId], references: [id])
 }

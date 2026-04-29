@@ -2,6 +2,8 @@
 
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { motion } from "framer-motion";
+import { Search, Clock, BookOpen, Bookmark, Star } from "lucide-react";
 
 export default function LearnPage() {
     const categories = ["All Modules", "Synthetic Media", "Algorithmic Bias", "Cognitive Warfare", "Data Ethics"];
@@ -64,56 +66,45 @@ export default function LearnPage() {
     ];
 
     return (
-        <div className="min-h-screen bg-slate-950 text-slate-200 font-sans selection:bg-indigo-600 selection:text-white pb-32">
+        <div className="min-h-screen text-white font-sans pb-32">
             <Navbar />
 
-            <header className="relative pt-40 pb-20 overflow-hidden">
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full -z-10">
-                    <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-indigo-600/10 rounded-full blur-[120px]"></div>
-                    <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-sky-500/10 rounded-full blur-[120px]"></div>
-                </div>
-
-                <div className="max-w-5xl mx-auto px-6 text-center">
-                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-indigo-500/20 bg-indigo-500/5 text-[10px] font-black tracking-[0.2em] text-indigo-400 uppercase mb-10 shadow-[0_0_15px_rgba(99,102,241,0.1)]">
-                        <span className="relative flex h-2 w-2">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-500 opacity-75"></span>
-                            <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
-                        </span>
-                        Intel Database v.4.0
+            <header className="relative pt-32 pb-20">
+                <div className="max-w-4xl mx-auto px-6">
+                    <div className="text-center mb-16">
+                        <h1 className="text-4xl md:text-6xl font-bold mb-6 text-white">
+                            Education Hub
+                        </h1>
+                        <p className="text-white/70 text-lg max-w-2xl mx-auto">
+                            Master the methodologies used by bad actors and learn to identify truth in the digital age.
+                        </p>
                     </div>
 
-                    <h1 className="text-6xl md:text-8xl font-black mb-10 text-white tracking-tighter leading-[0.9] uppercase italic">
-                        Education <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-sky-400 not-italic">Hub</span>
-                    </h1>
-
-                    <p className="text-xl text-slate-400 mb-14 max-w-3xl mx-auto font-light leading-relaxed">
-                        A high-fidelity digital archive dedicated to deconstructing synthetic media, algorithmic bias, and the architecture of misinformation networks.
-                    </p>
-
-                    <div className="max-w-2xl mx-auto">
-                        <div className="relative group bg-slate-900/50 border border-white/5 rounded-2xl p-2 transition-all hover:border-indigo-500/30 focus-within:border-indigo-500 focus-within:shadow-[0_0_30px_rgba(99,102,241,0.2)]">
-                            <div className="flex items-center">
-                                <span className="material-symbols-outlined ml-4 text-slate-500">search</span>
-                                <input
-                                    className="w-full bg-transparent border-none focus:ring-0 text-white placeholder:text-slate-600 px-4 py-3 text-lg font-medium"
-                                    placeholder="Query the archive..."
-                                    type="text"
-                                />
-                                <button className="bg-indigo-600 hover:bg-indigo-500 text-slate-950 px-10 py-3.5 rounded-xl font-black text-xs tracking-widest uppercase transition-all shadow-lg shadow-indigo-600/20">
-                                    Execute
-                                </button>
-                            </div>
+                    {/* Large Search Bar */}
+                    <div className="mb-12">
+                        <div className="relative">
+                            <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-6 h-6 text-white/50" />
+                            <input
+                                className="w-full glass-input rounded-2xl py-6 px-16 text-white placeholder:text-white/50 text-lg"
+                                placeholder="Search articles, guides, and resources..."
+                                type="text"
+                            />
+                            <button className="absolute right-4 top-1/2 -translate-y-1/2 bg-white text-black px-6 py-3 rounded-xl font-semibold hover:bg-white/90 transition-colors">
+                                Search
+                            </button>
                         </div>
                     </div>
 
-                    <div className="flex flex-wrap justify-center gap-3 mt-16 mt-16">
+                    {/* Filter Pills */}
+                    <div className="flex flex-wrap justify-center gap-3">
                         {categories.map((cat, i) => (
                             <button
                                 key={i}
-                                className={`px-6 py-2.5 rounded-full text-[10px] font-black tracking-widest uppercase border transition-all ${i === 0
-                                    ? "bg-indigo-600 border-indigo-600 text-slate-950 shadow-lg shadow-indigo-600/20"
-                                    : "border-white/5 text-slate-500 hover:text-white hover:border-indigo-500/50"
-                                    }`}
+                                className={`px-6 py-3 rounded-full text-sm font-medium border transition-all ${
+                                    i === 0
+                                        ? "bg-white text-black border-white"
+                                        : "border-white/20 text-white/70 hover:text-white hover:border-white/40"
+                                }`}
                             >
                                 {cat}
                             </button>
@@ -123,67 +114,93 @@ export default function LearnPage() {
             </header>
 
             <main className="max-w-7xl mx-auto px-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                    {modules.map((module, i) => (
-                        <article key={i} className="glass-panel group rounded-3xl overflow-hidden transition-all duration-500 flex flex-col bg-slate-900/40 border-white/5 hover:border-indigo-500/40 shadow-2xl">
-                            <div className="relative overflow-hidden aspect-[16/10] grayscale group-hover:grayscale-0 transition-all duration-700">
+                {/* Featured Article Hero Card */}
+                    <div className="bento-item p-6">
+                    <div className="flex flex-col lg:flex-row gap-8">
+                        <div className="lg:w-1/2">
+                            <div className="flex items-center gap-2 mb-4">
+                                <span className="px-3 py-1 bg-blue-500/10 border border-blue-500/20 rounded-lg text-blue-400 text-sm font-medium">
+                                    FEATURED
+                                </span>
+                                <span className="text-white/60 text-sm">Deepfakes</span>
+                            </div>
+                            <h2 className="text-3xl font-bold text-white mb-4">
+                                Spotting Deepfakes: The Ultimate Guide to Visual Literacy
+                            </h2>
+                            <p className="text-white/70 text-lg mb-6">
+                                As synthetic media becomes indistinguishable from reality, learning the subtle markers of AI-generated content is critical.
+                            </p>
+                            <div className="flex items-center gap-6 text-sm text-white/60">
+                                <div className="flex items-center gap-2">
+                                    <Clock className="w-4 h-4" />
+                                    <span>8 min read</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <Star className="w-4 h-4" />
+                                    <span>Advanced</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="lg:w-1/2">
+                            <img
+                                alt="Featured article"
+                                className="w-full h-64 lg:h-full object-cover rounded-xl"
+                                src={modules[0].image}
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                {/* Masonry Bento Content Cards */}
+                <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
+                    {modules.slice(1).map((module, i) => (
+                        <article
+                            key={i}
+                            className="bento-item break-inside-avoid p-6"
+                        >
+                            <div className="relative mb-4 overflow-hidden rounded-xl aspect-video">
                                 <img
                                     alt={module.title}
-                                    className="w-full h-full object-cover opacity-60 group-hover:scale-110 group-hover:opacity-100 transition-all duration-700"
+                                    className="w-full h-full object-cover"
                                     src={module.image}
                                 />
-                                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent"></div>
-                                <div className="absolute top-6 left-6">
-                                    <span className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-[0.2em] border backdrop-blur-md shadow-lg ${module.tagColor}`}>
+                                <div className="absolute inset-0 bg-black/20"></div>
+                                <button className="absolute top-3 right-3 p-2 glass-panel rounded-full opacity-0 hover:opacity-100 transition-opacity">
+                                    <Bookmark className="w-4 h-4 text-white" />
+                                </button>
+                            </div>
+
+                            <div className="space-y-3">
+                                <div className="flex items-center gap-2">
+                                    <span className={`px-2 py-1 rounded text-xs font-medium ${module.tagColor.replace('text-', 'text-').replace('bg-', 'bg-').replace('border-', 'border-')}`}>
                                         {module.tag}
                                     </span>
                                 </div>
-                            </div>
 
-                            <div className="p-10 flex flex-col flex-grow">
-                                <div className="flex items-center gap-6 mb-6">
-                                    <span className="text-[10px] font-black text-indigo-500 uppercase flex items-center gap-2">
-                                        <span className="material-symbols-outlined text-[16px]">timer</span> {module.time}
-                                    </span>
-                                    <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest">{module.date}</span>
-                                </div>
-
-                                <h3 className="text-2xl font-black mb-6 text-white group-hover:text-indigo-400 transition-colors tracking-tight leading-tight uppercase italic">
+                                <h3 className="text-lg font-bold text-white line-clamp-2">
                                     {module.title}
                                 </h3>
 
-                                <p className="text-slate-400 text-sm font-light leading-relaxed mb-10 flex-grow">
+                                <p className="text-white/70 text-sm line-clamp-3">
                                     {module.desc}
                                 </p>
 
-                                <div className="flex items-center justify-between mt-auto pt-8 border-t border-white/5">
-                                    <button className="flex items-center gap-3 text-indigo-500 font-black text-[10px] uppercase tracking-widest group-hover:gap-5 transition-all">
-                                        Initialize Read <span className="material-symbols-outlined text-sm font-black">arrow_forward_ios</span>
-                                    </button>
+                                <div className="flex items-center justify-between text-sm text-white/60">
+                                    <div className="flex items-center gap-4">
+                                        <div className="flex items-center gap-1">
+                                            <Clock className="w-4 h-4" />
+                                            <span>{module.time.split(' ')[0]}</span>
+                                        </div>
+                                        <div className="flex items-center gap-1">
+                                            <BookOpen className="w-4 h-4" />
+                                            <span>Advanced</span>
+                                        </div>
+                                    </div>
+                                    <span>{module.date}</span>
                                 </div>
-                            </div>
+                             </div>
                         </article>
                     ))}
-                </div>
-
-                {/* Pagination Segment */}
-                <div className="mt-32 flex flex-col items-center gap-10">
-                    <div className="flex items-center gap-4">
-                        <button className="w-12 h-12 rounded-xl border border-white/5 flex items-center justify-center text-slate-600 hover:text-white hover:border-indigo-500 transition-all shadow-inner">
-                            <span className="material-symbols-outlined text-lg">chevron_left</span>
-                        </button>
-                        <button className="w-12 h-12 rounded-xl bg-indigo-600 text-slate-950 font-black text-sm shadow-lg shadow-indigo-600/20 transition-transform active:scale-95">01</button>
-                        <button className="w-12 h-12 rounded-xl border border-white/5 flex items-center justify-center text-slate-500 hover:text-white hover:border-indigo-500 transition-all text-sm font-black shadow-inner">02</button>
-                        <button className="w-12 h-12 rounded-xl border border-white/5 flex items-center justify-center text-slate-500 hover:text-white hover:border-indigo-500 transition-all text-sm font-black shadow-inner">03</button>
-                        <span className="px-3 text-slate-800 font-black tracking-widest uppercase text-xs">•••</span>
-                        <button className="w-12 h-12 rounded-xl border border-white/5 flex items-center justify-center text-slate-500 hover:text-white hover:border-indigo-500 transition-all text-sm font-black shadow-inner">12</button>
-                        <button className="w-12 h-12 rounded-xl border border-white/5 flex items-center justify-center text-slate-600 hover:text-white hover:border-indigo-500 transition-all shadow-inner">
-                            <span className="material-symbols-outlined text-lg">chevron_right</span>
-                        </button>
-                    </div>
-                    <div className="px-6 py-2 bg-slate-900 rounded-full border border-white/5 shadow-inner">
-                        <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em]">Displaying Records 001-006 / Total Sync: 072</p>
-                    </div>
                 </div>
             </main>
             <Footer />

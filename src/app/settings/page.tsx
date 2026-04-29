@@ -1,9 +1,10 @@
 "use client";
 
-import Navbar from "@/components/Footer";
-import Footer from "@/components/Footer";
+import AuthLayout from "@/components/AuthLayout";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
+import { User, Settings, Shield, Bell, Lock, Smartphone, Globe, Palette, Mail, Eye, EyeOff } from "lucide-react";
 
 interface UserProfile {
   name: string;
@@ -23,6 +24,8 @@ interface UserProfile {
 export default function SettingsPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
+
+  console.log("Settings page mounted");
   const [isSaving, setIsSaving] = useState(false);
   const [activeTab, setActiveTab] = useState("profile");
   const [profile, setProfile] = useState<UserProfile>({
@@ -71,6 +74,11 @@ export default function SettingsPage() {
     setIsSaving(true);
     try {
       const token = localStorage.getItem("auth_token");
+      if (!token) {
+        router.push("/login");
+        return;
+      }
+
       const response = await fetch("/api/user/profile", {
         method: "PUT",
         headers: {
@@ -118,59 +126,56 @@ export default function SettingsPage() {
   };
 
   const tabs = [
-    { id: "profile", name: "Profile", icon: "person" },
-    { id: "preferences", name: "Preferences", icon: "settings" },
-    { id: "security", name: "Security", icon: "security" },
-    { id: "notifications", name: "Notifications", icon: "notifications" }
+    { id: "profile", name: "Profile", icon: User },
+    { id: "preferences", name: "Preferences", icon: Settings },
+    { id: "security", name: "Security", icon: Shield },
+    { id: "notifications", name: "Notifications", icon: Bell }
   ];
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-slate-950 text-slate-200 font-sans flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mb-4"></div>
-          <p className="text-slate-400 uppercase tracking-[0.3em] font-mono text-xs">Loading Settings...</p>
+      <AuthLayout title="Settings" description="Manage your account settings and preferences">
+        <div className="flex items-center justify-center py-20">
+          <div className="text-center">
+            <div className="w-16 h-16 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-slate-400">Loading settings...</p>
+          </div>
         </div>
-      </div>
+      </AuthLayout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-200 font-sans">
-      <Navbar />
-
-      <div className="container mx-auto px-6 py-12">
-        <div className="mb-8">
-          <h1 className="text-4xl font-black text-white mb-2">Settings</h1>
-          <p className="text-slate-400">Manage your account settings and preferences</p>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          {/* Sidebar Navigation */}
-          <div className="lg:col-span-1">
-            <div className="glass-panel rounded-2xl p-6 border border-white/5">
-              <nav className="space-y-2">
-                {tabs.map((tab) => (
+    <AuthLayout title="Settings" description="Manage your account settings and preferences">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        {/* Sidebar Navigation */}
+        <div className="lg:col-span-1">
+          <div className="bg-[#06111f]/50 border border-white/10 rounded-xl p-6 backdrop-blur-sm">
+            <nav className="space-y-2">
+              {tabs.map((tab) => {
+                const IconComponent = tab.icon;
+                return (
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
                     className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-all ${
                       activeTab === tab.id
-                        ? "bg-indigo-600/10 text-indigo-400 border border-indigo-500/20"
-                        : "text-slate-500 hover:text-indigo-400 hover:bg-indigo-600/5"
+                        ? "bg-blue-500/20 text-blue-300 border border-blue-500/20"
+                        : "text-slate-400 hover:text-white hover:bg-white/5"
                     }`}
                   >
-                    <span className="material-symbols-outlined">{tab.icon}</span>
+                    <IconComponent className="w-5 h-5" />
                     {tab.name}
                   </button>
-                ))}
-              </nav>
-            </div>
+                );
+              })}
+            </nav>
           </div>
+        </div>
 
-          {/* Content Area */}
-          <div className="lg:col-span-3">
-            <div className="glass-panel rounded-2xl p-8 border border-white/5">
+        {/* Content Area */}
+        <div className="lg:col-span-3">
+          <div className="bg-[#06111f]/50 border border-white/10 rounded-xl p-8 backdrop-blur-sm">
               {/* Profile Tab */}
               {activeTab === "profile" && (
                 <div>
@@ -414,13 +419,10 @@ export default function SettingsPage() {
                   {isSaving ? "Saving..." : "Save Changes"}
                 </button>
               </div>
-            </div>
           </div>
         </div>
       </div>
-
-      <Footer />
-    </div>
+    </AuthLayout>
   );
 }
 

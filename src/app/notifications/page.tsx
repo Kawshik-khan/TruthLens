@@ -1,9 +1,10 @@
 "use client";
 
-import Navbar from "@/components/Footer";
-import Footer from "@/components/Footer";
+import AuthLayout from "@/components/AuthLayout";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
+import { Bell, CheckCircle, AlertTriangle, Info, X, Settings, Search, Filter } from "lucide-react";
 
 interface Notification {
   id: string;
@@ -20,6 +21,8 @@ interface Notification {
 export default function NotificationsPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
+
+  console.log("Notifications page mounted");
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [filter, setFilter] = useState<"all" | "unread" | "read">("all");
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
@@ -136,19 +139,19 @@ export default function NotificationsPage() {
 
   const getNotificationIcon = (type: string) => {
     switch (type) {
-      case "success": return "check_circle";
-      case "warning": return "warning";
-      case "error": return "error";
-      default: return "info";
+      case "success": return CheckCircle;
+      case "warning": return AlertTriangle;
+      case "error": return X;
+      default: return Info;
     }
   };
 
   const getNotificationColor = (type: string) => {
     switch (type) {
-      case "success": return "text-green-400 bg-green-500/10 border-green-500/20";
+      case "success": return "text-emerald-400 bg-emerald-500/10 border-emerald-500/20";
       case "warning": return "text-amber-400 bg-amber-500/10 border-amber-500/20";
       case "error": return "text-red-400 bg-red-500/10 border-red-500/20";
-      default: return "text-sky-400 bg-sky-500/10 border-sky-500/20";
+      default: return "text-blue-400 bg-blue-500/10 border-blue-500/20";
     }
   };
 
@@ -167,27 +170,27 @@ export default function NotificationsPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-slate-950 text-slate-200 font-sans flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mb-4"></div>
-          <p className="text-slate-400 uppercase tracking-[0.3em] font-mono text-xs">Loading Notifications...</p>
+      <AuthLayout title="Notifications" description="Stay updated with your analysis results and system updates">
+        <div className="flex items-center justify-center py-20">
+          <div className="text-center">
+            <div className="w-16 h-16 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-slate-400">Loading notifications...</p>
+          </div>
         </div>
-      </div>
+      </AuthLayout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-200 font-sans">
-      <Navbar />
-
-      <div className="container mx-auto px-6 py-12">
-        <div className="mb-8">
-          <h1 className="text-4xl font-black text-white mb-2">Notifications</h1>
-          <p className="text-slate-400">
-            {unreadCount > 0 ? `${unreadCount} unread notification${unreadCount > 1 ? 's' : ''}` : "All caught up!"}
-          </p>
-        </div>
-
+    <AuthLayout 
+      title="Notifications" 
+      description={
+        unreadCount > 0 
+          ? `${unreadCount} unread notification${unreadCount > 1 ? 's' : ''}` 
+          : "All caught up!"
+      }
+    >
+      <div>
         {/* Filters */}
         <div className="mb-8 flex flex-wrap gap-4">
           <div className="flex gap-2">
@@ -270,9 +273,10 @@ export default function NotificationsPage() {
               >
                 <div className="flex items-start gap-4">
                   <div className={`w-10 h-10 rounded-full flex items-center justify-center ${getNotificationColor(notification.type)}`}>
-                    <span className="material-symbols-outlined text-xl">
-                      {getNotificationIcon(notification.type)}
-                    </span>
+                    {(() => {
+                      const IconComponent = getNotificationIcon(notification.type);
+                      return <IconComponent className="w-5 h-5" />;
+                    })()}
                   </div>
 
                   <div className="flex-grow">
@@ -328,9 +332,7 @@ export default function NotificationsPage() {
           )}
         </div>
       </div>
-
-      <Footer />
-    </div>
+      </AuthLayout>
   );
 }
 

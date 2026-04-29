@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { config } from "@/lib/config";
+import { setAuthState } from "@/lib/auth";
 
 export default function AuthPage() {
   const [activeTab, setActiveTab] = useState<"login" | "register">("login");
@@ -36,6 +37,9 @@ export default function AuthPage() {
       });
 
       if (res.ok) {
+        const data = await res.json();
+        // Store the token and user data using auth utilities
+        setAuthState(data.token, data.user);
         router.push("/dashboard");
       } else {
         const data = await res.json();

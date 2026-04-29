@@ -3,12 +3,15 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
+import { Eye, EyeOff, Shield, Users, Activity, UserPlus, CheckCircle } from "lucide-react";
 import { config } from "@/lib/config";
 
 export default function RegisterPage() {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
     const [role, setRole] = useState(config.auth.defaultUserRole);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
@@ -40,115 +43,181 @@ export default function RegisterPage() {
     };
 
     return (
-        <div className="bg-[#0b0b1a] font-sans text-slate-200 min-h-screen flex items-center justify-center relative overflow-hidden">
-            {/* Background Decor */}
-            <div className="absolute inset-0 z-0 opacity-20" style={{ backgroundImage: "linear-gradient(to right, rgba(59, 130, 246, 0.1) 1px, transparent 1px), linear-gradient(to bottom, rgba(59, 130, 246, 0.1) 1px, transparent 1px)", backgroundSize: "40px 40px" }}></div>
-            <div className="absolute -top-[20%] -left-[10%] w-[500px] h-[500px] bg-indigo-500/10 rounded-full blur-[120px] z-0"></div>
-            <div className="absolute -bottom-[20%] -right-[10%] w-[500px] h-[500px] bg-indigo-500/10 rounded-full blur-[120px] z-0"></div>
+        <div className="min-h-screen flex relative overflow-hidden font-sans">
+            {/* Left Side - Brand Story */}
+            <div className="hidden lg:flex lg:w-1/2 relative items-center justify-center p-12">
+                <div className="max-w-md">
+                    <motion.div
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.2 }}
+                        className="text-center mb-12"
+                    >
+                        <h1 className="text-4xl font-bold text-white mb-4">Join TruthLens</h1>
+                        <p className="text-white/70 text-lg">Be part of the future of information verification</p>
+                    </motion.div>
 
-            <div className="w-full max-w-xl px-6 py-12 relative z-10">
-                {/* Brand Identity */}
-                <div className="text-center mb-10">
-                    <Link href="/" className="inline-flex items-center justify-center w-16 h-16 rounded-xl bg-indigo-500/20 border border-indigo-500/30 mb-6 shadow-[0_0_20px_rgba(99,102,241,0.2)] transition-all hover:bg-indigo-500/30">
-                        <span className="material-icons text-indigo-400 text-4xl">travel_explore</span>
-                    </Link>
-                    <h1 className="text-4xl font-bold tracking-tight text-white mb-2">{config.app.name}</h1>
-                    <p className="text-slate-400 text-lg">Join the mission to identify truth in a digital world.</p>
-                </div>
-
-                {/* Registration Card */}
-                <div className="glass-panel rounded-2xl p-8 md:p-10">
-                    <h2 className="text-xl font-semibold text-white mb-8 border-l-4 border-indigo-500 pl-4">Create Your Account</h2>
-                    <form className="space-y-6" onSubmit={handleRegister}>
-                        {error && (
-                            <div className="bg-red-500/10 border border-red-500/20 text-red-500 text-xs p-3 rounded-lg text-center">
-                                {error}
+                    <div className="space-y-6">
+                        <motion.div
+                            className="bento-item p-6"
+                            initial={{ opacity: 0, x: -50 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 0.4 }}
+                        >
+                            <div className="flex items-center gap-4 mb-3">
+                                <div className="w-10 h-10 bg-blue-500/10 rounded-lg flex items-center justify-center border border-blue-500/20">
+                                    <UserPlus className="w-5 h-5 text-blue-400" />
+                                </div>
+                                <div>
+                                    <h3 className="text-white font-semibold">Free to Start</h3>
+                                    <p className="text-white/60 text-sm">No credit card required</p>
+                                </div>
                             </div>
-                        )}
-                        {/* Name Field */}
-                        <div className="space-y-2">
-                            <label className="block text-sm font-medium text-slate-400" htmlFor="full-name">Full Name</label>
-                            <div className="relative rounded-lg border border-white/10 transition-all duration-300 focus-within:border-indigo-500/50 focus-within:ring-1 focus-within:ring-indigo-500/20">
-                                <span className="material-icons absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-sm">person</span>
+                        </motion.div>
+
+                        <motion.div
+                            className="bento-item p-6"
+                            initial={{ opacity: 0, x: -50 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 0.6 }}
+                        >
+                            <div className="flex items-center gap-4 mb-3">
+                                <div className="w-10 h-10 bg-emerald-500/10 rounded-lg flex items-center justify-center border border-emerald-500/20">
+                                    <Shield className="w-5 h-5 text-emerald-400" />
+                                </div>
+                                <div>
+                                    <h3 className="text-white font-semibold">Secure & Private</h3>
+                                    <p className="text-white/60 text-sm">Your data stays protected</p>
+                                </div>
+                            </div>
+                        </motion.div>
+
+                        <motion.div
+                            className="bento-item p-6"
+                            initial={{ opacity: 0, x: -50 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 0.8 }}
+                        >
+                            <div className="flex items-center gap-4 mb-3">
+                                <div className="w-10 h-10 bg-indigo-500/10 rounded-lg flex items-center justify-center border border-indigo-500/20">
+                                    <Activity className="w-5 h-5 text-indigo-400" />
+                                </div>
+                                <div>
+                                    <h3 className="text-white font-semibold">Instant Access</h3>
+                                    <p className="text-white/60 text-sm">Start verifying claims immediately</p>
+                                </div>
+                            </div>
+                        </motion.div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Right Side - Auth Panel */}
+            <div className="flex-1 flex items-center justify-center p-6">
+                <div className="w-full max-w-md">
+                    {/* Brand Identity - Mobile Only */}
+                    <div className="text-center mb-8 lg:hidden">
+                        <Link href="/" className="inline-flex items-center justify-center p-3 rounded-xl glass-panel border-white/10 mb-4">
+                            <Shield className="w-8 h-8 text-white" />
+                        </Link>
+                        <h1 className="text-3xl font-bold text-white tracking-tight">TruthLens</h1>
+                        <p className="text-white/60 text-lg">Create your account</p>
+                    </div>
+
+                    {/* Registration Card */}
+                    <motion.div
+                        className="glass-panel rounded-2xl p-8"
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.3 }}
+                    >
+                        <form className="space-y-6" onSubmit={handleRegister}>
+                            {error && (
+                                <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-sm p-3 rounded-lg text-center">
+                                    {error}
+                                </div>
+                            )}
+                            {/* Name Field */}
+                            <div>
+                                <label className="block text-sm font-medium text-white/70 mb-2" htmlFor="full-name">Full Name</label>
                                 <input
-                                    className="block w-full bg-slate-900/50 border-0 pl-10 pr-4 py-3 text-white focus:ring-0 focus:outline-none placeholder:text-slate-600 rounded-lg"
-                                    id="full-name" placeholder="Alex Thorne" required type="text"
+                                    className="w-full glass-input rounded-lg py-3 px-4 text-white outline-none transition-all placeholder:text-white/50"
+                                    id="full-name" placeholder="Enter your full name" required type="text"
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
                                 />
                             </div>
-                        </div>
 
-                        {/* Email Field */}
-                        <div className="space-y-2">
-                            <label className="block text-sm font-medium text-slate-400" htmlFor="email">Email Address</label>
-                            <div className="relative rounded-lg border border-white/10 transition-all duration-300 focus-within:border-indigo-500/50 focus-within:ring-1 focus-within:ring-indigo-500/20">
-                                <span className="material-icons absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-sm">alternate_email</span>
+                            {/* Email Field */}
+                            <div>
+                                <label className="block text-sm font-medium text-white/70 mb-2" htmlFor="email">Email Address</label>
                                 <input
-                                    className="block w-full bg-slate-900/50 border-0 pl-10 pr-4 py-3 text-white focus:ring-0 focus:outline-none placeholder:text-slate-600 rounded-lg"
-                                    id="email" placeholder={`alex@${config.auth.domainWhitelist[0] || 'example.com'}`} required type="email"
+                                    className="w-full glass-input rounded-lg py-3 px-4 text-white outline-none transition-all placeholder:text-white/50"
+                                    id="email" placeholder="Enter your email" required type="email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                 />
                             </div>
-                        </div>
 
-                        {/* Password Field */}
-                        <div className="space-y-2">
-                            <label className="block text-sm font-medium text-slate-400" htmlFor="password">Security Password</label>
-                            <div className="relative rounded-lg border border-white/10 transition-all duration-300 focus-within:border-indigo-500/50 focus-within:ring-1 focus-within:ring-indigo-500/20">
-                                <span className="material-icons absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-sm">lock</span>
-                                <input
-                                    className="block w-full bg-slate-900/50 border-0 pl-10 pr-12 py-3 text-white focus:ring-0 focus:outline-none placeholder:text-slate-600 rounded-lg"
-                                    id="password" placeholder="••••••••••••" required type="password"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                />
-                            </div>
-                        </div>
-
-                        {/* Role Selection */}
-                        <div className="space-y-3">
-                            <label className="block text-sm font-medium text-slate-400">Identify Your Role</label>
-                            <div className="grid grid-cols-3 gap-3">
-                                {config.auth.availableRoles.filter(r => r !== 'ADMIN').map((r) => (
+                            {/* Password Field */}
+                            <div>
+                                <label className="block text-sm font-medium text-white/70 mb-2" htmlFor="password">Password</label>
+                                <div className="relative">
+                                    <input
+                                        className="w-full glass-input rounded-lg py-3 px-4 pr-12 text-white outline-none transition-all placeholder:text-white/50"
+                                        id="password" placeholder="Create a password" required type={showPassword ? "text" : "password"}
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                    />
                                     <button
-                                        key={r}
                                         type="button"
-                                        onClick={() => setRole(r)}
-                                        className={`flex flex-col items-center justify-center p-3 rounded-lg border transition-all ${role === r ? "border-indigo-500/40 bg-indigo-500/10 text-indigo-400" : "border-white/10 bg-white/5 text-slate-400 hover:border-slate-500"}`}
+                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-white/50 hover:text-white/70 transition-colors"
+                                        onClick={() => setShowPassword(!showPassword)}
                                     >
-                                        <span className="material-icons text-lg mb-1">{r === "STUDENT" ? "school" : r === "EDUCATOR" ? "co_present" : "science"}</span>
-                                        <span className="text-[10px] uppercase tracking-wider font-bold">{r}</span>
+                                        {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                                     </button>
-                                ))}
+                                </div>
                             </div>
-                        </div>
 
-                        {/* Primary CTA */}
-                        <div className="pt-4">
+                            {/* Role Selection */}
+                            <div>
+                                <label className="block text-sm font-medium text-white/70 mb-3">Your Role</label>
+                                <div className="grid grid-cols-2 gap-3">
+                                    {config.auth.availableRoles.filter(r => r !== 'ADMIN').map((r) => (
+                                        <button
+                                            key={r}
+                                            type="button"
+                                            onClick={() => setRole(r)}
+                                            className={`flex items-center justify-center p-3 rounded-lg border transition-all ${role === r ? "border-blue-500/40 bg-blue-500/10 text-blue-400" : "border-white/10 glass-panel text-white/70 hover:border-white/20"}`}
+                                        >
+                                            <span className="text-sm font-medium">{r}</span>
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Primary CTA */}
                             <button
                                 type="submit"
                                 disabled={isLoading}
-                                className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-4 rounded-lg shadow-[0_0_20px_rgba(99,102,241,0.3)] transition-all flex items-center justify-center gap-2 group uppercase text-sm tracking-widest disabled:opacity-50"
+                                className="w-full bg-white text-black font-semibold py-3.5 rounded-lg hover:bg-white/90 transition-all active:scale-[0.98] flex items-center justify-center gap-2 disabled:opacity-50"
                             >
-                                {isLoading ? "Joining..." : `Join ${config.app.name}`}
-                                <span className="material-icons text-sm transition-transform group-hover:translate-x-1">arrow_forward</span>
+                                {isLoading ? "Creating account..." : "Create Account"}
                             </button>
-                        </div>
-                    </form>
+                        </form>
 
-                    {/* Card Footer */}
-                    <div className="mt-8 pt-8 border-t border-white/5 flex flex-col items-center gap-4">
-                        <p className="text-slate-400 text-sm">
-                            Already have an account?
-                            <Link className="text-indigo-400 hover:underline underline-offset-4 font-semibold ml-2" href="/login">Log in</Link>
-                        </p>
-                        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
-                            <span className="material-icons text-emerald-500 text-[12px]">verified_user</span>
-                            <span className="text-[10px] font-bold text-emerald-500 tracking-widest uppercase">Secure 256-bit Registration</span>
+                        {/* Card Footer */}
+                        <div className="mt-8 pt-8 border-t border-white/10 flex flex-col items-center gap-4">
+                            <p className="text-white/60 text-sm">
+                                Already have an account?
+                                <Link className="text-blue-400 hover:text-blue-300 font-semibold ml-2" href="/login">Sign in</Link>
+                            </p>
+                            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full glass-panel border-emerald-500/20">
+                                <CheckCircle className="w-4 h-4 text-emerald-400" />
+                                <span className="text-xs font-bold text-emerald-400 tracking-widest uppercase">Secure Registration</span>
+                            </div>
                         </div>
-                    </div>
+                    </motion.div>
                 </div>
             </div>
         </div>

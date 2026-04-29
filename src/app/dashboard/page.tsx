@@ -1,9 +1,12 @@
 "use client";
 
-import Sidebar from "@/components/Sidebar";
+import AuthLayout from "@/components/AuthLayout";
 import Footer from "@/components/Footer";
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { User, Activity, Shield, Search, Bot, CheckCircle, TrendingUp, Target, Award } from "lucide-react";
+import { getAuthHeader, requireAuth } from "@/lib/auth";
 
 interface UserInfo {
     id: string;
@@ -25,11 +28,16 @@ export default function DashboardPage() {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
+        // Check authentication first
+        requireAuth();
+
         const fetchData = async () => {
             try {
+                const headers = getAuthHeader();
+                
                 const [historyRes, userRes] = await Promise.all([
-                    fetch("/api/submissions"),
-                    fetch("/api/auth/me"),
+                    fetch("/api/submissions", { headers }),
+                    fetch("/api/auth/me", { headers }),
                 ]);
 
                 if (historyRes.ok) {
@@ -56,190 +64,256 @@ export default function DashboardPage() {
     const trustTier = computeTrustTier(avgScore);
 
     return (
-        <div className="flex min-h-screen bg-[#0b0b1a] grid-bg">
-            <Sidebar />
-
-            <main className="flex-1 ml-64 p-8 max-w-7xl">
-                {/* Header Section */}
-                <div className="flex justify-between items-end mb-8">
-                    <div>
-                        <h2 className="text-3xl font-bold tracking-tight mb-2 text-white">User Dashboard</h2>
-                        <p className="text-slate-400">Welcome back{user ? `, ${user.name}` : ""}. Monitoring global truth metrics.</p>
-                    </div>
-                    <div className="flex items-center gap-4">
-                        <div className="text-right">
-                            <div className="text-xs font-bold uppercase tracking-widest text-slate-500">System Status</div>
-                            <div className="text-sm font-medium text-emerald-500 flex items-center gap-2">
-                                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                                Live Sync Active
+        <AuthLayout>
+            <main className="max-w-7xl">
+                <div className="bento-grid">
+                    {/* Top Hero Row */}
+                    <motion.div
+                        className="bento-item col-span-12 md:col-span-6 p-8"
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.1 }}
+                    >
+                        <div className="flex items-center gap-4 mb-6">
+                            <div className="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center border border-blue-500/20">
+                                <User className="w-6 h-6 text-blue-400" />
+                            </div>
+                            <div>
+                                <h2 className="text-2xl font-bold text-white">Welcome back{user ? `, ${user.name}` : ""}</h2>
+                                <p className="text-white/60">Ready to verify the truth?</p>
                             </div>
                         </div>
-                    </div>
-                </div>
-
-                {/* Profile Glass Card */}
-                <section className="glass rounded-2xl p-8 mb-10 relative overflow-hidden">
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-600/10 blur-[100px] rounded-full -mr-20 -mt-20"></div>
-                    <div className="flex flex-col md:flex-row md:items-center gap-8 relative z-10">
-                        <div className="flex-1">
-                            <div className="flex items-center gap-3 mb-4">
-                                <h3 className="text-2xl font-bold text-white">{user?.name || "Loading..."}</h3>
-                                <span className="bg-indigo-600/20 text-indigo-400 text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full border border-indigo-600/30">
-                                    {historyItems.length > 0 ? trustTier.label : "New Member"}
-                                </span>
-                                {user?.role && (
-                                    <span className="bg-slate-700/30 text-slate-400 text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full border border-slate-600/30">
-                                        {user.role}
-                                    </span>
-                                )}
+                        <div className="flex items-center gap-4">
+                            <div className="px-4 py-2 bg-indigo-500/10 border border-indigo-500/20 rounded-lg">
+                                <span className="text-indigo-400 font-semibold text-sm">{historyItems.length > 0 ? trustTier.label : "New Member"}</span>
                             </div>
-                            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-                                <div>
-                                    <div className="text-slate-500 text-xs font-semibold uppercase mb-1">Total Analysis</div>
-                                    <div className="text-2xl font-bold text-indigo-500">{historyItems.length}</div>
-                                </div>
-                                <div>
-                                    <div className="text-slate-500 text-xs font-semibold uppercase mb-1">Average Score</div>
-                                    <div className="text-2xl font-bold text-white">
-                                        {historyItems.length > 0 ? avgScore : "--"}
-                                    </div>
-                                </div>
-                                <div>
-                                    <div className="text-slate-500 text-xs font-semibold uppercase mb-1">Member Since</div>
-                                    <div className="text-2xl font-bold text-white">
-                                        {user ? new Date(user.createdAt).toLocaleDateString("en-US", { month: "short", year: "numeric" }) : "--"}
-                                    </div>
-                                </div>
-                                <div>
-                                    <div className="text-slate-500 text-xs font-semibold uppercase mb-1">Verified</div>
-                                    <div className="text-2xl font-bold text-emerald-500">
-                                        {historyItems.filter(i => i.status === "VERIFIED").length}
-                                    </div>
-                                </div>
+                            {user?.role && (
+                                <span className="text-white/60 text-sm">{user.role}</span>
+                            )}
+                        </div>
+                    </motion.div>
+
+                    <motion.div
+                        className="bento-item col-span-12 md:col-span-3 p-8 text-center"
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.2 }}
+                    >
+                        <h3 className="text-white font-semibold mb-4">Trust Tier</h3>
+                        <div className="text-4xl font-bold text-white mb-2">{trustTier.level}</div>
+                        <div className="text-white/60 text-sm">Level {trustTier.level}</div>
+                    </motion.div>
+
+                    <motion.div
+                        className="bento-item col-span-12 md:col-span-3 p-8"
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.3 }}
+                    >
+                        <h3 className="text-white font-semibold mb-4">Weekly Stats</h3>
+                        <div className="space-y-2">
+                            <div className="flex justify-between text-sm">
+                                <span className="text-white/60">This Week</span>
+                                <span className="text-white">{historyItems.filter(item => {
+                                    const itemDate = new Date(item.createdAt);
+                                    const weekAgo = new Date();
+                                    weekAgo.setDate(weekAgo.getDate() - 7);
+                                    return itemDate >= weekAgo;
+                                }).length}</span>
+                            </div>
+                            <div className="flex justify-between text-sm">
+                                <span className="text-white/60">Avg Score</span>
+                                <span className="text-white">{historyItems.length > 0 ? avgScore : "--"}%</span>
                             </div>
                         </div>
-                    </div>
-                </section>
+                    </motion.div>
 
-                {/* AI Quick Actions */}
-                <section className="mb-10">
-                    <h3 className="text-xl font-bold text-white mb-6">AI Tools</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <a href="/analyze" className="group p-6 rounded-2xl border border-indigo-500/10 bg-indigo-600/[0.03] hover:bg-indigo-600/[0.06] transition-all">
-                            <div className="flex items-center gap-3 mb-3">
-                                <div className="w-10 h-10 rounded-lg bg-indigo-600/10 border border-indigo-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
-                                    <span className="material-symbols-outlined text-indigo-400">neurology</span>
+                    {/* Second Row - AI Tools */}
+                    <motion.div
+                        className="bento-item col-span-12 md:col-span-4 p-8"
+                        initial={{ opacity: 0, y: 30 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.1 }}
+                    >
+                        <Link href="/submit" className="block h-full">
+                            <div className="flex items-center gap-4 mb-4">
+                                <div className="w-10 h-10 bg-blue-500/10 rounded-lg flex items-center justify-center border border-blue-500/20">
+                                    <Search className="w-5 h-5 text-blue-400" />
                                 </div>
-                                <h4 className="text-sm font-bold text-white">AI Analyze</h4>
+                                <h3 className="text-white font-semibold">Analyze</h3>
                             </div>
-                            <p className="text-xs text-slate-500 leading-relaxed">Fake news detection, sentiment, summarization, claim extraction &amp; source credibility.</p>
-                        </a>
-                        <a href="/analyze" className="group p-6 rounded-2xl border border-purple-500/10 bg-purple-600/[0.03] hover:bg-purple-600/[0.06] transition-all">
-                            <div className="flex items-center gap-3 mb-3">
-                                <div className="w-10 h-10 rounded-lg bg-purple-600/10 border border-purple-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
-                                    <span className="material-symbols-outlined text-purple-400">smart_toy</span>
-                                </div>
-                                <h4 className="text-sm font-bold text-white">AI Chat</h4>
-                            </div>
-                            <p className="text-xs text-slate-500 leading-relaxed">Chat with our AI about fact-checking, media literacy, and misinformation detection.</p>
-                        </a>
-                        <a href="/submit" className="group p-6 rounded-2xl border border-cyan-500/10 bg-cyan-600/[0.03] hover:bg-cyan-600/[0.06] transition-all">
-                            <div className="flex items-center gap-3 mb-3">
-                                <div className="w-10 h-10 rounded-lg bg-cyan-600/10 border border-cyan-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
-                                    <span className="material-symbols-outlined text-cyan-400">fact_check</span>
-                                </div>
-                                <h4 className="text-sm font-bold text-white">Verify Claim</h4>
-                            </div>
-                            <p className="text-xs text-slate-500 leading-relaxed">Submit a claim for cross-reference verification against trusted sources.</p>
-                        </a>
-                    </div>
-                </section>
+                            <p className="text-white/70 text-sm">Submit claims for AI-powered verification</p>
+                        </Link>
+                    </motion.div>
 
-                {/* History Section */}
-                <section id="history">
-                    <div className="flex items-center justify-between mb-6">
-                        <h3 className="text-xl font-bold text-white">Submission History</h3>
-                    </div>
+                    <motion.div
+                        className="bento-item col-span-12 md:col-span-4 p-8"
+                        initial={{ opacity: 0, y: 30 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.2 }}
+                    >
+                        <Link href="/analyze" className="block h-full">
+                            <div className="flex items-center gap-4 mb-4">
+                                <div className="w-10 h-10 bg-emerald-500/10 rounded-lg flex items-center justify-center border border-emerald-500/20">
+                                    <Shield className="w-5 h-5 text-emerald-400" />
+                                </div>
+                                <h3 className="text-white font-semibold">Verify</h3>
+                            </div>
+                            <p className="text-white/70 text-sm">Deep analysis with source validation</p>
+                        </Link>
+                    </motion.div>
 
-                    <div className="space-y-4">
+                    <motion.div
+                        className="bento-item col-span-12 md:col-span-4 p-8"
+                        initial={{ opacity: 0, y: 30 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.3 }}
+                    >
+                        <Link href="/analyze" className="block h-full">
+                            <div className="flex items-center gap-4 mb-4">
+                                <div className="w-10 h-10 bg-indigo-500/10 rounded-lg flex items-center justify-center border border-indigo-500/20">
+                                    <Bot className="w-5 h-5 text-indigo-400" />
+                                </div>
+                                <h3 className="text-white font-semibold">AI Chat</h3>
+                            </div>
+                            <p className="text-white/70 text-sm">Chat with AI about fact-checking</p>
+                        </Link>
+                    </motion.div>
+
+                    {/* Third Row - Submission History */}
+                    <motion.div
+                        className="bento-item col-span-12 p-8"
+                        initial={{ opacity: 0, y: 30 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.1 }}
+                    >
+                        <h3 className="text-xl font-bold text-white mb-6">Recent Submissions</h3>
                         {isLoading ? (
-                            <div className="flex justify-center py-20 text-slate-500 uppercase tracking-widest font-mono text-xs animate-pulse">
-                                Retrieving Historical Data...
+                            <div className="flex justify-center py-12">
+                                <div className="text-white/60">Loading history...</div>
                             </div>
                         ) : historyItems.length === 0 ? (
-                            <div className="flex flex-col items-center justify-center py-20 bg-slate-900/40 border border-white/5 rounded-xl">
-                                <span className="material-symbols-outlined text-4xl text-slate-700 mb-4">history</span>
-                                <p className="text-slate-500 text-sm">No analysis history found.</p>
-                                <Link href="/submit" className="mt-4 text-indigo-400 hover:text-indigo-300 text-xs font-bold uppercase tracking-widest">
-                                    Start New Analysis
+                            <div className="text-center py-12">
+                                <Activity className="w-12 h-12 text-white/30 mx-auto mb-4" />
+                                <p className="text-white/60 mb-4">No analysis history yet</p>
+                                <Link href="/submit" className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300">
+                                    Start your first analysis →
                                 </Link>
                             </div>
                         ) : (
-                            historyItems.map((item) => {
-                                let sourceDisplay = "Text Claim";
-                                try {
-                                    if (item.url) sourceDisplay = new URL(item.url).hostname;
-                                } catch { /* keep default */ }
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                {historyItems.slice(0, 6).map((item) => {
+                                    let sourceDisplay = "Text Claim";
+                                    try {
+                                        if (item.url) sourceDisplay = new URL(item.url).hostname;
+                                    } catch { /* keep default */ }
 
-                                return (
-                                    <div
-                                        key={item.id}
-                                        className="group flex items-center gap-6 p-4 bg-slate-900/40 border border-white/5 rounded-xl hover:border-indigo-600/50 transition-all hover:bg-indigo-600/[0.02]"
-                                    >
-                                        <div className="w-16 h-12 rounded overflow-hidden flex-shrink-0 bg-slate-800 relative flex items-center justify-center">
-                                            <span className="material-symbols-outlined text-slate-600 text-sm">{item.url ? "link" : "article"}</span>
-                                        </div>
-                                        <div className="flex-1 min-w-0">
-                                            <div className="flex items-center gap-2 text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">
-                                                <span>{sourceDisplay}</span>
-                                                <span>•</span>
-                                                <span>{new Date(item.createdAt).toLocaleDateString()}</span>
-                                            </div>
-                                            <h4 className="text-lg font-semibold truncate text-white group-hover:text-indigo-400 transition-colors">
-                                                {item.title}
-                                            </h4>
-                                        </div>
-                                        <div className="flex items-center gap-8">
-                                            <div className="text-center">
-                                                <div className="text-[10px] font-bold text-slate-500 uppercase mb-1">Trust Score</div>
-                                                <div className={`text-lg font-bold ${item.trustScore > 70 ? "text-emerald-500" : item.trustScore > 40 ? "text-amber-500" : "text-red-500"}`}>
-                                                    {item.trustScore}/100
-                                                </div>
-                                            </div>
-                                            <div className={`px-3 py-1 rounded text-xs font-bold border ${item.status === "VERIFIED" ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/20" :
-                                                    item.status === "RELIABLE" ? "bg-indigo-500/10 text-indigo-400 border-indigo-500/20" :
-                                                        item.status === "FLAGGED" ? "bg-amber-500/10 text-amber-500 border-amber-500/20" :
-                                                            "bg-red-500/10 text-red-500 border-red-500/20"
+                                    return (
+                                        <Link
+                                            key={item.id}
+                                            href={`/report?id=${item.id}`}
+                                            className="bento-item p-6 hover:scale-[1.02] transition-transform"
+                                        >
+                                            <div className="flex items-center gap-3 mb-3">
+                                                <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                                                    item.status === "VERIFIED" ? "bg-emerald-500/20" :
+                                                    item.status === "RELIABLE" ? "bg-blue-500/20" :
+                                                    item.status === "FLAGGED" ? "bg-amber-500/20" : "bg-red-500/20"
                                                 }`}>
-                                                {item.status}
+                                                    <CheckCircle className={`w-4 h-4 ${
+                                                        item.status === "VERIFIED" ? "text-emerald-400" :
+                                                        item.status === "RELIABLE" ? "text-blue-400" :
+                                                        item.status === "FLAGGED" ? "text-amber-400" : "text-red-400"
+                                                    }`} />
+                                                </div>
+                                                <div className="text-sm text-white/60">{sourceDisplay}</div>
                                             </div>
-                                            <div className="flex gap-2">
-                                                <Link
-                                                    href="/analyze"
-                                                    className="p-2 text-slate-500 hover:text-purple-400 hover:bg-purple-600/10 rounded transition-all"
-                                                    title="AI Analysis"
-                                                >
-                                                    <span className="material-symbols-outlined">neurology</span>
-                                                </Link>
-                                                <Link
-                                                    href={`/report?id=${item.id}`}
-                                                    className="p-2 text-slate-500 hover:text-indigo-400 hover:bg-indigo-600/10 rounded transition-all"
-                                                    title="View Report"
-                                                >
-                                                    <span className="material-symbols-outlined">visibility</span>
-                                                </Link>
+                                            <h4 className="text-white font-semibold mb-2 line-clamp-2">{item.title}</h4>
+                                            <div className="flex items-center justify-between text-sm">
+                                                <span className="text-white/60">{item.trustScore}%</span>
+                                                <span className="text-white/60">{new Date(item.createdAt).toLocaleDateString()}</span>
                                             </div>
-                                        </div>
-                                    </div>
-                                );
-                            })
+                                        </Link>
+                                    );
+                                })}
+                            </div>
                         )}
-                    </div>
-                </section>
+                    </motion.div>
+
+                    {/* Fourth Row - Analytics */}
+                    <motion.div
+                        className="bento-item col-span-12 md:col-span-3 p-8 text-center"
+                        initial={{ opacity: 0, y: 30 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.1 }}
+                    >
+                        <h3 className="text-white font-semibold mb-4">Claims Analyzed</h3>
+                        <div className="text-4xl font-bold text-white mb-2">{historyItems.length}</div>
+                        <div className="text-white/60 text-sm">Total submissions</div>
+                    </motion.div>
+
+                    <motion.div
+                        className="bento-item col-span-12 md:col-span-3 p-8 text-center"
+                        initial={{ opacity: 0, y: 30 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.2 }}
+                    >
+                        <h3 className="text-white font-semibold mb-4">Accuracy Trend</h3>
+                        <div className="text-4xl font-bold text-white mb-2">{historyItems.length > 0 ? avgScore : 0}%</div>
+                        <div className="flex items-center justify-center gap-2">
+                            <TrendingUp className="w-4 h-4 text-emerald-400" />
+                            <span className="text-emerald-400 text-sm">Improving</span>
+                        </div>
+                    </motion.div>
+
+                    <motion.div
+                        className="bento-item col-span-12 md:col-span-3 p-8 text-center"
+                        initial={{ opacity: 0, y: 30 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.3 }}
+                    >
+                        <h3 className="text-white font-semibold mb-4">Fake vs Real</h3>
+                        <div className="text-4xl font-bold text-white mb-2">
+                            {historyItems.length > 0 ? Math.round((historyItems.filter(i => i.status === "VERIFIED" || i.status === "RELIABLE").length / historyItems.length) * 100) : 0}%
+                        </div>
+                        <div className="text-white/60 text-sm">Verified claims</div>
+                    </motion.div>
+
+                    <motion.div
+                        className="bento-item col-span-12 md:col-span-3 p-8 text-center"
+                        initial={{ opacity: 0, y: 30 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.4 }}
+                    >
+                        <h3 className="text-white font-semibold mb-4">Analysis Streak</h3>
+                        <div className="text-4xl font-bold text-white mb-2">
+                            {historyItems.filter(item => {
+                                const itemDate = new Date(item.createdAt);
+                                const today = new Date();
+                                const diffTime = Math.abs(today.getTime() - itemDate.getTime());
+                                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                                return diffDays <= 7;
+                            }).length}
+                        </div>
+                        <div className="flex items-center justify-center gap-2">
+                            <Award className="w-4 h-4 text-yellow-400" />
+                            <span className="text-yellow-400 text-sm">This week</span>
+                        </div>
+                    </motion.div>
+                </div>
+
                 <div className="mt-20">
                     <Footer />
                 </div>
             </main>
-        </div>
+        </AuthLayout>
     );
 }

@@ -1,15 +1,14 @@
-import { db } from "@/lib/db";
-import bcrypt from "bcryptjs";
-import { SignJWT } from "jose";
-import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
-import { config, validateEmailDomain, getCookieSettings, getTokenExpiration } from "@/lib/config";
+import { NextRequest, NextResponse } from 'next/server';
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
+import { db } from '@/lib/db';
 
-const secret = new TextEncoder().encode(config.security.authSecret);
+const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
     try {
-        const { email, password } = await req.json();
+        const body = await req.json();
+        const { email, password } = body;
 
         if (!email || !password) {
             return NextResponse.json(
@@ -18,21 +17,11 @@ export async function POST(req: Request) {
             );
         }
 
-        // Email validation removed - allow any domain
-        // if (config.auth.domainWhitelist.length > 0 && !validateEmailDomain(email)) {
-        //     console.log('Email validation failed for:', email, 'Domain:', email.split('@')[1], 'Whitelist:', config.auth.domainWhitelist);
-        //     return NextResponse.json(
-        //         { error: "Email domain is not allowed" },
-        //         { status: 400 }
-        //     );
-        // }
-
+        // Find user in the real Supabase database
         const user = await db.user.findUnique({
-            where: { email },
+            where: { email }
         });
         
-        console.log('User lookup for email:', email, 'Found user:', user);
-
         if (!user) {
             return NextResponse.json(
                 { error: "Invalid credentials" },
@@ -40,10 +29,9 @@ export async function POST(req: Request) {
             );
         }
 
+        // Verify password
         const isPasswordValid = await bcrypt.compare(password, user.password);
         
-        console.log('Password comparison result:', isPasswordValid);
-
         if (!isPasswordValid) {
             return NextResponse.json(
                 { error: "Invalid credentials" },
@@ -51,22 +39,27 @@ export async function POST(req: Request) {
             );
         }
 
-        const token = await new SignJWT({
-            userId: user.id,
-            email: user.email,
-            role: user.role
-        })
-            .setProtectedHeader({ alg: "HS256" })
-            .setExpirationTime(getTokenExpiration())
-            .sign(secret);
-
-        const response = NextResponse.json(
-            { message: "Login successful", user: { id: user.id, name: user.name, email: user.email, role: user.role } },
-            { status: 200 }
+        // Generate JWT token
+        const token = jwt.sign(
+            {
+                userId: user.id,
+                email: user.email,
+                role: user.role
+            },
+            JWT_SECRET,
+            { expiresIn: '24h' }
         );
 
-        // Set cookie with configurable settings
-        (await cookies()).set("auth_token", token, getCookieSettings());
+        const response = NextResponse.json({
+            message: "Login successful",
+            token: token,
+            user: { 
+                id: user.id, 
+                name: user.name, 
+                email: user.email, 
+                role: user.role 
+            }
+        });
 
         return response;
     } catch (error) {

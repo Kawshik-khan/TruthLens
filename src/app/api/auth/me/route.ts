@@ -1,38 +1,29 @@
-import { db } from "@/lib/db";
-import { jwtVerify } from "jose";
-import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
+import { NextRequest, NextResponse } from 'next/server';
+import { requireAuth } from '@/lib/jwt';
 
-const secret = new TextEncoder().encode(process.env.AUTH_SECRET);
-
-export async function GET() {
+export async function GET(request: NextRequest) {
     try {
-        const token = (await cookies()).get("auth_token")?.value;
-        if (!token) {
-            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        const authResult = await requireAuth(request);
+        if (authResult.error) {
+            return NextResponse.json({ error: authResult.error }, { status: authResult.status });
         }
 
-        const { payload } = await jwtVerify(token, secret);
-        const userId = payload.userId as string;
+        if (!authResult.user) {
+            return NextResponse.json({ error: 'User not found' }, { status: 401 });
+        }
 
-        const user = await db.user.findUnique({
-            where: { id: userId },
-            select: {
-                id: true,
-                name: true,
-                email: true,
-                role: true,
-                createdAt: true,
-            },
+        const user = authResult.user;
+
+        // Return user data in the format expected by the frontend
+        return NextResponse.json({
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+            createdAt: user.createdAt,
         });
-
-        if (!user) {
-            return NextResponse.json({ error: "User not found" }, { status: 404 });
-        }
-
-        return NextResponse.json(user);
     } catch (error) {
-        console.error("Auth me error:", error);
-        return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+        console.error('Auth me error:', error);
+        return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
     }
 }

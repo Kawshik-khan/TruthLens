@@ -2,67 +2,139 @@
 
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { motion } from "framer-motion";
+import { FileText, ArrowRight, CheckCircle, Shield, Database, Zap, Download } from "lucide-react";
 
 export default function MethodologyPage() {
     return (
-        <div className="min-h-screen bg-slate-950 text-slate-200 font-sans selection:bg-indigo-600/30 selection:text-white pb-24 relative overflow-hidden">
-            {/* Background Decoration */}
-            <div className="fixed inset-0 grid-bg pointer-events-none opacity-30"></div>
-
+        <div className="min-h-screen text-white font-sans pb-24">
             <Navbar />
 
-            <main className="relative pt-40">
-                {/* Hero Section */}
-                <section className="max-w-7xl mx-auto px-6 mb-40">
-                    <div className="grid lg:grid-cols-2 gap-20 items-center">
-                        <div className="relative z-10">
-                            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-[10px] font-black uppercase tracking-[0.2em] mb-10 shadow-lg">
-                                <span className="relative flex h-2 w-2">
-                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-500 opacity-75"></span>
-                                    <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
-                                </span>
-                                Open Algorithm Protocol
-                            </div>
-                            <h1 className="text-6xl lg:text-8xl font-black text-white mb-10 leading-[0.9] uppercase italic tracking-tighter">
-                                Integrity via <span className="text-indigo-500 not-italic">Radical</span> Transparency.
-                            </h1>
-                            <p className="text-xl text-slate-400 leading-relaxed max-w-xl mb-12 font-light">
-                                TruthLens isn&apos;t a black box. We believe that for AI to fight misinformation, its own logic must be visible, auditable, and beyond reproach.
-                            </p>
-                            <div className="flex gap-6">
-                                <a
-                                    className="bg-indigo-600 text-slate-950 px-10 py-4 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-indigo-500 transition-all shadow-xl shadow-indigo-600/30 inline-flex items-center justify-center"
-                                    href="https://github.com/Kawshik-khan/TruthLens"
-                                    target="_blank"
-                                    rel="noreferrer"
-                                >
-                                    View GitHub Repo
-                                </a>
-                                <button className="px-10 py-4 rounded-xl font-black text-xs uppercase tracking-widest border border-white/10 text-white hover:bg-white/5 transition-all">Download Whitepaper</button>
-                            </div>
-                        </div>
+            <main className="max-w-7xl mx-auto px-6 pt-32">
+                {/* Hero */}
+                <motion.section
+                    className="text-center mb-20"
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                >
+                    <h1 className="text-5xl md:text-7xl font-bold mb-6 text-white">
+                        Radical Transparency
+                    </h1>
+                    <p className="text-white/70 text-xl max-w-3xl mx-auto">
+                        TruthLens operates with complete algorithmic visibility. Every decision, every score, every verification step is auditable and open-source.
+                    </p>
+                </motion.section>
 
+                <div className="bento-grid">
+                    {/* Interactive Timeline */}
+                    <motion.div
+                        className="bento-item col-span-12 p-8"
+                        initial={{ opacity: 0, y: 30 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                    >
+                        <h2 className="text-2xl font-bold text-white mb-8">Our Verification Process</h2>
                         <div className="relative">
-                            <div className="absolute -inset-20 bg-indigo-600/20 blur-[120px] rounded-full"></div>
-                            <div className="relative glass-panel rounded-[2.5rem] p-4 border-indigo-500/20 shadow-2xl bg-slate-900/40">
-                                <div className="aspect-square flex items-center justify-center relative overflow-hidden rounded-[2rem]">
-                                    <div className="absolute inset-0 flex items-center justify-center scale-125 opacity-20 group-hover:opacity-40 transition-opacity">
-                                        <div className="w-96 h-96 border border-indigo-500/30 rounded-full animate-[spin_20s_linear_infinite]"></div>
-                                        <div className="absolute w-64 h-64 border border-indigo-500/50 rounded-full animate-[spin_15s_linear_infinite_reverse]"></div>
-                                    </div>
-                                    <div className="relative z-10 w-48 h-48 bg-indigo-600/10 border-2 border-indigo-500 rounded-full flex items-center justify-center shadow-[0_0_50px_rgba(99,102,241,0.4)]">
-                                        <span className="material-symbols-outlined text-indigo-400 text-7xl font-light italic">insights</span>
-                                    </div>
-                                    <img
-                                        alt="Neural network"
-                                        className="absolute inset-0 w-full h-full object-cover opacity-30 mix-blend-overlay"
-                                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuDzUCsHFU5CgjaIGL07lwUSH_ikJId_xRIo4jkGFQPuX505T6yVUmTdHDYYWMixxWnj2qFmllc2lgEJKBT-ngQTg-KaoubuhHkVJ09qcDRwuCE_47Wg4beCCPbK55fEBtLk1qCOgVGlwE7s3w9_M_VoorvSqM67vl3P6QDfgJSFoqOBL6PGxAfkUzOOZqnT6Jam55LXrJUVT5Mj55YhHsuEFsp1Dulqn6PEIUH5gasZnwqRckvAAVg-m6qm-d7NDoezxPjabGGL_K4"
-                                    />
-                                </div>
+                            <div className="absolute left-8 top-0 bottom-0 w-px bg-gradient-to-b from-white/20 via-white/10 to-transparent"></div>
+                            <div className="space-y-8">
+                                {[
+                                    { step: 1, title: "Claim Ingestion", desc: "Input analysis begins with secure claim intake and initial parsing.", icon: FileText },
+                                    { step: 2, title: "NLP Parse", desc: "Advanced natural language processing analyzes sentiment, bias, and structure.", icon: Shield },
+                                    { step: 3, title: "Source Crawl", desc: "Automated web crawling gathers corroborating evidence from trusted sources.", icon: Database },
+                                    { step: 4, title: "Cross Verification", desc: "Multi-source validation ensures factual consistency across datasets.", icon: CheckCircle },
+                                    { step: 5, title: "Scoring Algorithm", desc: "Proprietary scoring system calculates trust metrics and confidence levels.", icon: Zap },
+                                    { step: 6, title: "Verdict & Report", desc: "Final analysis delivered with comprehensive evidence and explanations.", icon: ArrowRight },
+                                ].map((item, i) => (
+                                    <motion.div
+                                        key={i}
+                                        className="flex gap-8 items-start"
+                                        initial={{ opacity: 0, x: -50 }}
+                                        whileInView={{ opacity: 1, x: 0 }}
+                                        viewport={{ once: true }}
+                                        transition={{ delay: i * 0.1 }}
+                                    >
+                                        <div className="flex-shrink-0 w-16 h-16 bg-blue-500/10 rounded-xl flex items-center justify-center border border-blue-500/20">
+                                            <item.icon className="w-6 h-6 text-blue-400" />
+                                        </div>
+                                        <div className="flex-1 pt-2">
+                                            <div className="flex items-center gap-3 mb-2">
+                                                <span className="text-blue-400 font-mono text-sm">0{item.step}</span>
+                                                <h3 className="text-lg font-semibold text-white">{item.title}</h3>
+                                            </div>
+                                            <p className="text-white/70 text-sm">{item.desc}</p>
+                                        </div>
+                                    </motion.div>
+                                ))}
                             </div>
                         </div>
-                    </div>
-                </section>
+                    </motion.div>
+
+                    {/* Stats Section */}
+                    <motion.div
+                        className="bento-item col-span-12 md:col-span-4 p-8 text-center"
+                        initial={{ opacity: 0, y: 30 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.1 }}
+                    >
+                        <h3 className="text-white font-semibold mb-4">Accuracy Rate</h3>
+                        <div className="text-4xl font-bold text-white mb-2">99.7%</div>
+                        <p className="text-white/60 text-sm">Verified claims detected</p>
+                    </motion.div>
+
+                    <motion.div
+                        className="bento-item col-span-12 md:col-span-4 p-8 text-center"
+                        initial={{ opacity: 0, y: 30 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.2 }}
+                    >
+                        <h3 className="text-white font-semibold mb-4">Sources Analyzed</h3>
+                        <div className="text-4xl font-bold text-white mb-2">500M+</div>
+                        <p className="text-white/60 text-sm">Data points in our graph</p>
+                    </motion.div>
+
+                    <motion.div
+                        className="bento-item col-span-12 md:col-span-4 p-8 text-center"
+                        initial={{ opacity: 0, y: 30 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.3 }}
+                    >
+                        <h3 className="text-white font-semibold mb-4">Processing Speed</h3>
+                        <div className="text-4xl font-bold text-white mb-2">2.3s</div>
+                        <p className="text-white/60 text-sm">Average analysis time</p>
+                    </motion.div>
+
+                    {/* Whitepaper CTA */}
+                    <motion.div
+                        className="bento-item col-span-12 p-8 text-center"
+                        initial={{ opacity: 0, y: 30 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.4 }}
+                    >
+                        <h3 className="text-2xl font-bold text-white mb-4">Complete Methodology</h3>
+                        <p className="text-white/70 mb-6 max-w-2xl mx-auto">
+                            Download our comprehensive whitepaper detailing the full technical specifications, validation methods, and ethical frameworks.
+                        </p>
+                        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                            <a
+                                href="https://github.com/Kawshik-khan/TruthLens"
+                                target="_blank"
+                                rel="noreferrer"
+                                className="px-6 py-3 bg-white text-black rounded-lg font-semibold hover:bg-white/90 transition-colors flex items-center gap-2"
+                            >
+                                <FileText className="w-4 h-4" />
+                                View Source Code
+                            </a>
+                            <button className="px-6 py-3 glass-panel text-white rounded-lg hover:bg-white/10 transition-colors flex items-center gap-2">
+                                <Download className="w-4 h-4" />
+                                Download Whitepaper
+                            </button>
+                        </div>
+                    </motion.div>
+                </div>
 
                 {/* Triple-Verification Engine */}
                 <section className="max-w-7xl mx-auto px-6 mb-40">
