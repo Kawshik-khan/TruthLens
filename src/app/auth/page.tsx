@@ -40,7 +40,8 @@ export default function AuthPage() {
         const data = await res.json();
         // Store the token and user data using auth utilities
         setAuthState(data.token, data.user);
-        router.push("/dashboard");
+        // Redirect to dashboard
+        window.location.href = "/dashboard";
       } else {
         const data = await res.json();
         setError(data.error || "Login failed");
@@ -82,13 +83,29 @@ export default function AuthPage() {
       });
 
       if (res.ok) {
-        setActiveTab("login");
-        setError("");
-        setRegisterName("");
-        setRegisterEmail("");
-        setRegisterPassword("");
-        setRegisterConfirmPassword("");
-        setAgreeToTerms(false);
+        // Auto-login after successful registration
+        const loginRes = await fetch("/api/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: registerEmail, password: registerPassword }),
+        });
+
+        if (loginRes.ok) {
+          const loginData = await loginRes.json();
+          // Store auth state
+          setAuthState(loginData.token, loginData.user);
+          // Redirect to dashboard
+          window.location.href = "/dashboard";
+        } else {
+          // If auto-login fails, switch to login tab
+          setActiveTab("login");
+          setError("");
+          setRegisterName("");
+          setRegisterEmail("");
+          setRegisterPassword("");
+          setRegisterConfirmPassword("");
+          setAgreeToTerms(false);
+        }
       } else {
         const data = await res.json();
         setError(data.error || "Registration failed");

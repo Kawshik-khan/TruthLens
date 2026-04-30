@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { Search, Filter, Calendar, TrendingUp, Eye, CheckCircle, AlertTriangle, XCircle, Clock } from "lucide-react";
+import { requireAuth } from "@/lib/auth";
 
 interface HistoryItem {
   id: string;
@@ -25,6 +26,9 @@ export default function HistoryPage() {
   const [sortBy, setSortBy] = useState<"date" | "score">("date");
 
   useEffect(() => {
+    // Check authentication first
+    requireAuth();
+
     fetchHistory();
   }, []);
 

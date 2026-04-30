@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Eye, EyeOff, Shield, Users, Activity, UserPlus, CheckCircle } from "lucide-react";
 import { config } from "@/lib/config";
+import { setAuthState } from "@/lib/auth";
 
 export default function RegisterPage() {
     const [name, setName] = useState("");
@@ -30,7 +31,23 @@ export default function RegisterPage() {
             });
 
             if (res.ok) {
-                router.push("/login");
+                // Auto-login after successful registration
+                const loginRes = await fetch("/api/auth/login", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email, password }),
+                });
+
+                if (loginRes.ok) {
+                    const loginData = await loginRes.json();
+                    // Store auth state
+                    setAuthState(loginData.token, loginData.user);
+                    // Redirect to dashboard
+                    window.location.href = "/dashboard";
+                } else {
+                    // If auto-login fails, redirect to login page
+                    window.location.href = "/login";
+                }
             } else {
                 const data = await res.json();
                 setError(data.error || "Registration failed");

@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Eye, EyeOff, Shield, Users, Activity, CheckCircle } from "lucide-react";
 import { config } from "@/lib/config";
@@ -14,7 +13,6 @@ export default function LoginPage() {
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
-    const router = useRouter();
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -27,22 +25,15 @@ export default function LoginPage() {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, password }),
             });
-            
+
             if (res.ok) {
                 const data = await res.json();
-                
+
                 // Store the token and user data using auth utilities
-                try {
-                    setAuthState(data.token, data.user);
-                    
-                    // Redirect to dashboard
-                    setTimeout(() => {
-                        window.location.href = "/dashboard";
-                    }, 100);
-                    
-                } catch (authError) {
-                    setError("Error saving login information");
-                }
+                setAuthState(data.token, data.user);
+
+                // Redirect to dashboard immediately
+                window.location.href = "/dashboard";
             } else {
                 const data = await res.json();
                 setError(data.error || "Login failed");

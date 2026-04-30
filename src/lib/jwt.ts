@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import { db } from '@/lib/db';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
 
@@ -36,24 +37,27 @@ export async function requireAuth(request: Request) {
     return { error: 'Invalid token', status: 401 };
   }
 
-  // Return mock user data for now
-  const user = {
-    id: payload.userId,
-    name: 'Test User',
-    email: payload.email,
-    role: payload.role,
-    avatar: null,
-    bio: null,
-    preferences: {
-      emailNotifications: true,
-      pushNotifications: false,
-      weeklyReports: true,
-      theme: 'dark',
-      language: 'en'
-    },
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  };
+  // Fetch real user from database
+  try {
+    const user = await (db as any).user.findUnique({
+      where: { id: payload.userId },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        createdAt: true,
+        updatedAt: true,
+      }
+    });
 
-  return { user };
+    if (!user) {
+      return { error: 'User not found', status: 401 };
+    }
+
+    return { user };
+  } catch (error) {
+    console.error('Error fetching user from database:', error);
+    return { error: 'Database error', status: 500 };
+  }
 }
