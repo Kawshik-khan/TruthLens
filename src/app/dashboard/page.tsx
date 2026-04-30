@@ -6,7 +6,6 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { User, Activity, Shield, Search, Bot, CheckCircle, TrendingUp, Target, Award } from "lucide-react";
-import { getAuthHeader, requireAuth } from "@/lib/auth";
 
 interface UserInfo {
     id: string;
@@ -28,16 +27,12 @@ export default function DashboardPage() {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        // Check authentication first
-        requireAuth();
-
         const fetchData = async () => {
             try {
-                const headers = getAuthHeader();
-                
+                // Cookie is automatically sent by browser
                 const [historyRes, userRes] = await Promise.all([
-                    fetch("/api/submissions", { headers }),
-                    fetch("/api/auth/me", { headers }),
+                    fetch("/api/submissions", { credentials: "include" }),
+                    fetch("/api/auth/me", { credentials: "include" }),
                 ]);
 
                 if (historyRes.ok) {

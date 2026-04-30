@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Eye, EyeOff, Shield, Users, Activity, UserPlus, CheckCircle } from "lucide-react";
 import { config } from "@/lib/config";
-import { setAuthState } from "@/lib/auth";
 
 export default function RegisterPage() {
     const [name, setName] = useState("");
@@ -36,17 +35,16 @@ export default function RegisterPage() {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ email, password }),
+                    credentials: "include", // Important: includes cookies
                 });
 
                 if (loginRes.ok) {
-                    const loginData = await loginRes.json();
-                    // Store auth state
-                    setAuthState(loginData.token, loginData.user);
+                    // Cookie is automatically set by browser
                     // Redirect to dashboard
-                    window.location.href = "/dashboard";
+                    router.push("/dashboard");
                 } else {
                     // If auto-login fails, redirect to login page
-                    window.location.href = "/login";
+                    router.push("/login");
                 }
             } else {
                 const data = await res.json();

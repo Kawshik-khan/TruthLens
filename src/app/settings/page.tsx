@@ -2,7 +2,6 @@
 
 import AuthLayout from "@/components/AuthLayout";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { User, Settings, Shield, Bell, Lock, Smartphone, Globe, Palette, Mail, Eye, EyeOff } from "lucide-react";
 
@@ -22,10 +21,7 @@ interface UserProfile {
 }
 
 export default function SettingsPage() {
-  const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
-
-  console.log("Settings page mounted");
   const [isSaving, setIsSaving] = useState(false);
   const [activeTab, setActiveTab] = useState("profile");
   const [profile, setProfile] = useState<UserProfile>({
@@ -47,16 +43,9 @@ export default function SettingsPage() {
 
   const fetchProfile = async () => {
     try {
-      const token = localStorage.getItem("auth_token");
-      if (!token) {
-        router.push("/login");
-        return;
-      }
-
+      // Cookie is automatically sent by browser
       const response = await fetch("/api/user/profile", {
-        headers: {
-          "Authorization": `Bearer ${token}`
-        }
+        credentials: "include"
       });
 
       if (response.ok) {
@@ -73,18 +62,13 @@ export default function SettingsPage() {
   const handleSaveProfile = async () => {
     setIsSaving(true);
     try {
-      const token = localStorage.getItem("auth_token");
-      if (!token) {
-        router.push("/login");
-        return;
-      }
-
+      // Cookie is automatically sent by browser
       const response = await fetch("/api/user/profile", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
         },
+        credentials: "include",
         body: JSON.stringify(profile)
       });
 
@@ -104,13 +88,13 @@ export default function SettingsPage() {
 
   const handlePasswordChange = async (currentPassword: string, newPassword: string) => {
     try {
-      const token = localStorage.getItem("auth_token");
+      // Cookie is automatically sent by browser
       const response = await fetch("/api/user/change-password", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
         },
+        credentials: "include",
         body: JSON.stringify({ currentPassword, newPassword })
       });
 

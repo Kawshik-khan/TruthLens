@@ -21,8 +21,6 @@ interface Notification {
 export default function NotificationsPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
-
-  console.log("Notifications page mounted");
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [filter, setFilter] = useState<"all" | "unread" | "read">("all");
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
@@ -33,16 +31,9 @@ export default function NotificationsPage() {
 
   const fetchNotifications = async () => {
     try {
-      const token = localStorage.getItem("auth_token");
-      if (!token) {
-        router.push("/login");
-        return;
-      }
-
+      // Cookie is automatically sent by browser
       const response = await fetch("/api/user/notifications", {
-        headers: {
-          "Authorization": `Bearer ${token}`
-        }
+        credentials: "include"
       });
 
       if (response.ok) {

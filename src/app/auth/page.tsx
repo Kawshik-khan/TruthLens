@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { config } from "@/lib/config";
-import { setAuthState } from "@/lib/auth";
 
 export default function AuthPage() {
   const [activeTab, setActiveTab] = useState<"login" | "register">("login");
@@ -34,14 +33,13 @@ export default function AuthPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: loginEmail, password: loginPassword }),
+        credentials: "include", // Important: includes cookies
       });
 
       if (res.ok) {
-        const data = await res.json();
-        // Store the token and user data using auth utilities
-        setAuthState(data.token, data.user);
+        // Cookie is automatically set by browser
         // Redirect to dashboard
-        window.location.href = "/dashboard";
+        router.push("/dashboard");
       } else {
         const data = await res.json();
         setError(data.error || "Login failed");
@@ -88,14 +86,13 @@ export default function AuthPage() {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email: registerEmail, password: registerPassword }),
+          credentials: "include", // Important: includes cookies
         });
 
         if (loginRes.ok) {
-          const loginData = await loginRes.json();
-          // Store auth state
-          setAuthState(loginData.token, loginData.user);
+          // Cookie is automatically set by browser
           // Redirect to dashboard
-          window.location.href = "/dashboard";
+          router.push("/dashboard");
         } else {
           // If auto-login fails, switch to login tab
           setActiveTab("login");

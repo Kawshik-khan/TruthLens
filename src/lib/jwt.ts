@@ -23,14 +23,36 @@ export function verifyToken(token: string): JWTPayload | null {
   }
 }
 
-export async function requireAuth(request: Request) {
-  const authHeader = request.headers.get('authorization');
+// Helper to extract token from cookies in a request
+function getTokenFromCookies(request: Request): string | null {
+  const cookieHeader = request.headers.get('cookie');
+  if (!cookieHeader) return null;
   
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+  const cookies = cookieHeader.split(';');
+  for (const cookie of cookies) {
+    const [name, value] = cookie.trim().split('=');
+    if (name === 'token') {
+      return value;
+    }
+  }
+  return null;
+}
+
+export async function requireAuth(request: Request) {
+  // Try to get token from cookie first, then fall back to Authorization header
+  let token = getTokenFromCookies(request);
+  
+  if (!token) {
+    const authHeader = request.headers.get('authorization');
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      token = authHeader.substring(7);
+    }
+  }
+  
+  if (!token) {
     return { error: 'Unauthorized', status: 401 };
   }
 
-  const token = authHeader.substring(7);
   const payload = verifyToken(token);
 
   if (!payload) {

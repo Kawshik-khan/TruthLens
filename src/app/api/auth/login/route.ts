@@ -50,15 +50,24 @@ export async function POST(req: NextRequest) {
             { expiresIn: '24h' }
         );
 
+        // Create response with user data (token is in cookie, not response body)
         const response = NextResponse.json({
             message: "Login successful",
-            token: token,
             user: { 
                 id: user.id, 
                 name: user.name, 
                 email: user.email, 
                 role: user.role 
             }
+        });
+
+        // Set httpOnly cookie with token
+        response.cookies.set('token', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax',
+            path: '/',
+            maxAge: 86400 // 24 hours
         });
 
         return response;
