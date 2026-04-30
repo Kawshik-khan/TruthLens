@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 // PUT /api/user/notifications/[id]/read - Mark notification as read
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const authHeader = request.headers.get('authorization');
@@ -11,7 +11,7 @@ export async function PUT(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const notificationId = params.id;
+    const { id: notificationId } = await params;
 
     // Mock response - in production, verify notification exists and belongs to user
     const updatedNotification = {
