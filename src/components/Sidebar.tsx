@@ -2,10 +2,12 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { useAuth } from "./AuthProvider";
 
 export default function Sidebar() {
     const pathname = usePathname();
     const router = useRouter();
+    const { logout: authLogout } = useAuth();
 
     const navItems = [
         { name: "Dashboard", href: "/dashboard", icon: "dashboard" },
@@ -17,6 +19,7 @@ export default function Sidebar() {
     const handleLogout = async () => {
         try {
             await fetch("/api/auth/logout", { method: "POST" });
+            authLogout();
             router.push("/login");
         } catch (error) {
             console.error("Logout failed:", error);

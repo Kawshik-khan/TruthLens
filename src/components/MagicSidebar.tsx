@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
+import { useAuth } from "./AuthProvider";
 import { 
   LayoutDashboard, 
   History, 
@@ -46,11 +47,13 @@ const navItems = [
 export default function MagicSidebar() {
   const pathname = usePathname();
   const router = useRouter();
+  const { logout: authLogout } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const handleLogout = async () => {
     try {
       await fetch("/api/auth/logout", { method: "POST" });
+      authLogout();
       router.push("/login");
     } catch (error) {
       console.error("Logout failed:", error);

@@ -16,7 +16,6 @@ const publicRoutes = [
   '/learn',
   '/learn/quizzes',
   '/feedback',
-  '/submit',
   '/analyze'
 ]
 

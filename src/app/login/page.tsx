@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Eye, EyeOff, Shield, Users, Activity, CheckCircle } from "lucide-react";
 import { config } from "@/lib/config";
+import { useAuth } from "@/components/AuthProvider";
 
 export default function LoginPage() {
     const [email, setEmail] = useState("");
@@ -14,6 +15,7 @@ export default function LoginPage() {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
     const router = useRouter();
+    const { hydrate } = useAuth();
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -29,22 +31,12 @@ export default function LoginPage() {
             });
 
             if (res.ok) {
-                console.log("Login API successful, verifying cookie persistence...");
-
-                // Verify cookie is properly set before redirecting
-                const verifyRes = await fetch("/api/auth/verify-cookie", {
-                    credentials: "include",
-                });
-
-                if (verifyRes.ok) {
-                    const verifyData = await verifyRes.json();
-                    console.log("Cookie verification successful:", verifyData);
-                    // Cookie is set and valid, now safe to redirect
-                    router.push("/dashboard");
-                } else {
-                    console.error("Cookie verification failed after login");
-                    setError("Login succeeded but authentication persistence failed. Please try again.");
-                }
+                console.log("Login API successful");
+                // Call hydrate to sync auth state before redirecting
+                console.log("Calling hydrate to sync auth state...");
+                await hydrate();
+                console.log("Auth hydrated successfully, redirecting to dashboard");
+                router.push("/dashboard");
             } else {
                 const data = await res.json();
                 setError(data.error || "Login failed");

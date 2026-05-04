@@ -8,18 +8,28 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useAuth } from "@/components/AuthProvider";
 import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function SubmitPage() {
     const [content, setContent] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [analysisResult, setAnalysisResult] = useState<any>(null);
     const [error, setError] = useState("");
+    const router = useRouter();
     const { isAuthenticated, user, isLoading: authLoading } = useAuth();
 
     // Debug authentication state changes
     useEffect(() => {
         console.log("Submit page - Auth state updated:", { isAuthenticated, user, authLoading });
     }, [isAuthenticated, user, authLoading]);
+
+    // Redirect to login if auth has loaded and user is not authenticated
+    useEffect(() => {
+        if (!authLoading && !isAuthenticated) {
+            console.log("Submit page - Not authenticated, redirecting to login");
+            router.push("/login?next=/submit");
+        }
+    }, [authLoading, isAuthenticated, router]);
 
     const isValid = content.trim().length >= 10;
 

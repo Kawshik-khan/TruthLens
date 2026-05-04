@@ -11,96 +11,65 @@ export interface User {
 
 interface AuthContextType {
   user: User | null;
-  token: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (token: string, user: User) => void;
   logout: () => void;
+  hydrate: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
-  const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    // Load auth from both cookies and localStorage on mount
-    if (typeof window !== 'undefined') {
-      // Try cookie first (server-set), fallback to localStorage
-      const getCookie = (name: string) => {
-        const cookies = document.cookie.split('; ');
-        for (const cookie of cookies) {
-          const [cookieName, cookieValue] = cookie.trim().split('=');
-          if (cookieName === name) {
-            return cookieValue || null;
-          }
-        }
-        return null;
-      };
+  // Hydrate auth state from server-verified session via /api/auth/me
+  const hydrate = async () => {
+    try {
+      console.log('[AuthProvider] Starting hydration...');
+      const response = await fetch("/api/auth/me", {
+        credentials: "include", // Include httpOnly cookies
+        cache: 'no-store', // Force fresh request, don't use cache
+      });
+
+      console.log('[AuthProvider] /api/auth/me response status:', response.status);
       
-      const storedToken = getCookie('token') || localStorage.getItem("auth_token");
-      const storedUser = getCookie('user') || localStorage.getItem("auth_user");
-      
-      // Debug logging
-      console.log("AuthProvider - Available cookies:", document.cookie);
-      console.log("AuthProvider - Token from cookie:", getCookie('token'));
-      console.log("AuthProvider - Token from localStorage:", localStorage.getItem("auth_token"));
-      console.log("AuthProvider - User from cookie:", getCookie('user'));
-      console.log("AuthProvider - User from localStorage:", localStorage.getItem("auth_user"));
-      
-      if (storedToken && storedUser) {
-        try {
-          setToken(storedToken);
-          setUser(typeof storedUser === 'string' ? JSON.parse(storedUser) : storedUser);
-          console.log("AuthProvider - Auth state loaded successfully");
-        } catch (e) {
-          console.error("Failed to parse auth data");
-        }
+      if (response.ok) {
+        const userData = await response.json();
+        console.log('[AuthProvider] ✅ Hydration successful, user:', userData.email);
+        setUser(userData);
+      } else {
+        const errorData = await response.json();
+        console.warn('[AuthProvider] ❌ /api/auth/me returned', response.status, errorData);
+        setUser(null);
       }
-      
+    } catch (error) {
+      console.error('[AuthProvider] ❌ Hydration failed:', error);
+      setUser(null);
+    } finally {
       setIsLoading(false);
     }
-  }, []);
-
-  const login = (newToken: string, newUser: User) => {
-    if (typeof window !== 'undefined') {
-      // Set both cookie and localStorage for persistence
-      localStorage.setItem("auth_token", newToken);
-      localStorage.setItem("auth_user", JSON.stringify(newUser));
-      
-      // Also set cookie for server-side compatibility
-      const isProduction = process.env.NODE_ENV === 'production';
-      const cookieDomain = process.env.COOKIE_DOMAIN;
-      document.cookie = `token=${newToken}; path=/; max-age=86400; ${isProduction ? 'secure;' : ''} ${isProduction && cookieDomain ? `domain=${cookieDomain};` : ''} sameSite=${isProduction ? 'none' : 'lax'}`;
-    }
-    setToken(newToken);
-    setUser(newUser);
   };
 
+  // Hydrate on mount
+  useEffect(() => {
+    hydrate();
+  }, []);
+
   const logout = () => {
-    if (typeof window !== 'undefined') {
-      // Clear both localStorage and cookies
-      localStorage.removeItem("auth_token");
-      localStorage.removeItem("auth_user");
-      
-      // Clear cookie by setting it to expire in the past
-      document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    }
-    setToken(null);
     setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{
-      user,
-      token,
-      isAuthenticated: !!token && !!user,
-      isLoading,
-      login,
-      logout
-    }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        isAuthenticated: !!user,
+        isLoading,
+        logout,
+        hydrate,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

@@ -21,7 +21,7 @@ interface NavbarProps {
 
 export default function Navbar({ links, cta }: NavbarProps) {
     const [mobileOpen, setMobileOpen] = useState(false);
-    const { isAuthenticated, user } = useAuth();
+    const { isAuthenticated, user, isLoading } = useAuth();
 
     const defaultLinks = [
         { name: "Analyzer", href: "/submit" },
@@ -55,7 +55,9 @@ export default function Navbar({ links, cta }: NavbarProps) {
                 </div>
 
                 <div className="hidden items-center gap-3 sm:flex">
-                    {isAuthenticated ? (
+                    {isLoading ? (
+                        <div className="h-10 w-32 animate-pulse rounded-full bg-white/10" />
+                    ) : isAuthenticated ? (
                         <Link href="/dashboard" className="group inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-emerald-600 to-emerald-500 px-5 py-2.5 text-sm font-semibold text-white shadow-[0_0_30px_rgba(16,185,129,0.35)] transition-all duration-300 hover:from-emerald-500 hover:to-green-400 hover:shadow-[0_0_40px_rgba(16,185,129,0.5)]">
                             <span>Dashboard</span>
                             <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" />
@@ -112,7 +114,9 @@ export default function Navbar({ links, cta }: NavbarProps) {
                                 </motion.div>
                             ))}
                             <div className="mt-2 grid grid-cols-2 gap-3">
-                                {isAuthenticated ? (
+                                {isLoading ? (
+                                    <div className="col-span-2 h-12 animate-pulse rounded-2xl bg-white/10" />
+                                ) : isAuthenticated ? (
                                     <Link href="/dashboard" onClick={() => setMobileOpen(false)} className="col-span-2 rounded-2xl bg-gradient-to-r from-emerald-600 to-emerald-500 px-4 py-4 text-center text-sm font-semibold text-white shadow-[0_0_28px_rgba(16,185,129,0.3)] transition-all duration-300 hover:from-emerald-500 hover:to-green-400">
                                         Dashboard
                                     </Link>
