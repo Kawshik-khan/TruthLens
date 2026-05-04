@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import jwt from 'jsonwebtoken'
+import { jwtVerify } from 'jose'
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production'
+const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET || 'your-secret-key-change-in-production')
 
 // Public routes that don't require authentication
 const publicRoutes = [
@@ -23,16 +23,18 @@ const publicRoutes = [
 // Routes that start with these are public
 const publicPrefixes = ['/api/', '/_next/', '/favicon.ico', '/static/']
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   // Check if route is public
   if (publicRoutes.includes(pathname)) {
+    console.log(`Middleware: Allowing public route ${pathname}`)
     return NextResponse.next()
   }
 
   // Check if route starts with public prefix
   if (publicPrefixes.some(prefix => pathname.startsWith(prefix))) {
+    console.log(`Middleware: Allowing public prefix route ${pathname}`)
     return NextResponse.next()
   }
 
@@ -40,16 +42,20 @@ export function middleware(request: NextRequest) {
   const token = request.cookies.get('token')?.value
 
   if (!token) {
+    console.log(`Middleware: No token found for protected route ${pathname}, redirecting to login`)
     // Redirect to login if no token
     const loginUrl = new URL('/login', request.url)
     return NextResponse.redirect(loginUrl)
   }
 
   try {
-    // Verify JWT
-    jwt.verify(token, JWT_SECRET)
+    // Verify JWT using jose (edge runtime compatible)
+    const { payload } = await jwtVerify(token, JWT_SECRET)
+    console.log(`Middleware: Token verified for user ${payload.email}, allowing access to ${pathname}`)
     return NextResponse.next()
   } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    console.error(`Middleware: Token verification failed for route ${pathname}:`, errorMessage)
     // Token is invalid, redirect to login
     const loginUrl = new URL('/login', request.url)
     return NextResponse.redirect(loginUrl)

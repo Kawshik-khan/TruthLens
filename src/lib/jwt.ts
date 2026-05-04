@@ -38,16 +38,36 @@ function getTokenFromCookies(request: Request): string | null {
   return null;
 }
 
+// Helper to extract token from Authorization header (for API calls)
+function getTokenFromAuthHeader(request: Request): string | null {
+  const authHeader = request.headers.get('authorization');
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    return authHeader.substring(7);
+  }
+  return null;
+}
+
+// Debug helper to log all authentication attempts
+function logAuthAttempt(request: Request, source: string, token: string | null, success: boolean) {
+  console.log(`Auth attempt - Source: ${source}, Token: ${token ? token.substring(0, 10) + '...' : 'null'}, Success: ${success}`);
+  
+  if (!success) {
+    console.log('Request headers:', Object.fromEntries(request.headers.entries()));
+  }
+}
+
 export async function requireAuth(request: Request) {
   // Try to get token from cookie first, then fall back to Authorization header
   let token = getTokenFromCookies(request);
+  let authSource = 'cookie';
   
   if (!token) {
-    const authHeader = request.headers.get('authorization');
-    if (authHeader && authHeader.startsWith('Bearer ')) {
-      token = authHeader.substring(7);
-    }
+    token = getTokenFromAuthHeader(request);
+    authSource = token ? 'authorization' : 'none';
   }
+  
+  // Log authentication attempt for debugging
+  logAuthAttempt(request, authSource, token, !!token);
   
   if (!token) {
     return { error: 'Unauthorized', status: 401 };

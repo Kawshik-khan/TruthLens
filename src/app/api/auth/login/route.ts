@@ -61,14 +61,20 @@ export async function POST(req: NextRequest) {
             }
         });
 
-        // Set httpOnly cookie with token
+        // Set httpOnly cookie with token - production-ready configuration
+        const isProduction = process.env.NODE_ENV === 'production';
+        const cookieDomain = process.env.COOKIE_DOMAIN; // Optional: set for cross-domain cookies
+
         response.cookies.set('token', token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'lax',
+            secure: isProduction, // Always secure in production, optional in dev
+            sameSite: isProduction ? 'none' : 'lax', // 'none' required for cross-domain in production
+            domain: cookieDomain, // Explicit domain if set in env
             path: '/',
             maxAge: 86400 // 24 hours
         });
+
+        console.log(`Login successful: token cookie set for user ${user.email}, production: ${isProduction}, domain: ${cookieDomain || 'default'}`);
 
         return response;
     } catch (error) {

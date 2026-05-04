@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requireAuth } from '@/lib/jwt';
 import { verifyNews } from "@/lib/verify";
+import { db } from "@/lib/db";
+import { createAnalysisNotification } from "@/lib/notifications";
 
 export async function POST(req: NextRequest) {
     try {
@@ -30,36 +32,27 @@ export async function POST(req: NextRequest) {
         // Trigger verification using the claim text
         const verification = await verifyNews(content, submissionTitle);
 
-        // For now, return mock data since we don't have the database connection
-        // In production, you would:
-        // const submission = await db.submission.create({
-        //     data: {
-        //         title: submissionTitle,
-        //         content,
-        //         url,
-        //         trustScore: analysis.trustScore,
-        //         status: analysis.status,
-        //         citations: analysis.citations || [],
-        //         userId,
-        //     },
-        // });
+        // Create submission in database
+        const submission = await (db as any).submission.create({
+            data: {
+                title: submissionTitle,
+                content,
+                url: url || null,
+                trustScore: verification.accuracy || 0,
+                status: verification.status || "PENDING",
+                citations: verification.citations ? JSON.stringify(verification.citations) : null,
+                userId,
+            },
+        });
 
-        const submission = {
-            id: Date.now().toString(),
-            title: submissionTitle,
-            content,
-            url,
-            trustScore: verification.accuracy,
-            status: verification.status,
-            citations: verification.citations || [],
-            userId,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
-        };
+        // Create notification for user (non-blocking)
+        createAnalysisNotification(userId, submissionTitle, verification.accuracy || 0)
+            .catch(err => console.error('Failed to create notification:', err));
 
         // Return submission data along with AI analysis
         return NextResponse.json({
             ...submission,
+            citations: verification.citations || [],
             aiAnalysis: verification.aiAnalysis,
         }, { status: 201 });
     } catch (error) {
@@ -84,41 +77,19 @@ export async function GET(req: NextRequest) {
 
         const userId = authResult.user.id;
 
-        // For now, return mock data since we don't have the database connection
-        // In production, you would:
-        // const submissions = await db.submission.findMany({
-        //     where: { userId },
-        //     orderBy: { createdAt: "desc" },
-        // });
+        // Fetch user's submissions from database
+        const submissions = await (db as any).submission.findMany({
+            where: { userId },
+            orderBy: { createdAt: "desc" },
+        });
 
-        const mockSubmissions = [
-            {
-                id: "1",
-                title: "Climate Change Analysis",
-                content: "Analysis of recent climate change data and trends...",
-                url: "https://example.com/climate-article",
-                trustScore: 85,
-                status: "VERIFIED",
-                citations: ["Source 1", "Source 2"],
-                createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(),
-                updatedAt: new Date().toISOString(),
-                userId: userId
-            },
-            {
-                id: "2", 
-                title: "Political News Verification",
-                content: "Verification of recent political news claims...",
-                url: "https://example.com/political-article",
-                trustScore: 72,
-                status: "RELIABLE",
-                citations: ["Source 3"],
-                createdAt: new Date(Date.now() - 1000 * 60 * 60 * 48).toISOString(),
-                updatedAt: new Date().toISOString(),
-                userId: userId
-            }
-        ];
+        // Parse citations JSON for each submission
+        const formattedSubmissions = submissions.map((sub: any) => ({
+            ...sub,
+            citations: sub.citations ? JSON.parse(sub.citations) : [],
+        }));
 
-        return NextResponse.json(mockSubmissions);
+        return NextResponse.json(formattedSubmissions);
     } catch (error) {
         console.error("Fetch submissions error:", error);
         return NextResponse.json(

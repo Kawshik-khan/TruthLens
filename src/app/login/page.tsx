@@ -29,14 +29,28 @@ export default function LoginPage() {
             });
 
             if (res.ok) {
-                // Cookie is automatically set by browser
-                // Redirect to dashboard
-                router.push("/dashboard");
+                console.log("Login API successful, verifying cookie persistence...");
+
+                // Verify cookie is properly set before redirecting
+                const verifyRes = await fetch("/api/auth/verify-cookie", {
+                    credentials: "include",
+                });
+
+                if (verifyRes.ok) {
+                    const verifyData = await verifyRes.json();
+                    console.log("Cookie verification successful:", verifyData);
+                    // Cookie is set and valid, now safe to redirect
+                    router.push("/dashboard");
+                } else {
+                    console.error("Cookie verification failed after login");
+                    setError("Login succeeded but authentication persistence failed. Please try again.");
+                }
             } else {
                 const data = await res.json();
                 setError(data.error || "Login failed");
             }
         } catch (err) {
+            console.error("Login error:", err);
             setError("An unexpected error occurred");
         } finally {
             setIsLoading(false);

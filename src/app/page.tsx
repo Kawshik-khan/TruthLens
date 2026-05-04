@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
 import {
   Activity,
   ArrowRight,
@@ -90,14 +91,42 @@ const howItWorks = [
   },
 ];
 
-const trustMetrics = [
-  { value: "1.2M+", label: "Analyses Performed" },
-  { value: "98.7%", label: "Accuracy Rate" },
-  { value: "320K+", label: "Verified Sources" },
-  { value: "150+", label: "Countries Served" },
-];
+// Format large numbers with K/M suffixes
+function formatNumber(num: number): string {
+  if (num >= 1000000) return (num / 1000000).toFixed(1) + "M+";
+  if (num >= 1000) return (num / 1000).toFixed(1) + "K+";
+  return num.toString();
+}
 
 export default function Home() {
+  const [stats, setStats] = useState({
+    totalAnalyses: 0,
+    avgAccuracy: 0,
+    verifiedSources: 0,
+    countriesServed: 0
+  });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("/api/stats")
+      .then(res => res.json())
+      .then(data => {
+        setStats(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error("Failed to fetch stats:", err);
+        setLoading(false);
+      });
+  }, []);
+
+  const trustMetrics = [
+    { value: formatNumber(stats.totalAnalyses), label: "Analyses Performed" },
+    { value: stats.avgAccuracy + "%", label: "Accuracy Rate" },
+    { value: formatNumber(stats.verifiedSources), label: "Verified Sources" },
+    { value: formatNumber(stats.countriesServed), label: "Countries Served" },
+  ];
+
   return (
     <>
       <Navbar />

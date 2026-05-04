@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { User, Activity, Shield, Search, Bot, CheckCircle, TrendingUp, Target, Award } from "lucide-react";
+import { useAuth } from "@/components/AuthProvider";
 
 interface UserInfo {
     id: string;
@@ -25,6 +26,11 @@ export default function DashboardPage() {
     const [historyItems, setHistoryItems] = useState<any[]>([]);
     const [user, setUser] = useState<UserInfo | null>(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [analysisContent, setAnalysisContent] = useState("");
+    const [analysisLoading, setAnalysisLoading] = useState(false);
+    const [analysisResult, setAnalysisResult] = useState<any>(null);
+    const [analysisError, setAnalysisError] = useState("");
+    const { isAuthenticated } = useAuth();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -57,6 +63,49 @@ export default function DashboardPage() {
         ? Math.round(historyItems.reduce((acc, curr) => acc + curr.trustScore, 0) / historyItems.length)
         : 0;
     const trustTier = computeTrustTier(avgScore);
+
+    const handleDashboardAnalyze = async () => {
+        if (!analysisContent.trim() || analysisContent.trim().length < 10) {
+            setAnalysisError("Please enter at least 10 characters to analyze.");
+            return;
+        }
+
+        if (!isAuthenticated) {
+            setAnalysisError("Please log in to perform analysis.");
+            return;
+        }
+
+        setAnalysisLoading(true);
+        setAnalysisResult(null);
+        setAnalysisError("");
+
+        try {
+            const response = await fetch("/api/submissions", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                credentials: "include",
+                body: JSON.stringify({ content: analysisContent.trim() }),
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                setAnalysisResult(data);
+                // Add to history items immediately
+                setHistoryItems(prev => [data, ...prev].slice(0, 6));
+            } else {
+                const errData = await response.json();
+                if (response.status === 401) {
+                    setAnalysisError("Please log in to perform analysis.");
+                } else {
+                    setAnalysisError(errData.error || "Analysis failed");
+                }
+            }
+        } catch (err) {
+            setAnalysisError("An unexpected error occurred");
+        } finally {
+            setAnalysisLoading(false);
+        }
+    };
 
     return (
         <AuthLayout>
@@ -245,38 +294,11 @@ export default function DashboardPage() {
                         initial={{ opacity: 0, y: 30 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
-                        transition={{ delay: 0.1 }}
-                    >
-                        <h3 className="text-white font-semibold mb-4">Claims Analyzed</h3>
-                        <div className="text-4xl font-bold text-white mb-2">{historyItems.length}</div>
-                        <div className="text-white/60 text-sm">Total submissions</div>
-                    </motion.div>
-
-                    <motion.div
-                        className="bento-item col-span-12 md:col-span-3 p-8 text-center"
-                        initial={{ opacity: 0, y: 30 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: 0.2 }}
-                    >
-                        <h3 className="text-white font-semibold mb-4">Accuracy Trend</h3>
-                        <div className="text-4xl font-bold text-white mb-2">{historyItems.length > 0 ? avgScore : 0}%</div>
-                        <div className="flex items-center justify-center gap-2">
-                            <TrendingUp className="w-4 h-4 text-emerald-400" />
-                            <span className="text-emerald-400 text-sm">Improving</span>
-                        </div>
-                    </motion.div>
-
-                    <motion.div
-                        className="bento-item col-span-12 md:col-span-3 p-8 text-center"
-                        initial={{ opacity: 0, y: 30 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
                         transition={{ delay: 0.3 }}
                     >
                         <h3 className="text-white font-semibold mb-4">Fake vs Real</h3>
                         <div className="text-4xl font-bold text-white mb-2">
-                            {historyItems.length > 0 ? Math.round((historyItems.filter(i => i.status === "VERIFIED" || i.status === "RELIABLE").length / historyItems.length) * 100) : 0}%
+                            {historyItems.length > 0 ? Math.round((historyItems.filter((item) => item.status === "VERIFIED" || item.status === "RELIABLE").length / historyItems.length) * 100) : 0}%
                         </div>
                         <div className="text-white/60 text-sm">Verified claims</div>
                     </motion.div>
@@ -290,7 +312,7 @@ export default function DashboardPage() {
                     >
                         <h3 className="text-white font-semibold mb-4">Analysis Streak</h3>
                         <div className="text-4xl font-bold text-white mb-2">
-                            {historyItems.filter(item => {
+                            {historyItems.filter((item) => {
                                 const itemDate = new Date(item.createdAt);
                                 const today = new Date();
                                 const diffTime = Math.abs(today.getTime() - itemDate.getTime());

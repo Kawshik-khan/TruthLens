@@ -36,12 +36,12 @@ export default function HistoryPage() {
         const data = await response.json();
         setHistoryItems(data);
       } else {
-        // Mock data for demo
-        setHistoryItems(getMockHistory());
+        // API error - show empty state
+        setHistoryItems([]);
       }
     } catch (error) {
       console.error("Failed to fetch history:", error);
-      setHistoryItems(getMockHistory());
+      setHistoryItems([]);
     } finally {
       setIsLoading(false);
     }
@@ -274,54 +274,4 @@ export default function HistoryPage() {
       )}
     </AuthLayout>
   );
-}
-
-// Mock data for demo purposes
-function getMockHistory(): HistoryItem[] {
-  return [
-    {
-      id: "1",
-      title: "Climate Change Study Reveals Accelerating Ice Loss",
-      content: "Recent scientific research shows that Greenland's ice sheet is losing mass at an unprecedented rate, contributing to global sea level rise.",
-      trustScore: 92,
-      status: "VERIFIED",
-      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(),
-      url: "https://climate.nasa.gov",
-      citations: '[{"title": "NASA Climate Change Study", "source": "NASA", "url": "https://climate.nasa.gov"}]'
-    },
-    {
-      id: "2",
-      title: "New COVID-19 Variant Detected in Multiple Countries",
-      content: "Health authorities report a new coronavirus variant with mutations that may affect vaccine efficacy.",
-      trustScore: 78,
-      status: "RELIABLE",
-      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(),
-      url: "https://who.int",
-    },
-    {
-      id: "3",
-      title: "Quantum Computer Achieves Breakthrough in Processing Power",
-      content: "Researchers claim to have built a quantum computer that can solve complex problems millions of times faster than traditional computers.",
-      trustScore: 45,
-      status: "FLAGGED",
-      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 48).toISOString(),
-    },
-    {
-      id: "4",
-      title: "Miracle Cure Claims for Common Cold Debunked",
-      content: "Social media posts claim a new herbal supplement can cure the common cold in 24 hours, but medical experts find no evidence.",
-      trustScore: 15,
-      status: "FAKE",
-      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 72).toISOString(),
-    },
-    {
-      id: "5",
-      title: "Renewable Energy Surpasses Coal in Power Generation",
-      content: "For the first time, renewable energy sources have generated more electricity than coal in the United States.",
-      trustScore: 88,
-      status: "VERIFIED",
-      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 120).toISOString(),
-      url: "https://energy.gov",
-    },
-  ];
 }

@@ -40,13 +40,12 @@ export default function NotificationsPage() {
         const data = await response.json();
         setNotifications(data);
       } else {
-        // Mock data for demo
-        setNotifications(getMockNotifications());
+        // API error - show empty state
+        setNotifications([]);
       }
     } catch (error) {
       console.error("Failed to fetch notifications:", error);
-      // Mock data for demo
-      setNotifications(getMockNotifications());
+      setNotifications([]);
     } finally {
       setIsLoading(false);
     }
@@ -54,12 +53,9 @@ export default function NotificationsPage() {
 
   const markAsRead = async (notificationId: string) => {
     try {
-      const token = localStorage.getItem("auth_token");
       const response = await fetch(`/api/user/notifications/${notificationId}/read`, {
         method: "PUT",
-        headers: {
-          "Authorization": `Bearer ${token}`
-        }
+        credentials: "include"
       });
 
       if (response.ok) {
@@ -74,12 +70,9 @@ export default function NotificationsPage() {
 
   const markAllAsRead = async () => {
     try {
-      const token = localStorage.getItem("auth_token");
       const response = await fetch("/api/user/notifications/mark-all-read", {
         method: "PUT",
-        headers: {
-          "Authorization": `Bearer ${token}`
-        }
+        credentials: "include"
       });
 
       if (response.ok) {
@@ -325,65 +318,4 @@ export default function NotificationsPage() {
       </div>
       </AuthLayout>
   );
-}
-
-// Mock data for demo purposes
-function getMockNotifications(): Notification[] {
-  return [
-    {
-      id: "1",
-      title: "Analysis Complete",
-      message: "Your analysis of 'Climate Change Article' has been completed with a trust score of 85%",
-      type: "success",
-      category: "analysis",
-      isRead: false,
-      createdAt: new Date(Date.now() - 1000 * 60 * 5).toISOString(),
-      actionUrl: "/dashboard",
-      actionText: "View Results"
-    },
-    {
-      id: "2",
-      title: "Quiz Available",
-      message: "New quiz 'Media Literacy Basics' is now available in the Education module",
-      type: "info",
-      category: "quiz",
-      isRead: false,
-      createdAt: new Date(Date.now() - 1000 * 60 * 60).toISOString(),
-      actionUrl: "/learn/quizzes",
-      actionText: "Take Quiz"
-    },
-    {
-      id: "3",
-      title: "System Update",
-      message: "TruthLens has been updated with new features and improvements",
-      type: "info",
-      category: "update",
-      isRead: true,
-      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(),
-      actionUrl: "/methodology",
-      actionText: "Learn More"
-    },
-    {
-      id: "4",
-      title: "Security Alert",
-      message: "New login detected from Chrome on Windows",
-      type: "warning",
-      category: "security",
-      isRead: true,
-      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(),
-      actionUrl: "/settings",
-      actionText: "Review"
-    },
-    {
-      id: "5",
-      title: "Weekly Report Ready",
-      message: "Your weekly analysis report is ready with insights on your fact-checking activity",
-      type: "info",
-      category: "system",
-      isRead: false,
-      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 48).toISOString(),
-      actionUrl: "/dashboard",
-      actionText: "View Report"
-    }
-  ];
 }

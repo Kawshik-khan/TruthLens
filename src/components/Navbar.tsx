@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight, Menu, X } from "lucide-react";
+import { useAuth } from "@/components/AuthProvider";
 
 interface NavLink {
     name: string;
@@ -20,6 +21,7 @@ interface NavbarProps {
 
 export default function Navbar({ links, cta }: NavbarProps) {
     const [mobileOpen, setMobileOpen] = useState(false);
+    const { isAuthenticated, user } = useAuth();
 
     const defaultLinks = [
         { name: "Analyzer", href: "/submit" },
@@ -53,13 +55,22 @@ export default function Navbar({ links, cta }: NavbarProps) {
                 </div>
 
                 <div className="hidden items-center gap-3 sm:flex">
-                    <Link href="/login" className="rounded-full border border-white/10 px-4 py-2 text-sm font-medium text-white/90 transition-all duration-300 hover:border-white/20 hover:bg-white/5 hover:text-white">
-                        Sign In
-                    </Link>
-                    <Link href={primaryAction.href} className="group inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-blue-600 to-blue-500 px-5 py-2.5 text-sm font-semibold text-white shadow-[0_0_30px_rgba(37,99,235,0.35)] transition-all duration-300 hover:from-blue-500 hover:to-sky-400 hover:shadow-[0_0_40px_rgba(37,99,235,0.5)]">
-                        <span>{primaryAction.name}</span>
-                        <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" />
-                    </Link>
+                    {isAuthenticated ? (
+                        <Link href="/dashboard" className="group inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-emerald-600 to-emerald-500 px-5 py-2.5 text-sm font-semibold text-white shadow-[0_0_30px_rgba(16,185,129,0.35)] transition-all duration-300 hover:from-emerald-500 hover:to-green-400 hover:shadow-[0_0_40px_rgba(16,185,129,0.5)]">
+                            <span>Dashboard</span>
+                            <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" />
+                        </Link>
+                    ) : (
+                        <>
+                            <Link href="/login" className="rounded-full border border-white/10 px-4 py-2 text-sm font-medium text-white/90 transition-all duration-300 hover:border-white/20 hover:bg-white/5 hover:text-white">
+                                Sign In
+                            </Link>
+                            <Link href={primaryAction.href} className="group inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-blue-600 to-blue-500 px-5 py-2.5 text-sm font-semibold text-white shadow-[0_0_30px_rgba(37,99,235,0.35)] transition-all duration-300 hover:from-blue-500 hover:to-sky-400 hover:shadow-[0_0_40px_rgba(37,99,235,0.5)]">
+                                <span>{primaryAction.name}</span>
+                                <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" />
+                            </Link>
+                        </>
+                    )}
                 </div>
 
                 <button
@@ -101,12 +112,20 @@ export default function Navbar({ links, cta }: NavbarProps) {
                                 </motion.div>
                             ))}
                             <div className="mt-2 grid grid-cols-2 gap-3">
-                                <Link href="/login" onClick={() => setMobileOpen(false)} className="rounded-2xl border border-white/10 px-4 py-4 text-center text-sm font-medium text-white transition-all duration-300 hover:bg-white/5">
-                                    Sign In
-                                </Link>
-                                <Link href={primaryAction.href} onClick={() => setMobileOpen(false)} className="rounded-2xl bg-gradient-to-r from-blue-600 to-blue-500 px-4 py-4 text-center text-sm font-semibold text-white shadow-[0_0_28px_rgba(37,99,235,0.3)] transition-all duration-300 hover:from-blue-500 hover:to-sky-400">
-                                    {primaryAction.name}
-                                </Link>
+                                {isAuthenticated ? (
+                                    <Link href="/dashboard" onClick={() => setMobileOpen(false)} className="col-span-2 rounded-2xl bg-gradient-to-r from-emerald-600 to-emerald-500 px-4 py-4 text-center text-sm font-semibold text-white shadow-[0_0_28px_rgba(16,185,129,0.3)] transition-all duration-300 hover:from-emerald-500 hover:to-green-400">
+                                        Dashboard
+                                    </Link>
+                                ) : (
+                                    <>
+                                        <Link href="/login" onClick={() => setMobileOpen(false)} className="rounded-2xl border border-white/10 px-4 py-4 text-center text-sm font-medium text-white transition-all duration-300 hover:bg-white/5">
+                                            Sign In
+                                        </Link>
+                                        <Link href={primaryAction.href} onClick={() => setMobileOpen(false)} className="rounded-2xl bg-gradient-to-r from-blue-600 to-blue-500 px-4 py-4 text-center text-sm font-semibold text-white shadow-[0_0_28px_rgba(37,99,235,0.3)] transition-all duration-300 hover:from-blue-500 hover:to-sky-400">
+                                            {primaryAction.name}
+                                        </Link>
+                                    </>
+                                )}
                             </div>
                         </div>
                     </motion.div>

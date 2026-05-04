@@ -12,10 +12,12 @@ export interface VerificationResult {
  */
 async function searchWeb(query: string): Promise<{ title: string; url: string; source: string; snippet?: string }[]> {
     const serperKey = process.env.SERPER_API_KEY;
+    console.log("SERPER_API_KEY available:", !!serperKey, serperKey ? serperKey.substring(0, 10) + "..." : "null");
 
     if (serperKey && serperKey.trim() !== "") {
         console.log("Using Serper API for full internet search...");
         try {
+            console.log("Making Serper API request with key:", serperKey.substring(0, 10) + "...");
             const response = await fetch("https://google.serper.dev/search", {
                 method: "POST",
                 headers: {
@@ -30,6 +32,7 @@ async function searchWeb(query: string): Promise<{ title: string; url: string; s
                 })
             });
 
+            console.log("Serper API response status:", response.status);
             if (response.ok) {
                 const data = await response.json();
                 const items: { title: string; url: string; source: string; snippet?: string }[] = [];

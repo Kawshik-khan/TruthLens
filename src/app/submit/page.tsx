@@ -3,20 +3,38 @@
 import Link from "next/link";
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Activity, Shield, Search, BookOpen, Database, History, ArrowRight } from "lucide-react";
+import { Activity, Shield, Search, BookOpen, Database, History, ArrowRight, ExternalLink, CheckCircle, AlertTriangle, XCircle } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { useAuth } from "@/components/AuthProvider";
+import { useEffect } from "react";
 
 export default function SubmitPage() {
     const [content, setContent] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [analysisResult, setAnalysisResult] = useState<any>(null);
     const [error, setError] = useState("");
+    const { isAuthenticated, user, isLoading: authLoading } = useAuth();
+
+    // Debug authentication state changes
+    useEffect(() => {
+        console.log("Submit page - Auth state updated:", { isAuthenticated, user, authLoading });
+    }, [isAuthenticated, user, authLoading]);
 
     const isValid = content.trim().length >= 10;
 
     const handleAnalyze = async () => {
         if (!isValid) return;
+        
+        // Check authentication before making API call
+        if (!isAuthenticated) {
+            setError("Please log in to verify claims.");
+            setTimeout(() => { window.location.href = "/login"; }, 2000);
+            return;
+        }
+        
+        // Show user info for debugging
+        console.log("Submit page - User authenticated:", isAuthenticated, "User:", user);
         setIsLoading(true);
         setAnalysisResult(null);
         setError("");
@@ -25,6 +43,7 @@ export default function SubmitPage() {
             const response = await fetch("/api/submissions", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
+                credentials: "include",
                 body: JSON.stringify({ content: content.trim() }),
             });
 
@@ -139,14 +158,14 @@ export default function SubmitPage() {
 
                             <div className="flex items-center justify-between">
                                 <div className="text-sm text-white/60">
-                                    {content.length} characters {isValid ? "(Ready to analyze)" : "(Minimum 10 characters)"}
+                                    {content.length} characters {isValid ? (isAuthenticated ? "(Ready to analyze)" : "(Please sign in to analyze)") : "(Minimum 10 characters)"}
                                 </div>
                                 <button
                                     className="bg-white text-black px-6 py-3 rounded-lg font-semibold hover:bg-white/90 transition-all flex items-center gap-2 disabled:opacity-50"
                                     onClick={handleAnalyze}
-                                    disabled={!isValid || isLoading}
+                                    disabled={!isValid || isLoading || !isAuthenticated}
                                 >
-                                    {isLoading ? "Analyzing..." : "Start Analysis"}
+                                    {isLoading ? "Analyzing..." : !isAuthenticated ? "Sign in to Analyze" : "Start Analysis"}
                                     <ArrowRight className="w-4 h-4" />
                                 </button>
                             </div>
@@ -233,6 +252,123 @@ export default function SubmitPage() {
                                 <p className="text-white/70 text-sm">View your past claim verifications and insights.</p>
                             </Link>
                         </motion.div>
+
+                        {/* Analysis Results Section */}
+                        {analysisResult && (
+                            <motion.div
+                                className="bento-item col-span-12 p-8"
+                                initial={{ opacity: 0, y: 30 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.2 }}
+                            >
+                                <div className="flex items-center gap-3 mb-6">
+                                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center border ${getStatusBg(analysisResult.status)}`}>
+                                        {analysisResult.status === "VERIFIED" && <CheckCircle className="w-5 h-5 text-emerald-400" />}
+                                        {analysisResult.status === "RELIABLE" && <CheckCircle className="w-5 h-5 text-blue-400" />}
+                                        {analysisResult.status === "FLAGGED" && <AlertTriangle className="w-5 h-5 text-amber-500" />}
+                                        {analysisResult.status === "FAKE" && <XCircle className="w-5 h-5 text-red-500" />}
+                                        {!["VERIFIED", "RELIABLE", "FLAGGED", "FAKE"].includes(analysisResult.status) && <Shield className="w-5 h-5 text-slate-400" />}
+                                    </div>
+                                    <h2 className="text-xl font-bold text-white">Analysis Results</h2>
+                                </div>
+
+                                {/* Status and Trust Score */}
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                                    <div className={`glass-panel rounded-lg p-6 border ${getStatusBg(analysisResult.status)}`}>
+                                        <div className="flex items-center justify-between mb-2">
+                                            <span className="text-white/70 text-sm">Verification Status</span>
+                                            <span className={`font-bold ${getStatusColor(analysisResult.status)}`}>
+                                                {analysisResult.status || "ANALYZING"}
+                                            </span>
+                                        </div>
+                                        <p className="text-white/60 text-sm">
+                                            {getStatusMessage(analysisResult.status)}
+                                        </p>
+                                    </div>
+                                    <div className="glass-panel rounded-lg p-6 border border-slate-500/20">
+                                        <div className="flex items-center justify-between mb-2">
+                                            <span className="text-white/70 text-sm">Trust Score</span>
+                                            <span className="font-bold text-white">
+                                                {analysisResult.trustScore || analysisResult.accuracy || 0}%
+                                            </span>
+                                        </div>
+                                        <div className="w-full bg-slate-700 rounded-full h-2">
+                                            <div 
+                                                className={`h-2 rounded-full transition-all ${
+                                                    (analysisResult.trustScore || analysisResult.accuracy || 0) >= 80 ? 'bg-emerald-500' :
+                                                    (analysisResult.trustScore || analysisResult.accuracy || 0) >= 60 ? 'bg-blue-400' :
+                                                    (analysisResult.trustScore || analysisResult.accuracy || 0) >= 40 ? 'bg-amber-500' :
+                                                    'bg-red-500'
+                                                }`}
+                                                style={{ width: `${analysisResult.trustScore || analysisResult.accuracy || 0}%` }}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* AI Analysis */}
+                                {analysisResult.aiAnalysis && (
+                                    <div className="glass-panel rounded-lg p-6 mb-8 border border-slate-500/20">
+                                        <h3 className="text-white font-semibold mb-3 flex items-center gap-2">
+                                            <Activity className="w-4 h-4 text-blue-400" />
+                                            AI Analysis
+                                        </h3>
+                                        <p className="text-white/80 leading-relaxed">
+                                            {analysisResult.aiAnalysis}
+                                        </p>
+                                    </div>
+                                )}
+
+                                {/* Citations from Serper Search */}
+                                {analysisResult.citations && analysisResult.citations.length > 0 && (
+                                    <div className="glass-panel rounded-lg p-6 border border-slate-500/20">
+                                        <h3 className="text-white font-semibold mb-4 flex items-center gap-2">
+                                            <Search className="w-4 h-4 text-blue-400" />
+                                            Found {analysisResult.citations.length} Sources
+                                        </h3>
+                                        <div className="space-y-3">
+                                            {analysisResult.citations.map((citation: any, index: number) => (
+                                                <div key={index} className="flex items-start gap-3 p-3 rounded-lg bg-slate-800/50 border border-slate-600/30 hover:border-slate-500/50 transition-colors">
+                                                    <div className="w-2 h-2 bg-blue-400 rounded-full mt-2 flex-shrink-0" />
+                                                    <div className="flex-1 min-w-0">
+                                                        <h4 className="text-white font-medium text-sm mb-1 line-clamp-2">
+                                                            {citation.title}
+                                                        </h4>
+                                                        <p className="text-white/60 text-xs mb-2">
+                                                            {citation.source}
+                                                        </p>
+                                                        {citation.url && (
+                                                            <a
+                                                                href={citation.url}
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                                className="inline-flex items-center gap-1 text-blue-400 hover:text-blue-300 text-xs transition-colors"
+                                                            >
+                                                                <ExternalLink className="w-3 h-3" />
+                                                                Visit Source
+                                                            </a>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* No Sources Found */}
+                                {(!analysisResult.citations || analysisResult.citations.length === 0) && (
+                                    <div className="glass-panel rounded-lg p-6 border border-amber-500/20">
+                                        <div className="flex items-center gap-3 text-amber-400">
+                                            <AlertTriangle className="w-5 h-5" />
+                                            <span className="font-medium">No corroborating sources found</span>
+                                        </div>
+                                        <p className="text-white/60 text-sm mt-2">
+                                            This claim could not be verified with external sources. Exercise caution when evaluating this information.
+                                        </p>
+                                    </div>
+                                )}
+                            </motion.div>
+                        )}
                     </div>
                 </div>
             </main>

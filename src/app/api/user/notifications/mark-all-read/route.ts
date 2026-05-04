@@ -1,20 +1,36 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { requireAuth } from '@/lib/jwt';
+import { db } from "@/lib/db";
 
 // PUT /api/user/notifications/mark-all-read - Mark all notifications as read
 export async function PUT(request: NextRequest) {
   try {
-    const authHeader = request.headers.get('authorization');
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const authResult = await requireAuth(request);
+    if (authResult.error) {
+      return NextResponse.json({ error: authResult.error }, { status: authResult.status });
     }
 
-    // Mock response - in production, update all notifications for user
-    const result = {
-      message: 'All notifications marked as read',
-      count: 2 // Mock count of unread notifications that were marked as read
-    };
+    if (!authResult.user) {
+      return NextResponse.json({ error: 'User not found' }, { status: 401 });
+    }
 
-    return NextResponse.json(result);
+    const userId = authResult.user.id;
+
+    // Update all unread notifications for the user
+    const result = await (db as any).notification.updateMany({
+      where: {
+        userId: userId,
+        isRead: false,
+      },
+      data: {
+        isRead: true,
+      },
+    });
+
+    return NextResponse.json({
+      message: 'All notifications marked as read',
+      count: result.count
+    });
   } catch (error) {
     console.error('Error marking all notifications as read:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

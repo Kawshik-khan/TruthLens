@@ -1,21 +1,6 @@
 import type { Metadata } from "next";
-import { Inter, Plus_Jakarta_Sans, Outfit } from "next/font/google";
 import "./globals.css";
-
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-});
-
-const plusJakarta = Plus_Jakarta_Sans({
-  variable: "--font-plus-jakarta",
-  subsets: ["latin"],
-});
-
-const outfit = Outfit({
-  variable: "--font-outfit",
-  subsets: ["latin"],
-});
+import { AuthProvider } from "@/components/AuthProvider";
 
 
 
@@ -34,10 +19,10 @@ export default function RootLayout({
       <head>
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
       </head>
-      <body
-        className={`${inter.variable} ${plusJakarta.variable} ${outfit.variable} antialiased font-sans`}
-      >
-        {children}
+      <body className="antialiased font-sans">
+        <AuthProvider>
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );
